@@ -21,14 +21,3 @@ class PrismaState(object):
     def __hash__(self):
         return hash(self.preState) ^ hash(self.curState)
 
-if __name__ == '__main__':
-    print('hello')
-    stateA = PrismaState('a','b')
-    stateB = PrismaState('b','c')
-    print(stateA)
-    print(stateB)
-    print(stateA==stateB)
-    print(stateB==stateB)
-    print(stateB==stateA)
-    print(stateA==stateA)
-    exit()

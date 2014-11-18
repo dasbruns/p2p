@@ -17,6 +17,9 @@ class MarkovModel(object):
     def __getitem__(self,key):
         return self.model[key]
 
+    def keys(self):
+        return self.model.keys()
+
     def __iter__(self):
         return self.model.items().__iter__()
 
