@@ -49,38 +49,36 @@ def templateParse(filehandle):
 def ruleParse(filehandle):
     rules = RulesContainer()
     dataRules = RulesContainer()
+
     dataFlag = 0
     ptypeFlag = 0
-    for line in filehandle:
-        readNext = 1
-        if len(line)==1:
-            continue
-        #TODO
-        if dataFlag == 0 and ptypeFlag == 0:
-            #print(line)
-            line = line.split()
-            if 'DataRule' in line[5].split(':')[1]:
-                dataFlag = 1
-            if 'CopyComplete' in line[5].split(':')[1]:
-                ptypeFlag = 1
-            hist = Hist(*list(map(int,line[1].split(':')[1].split(';'))))
-            srcID = int(line[2].split(':')[1])
-            srcField = int(line[3].split(':')[1])
-            dstField = int(line[4].split(':')[1])
-            #NOTE 
-            dstID = hist.curTempID
-            if dataFlag==0 and ptypeFlag==0:
-                rules.add(Rule(hist,srcID,srcField,dstID,dstField))
-            readNext = 0
-        elif dataFlag == 1 and readNext == 1:
-            data = line.split(':')[1].split(',')
+
+    line1 = filehandle.readline()
+    while line1:
+        line2 = filehandle.readline()
+        if 'DataRule' in line1:
+            dataFlag = 1
+        if 'CopyComplete' in line1:
+            ptypeFlag = 1
+        line = line1.split()
+        hist = Hist(*list(map(int,line[1].split(':')[1].split(';'))))
+        srcID = int(line[2].split(':')[1])
+        srcField = int(line[3].split(':')[1])
+        dstField = int(line[4].split(':')[1])
+        #NOTE 
+        dstID = hist.curTempID
+        if dataFlag == 1:
+            data = line2.split(':')[1].split(',')
             data[-1] = data[-1].strip()
             dataRules.add(DataRule(hist,srcID,srcField,dstID,dstField,data))
             dataFlag = 0
-        elif ptypeFlag == 1 and readNext == 1:
-            ptype = line.split(':')[1]
+        #TODO handle ptype accurate
+        elif ptypeFlag == 1:
+            ptype = line2.split(':')[1]
             rules.add(CopyRule(hist,srcID,srcField,dstID,dstField,ptype))
             ptypeFlag = 0
-
-    return rules,dataRules
+        else: #assuming: dataFlag == 0 and ptypeFlag == 0:
+            rules.add(Rule(hist,srcID,srcField,dstID,dstField))
+        line1 = filehandle.readline()
+    return rules, dataRules
 
