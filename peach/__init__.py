@@ -73,7 +73,7 @@ def stateModel(pit, done):
             dataModel = ET.Element('DataModel', name='write', attrib={'ref':str(state.hist)})
             #look for DATA to be applied by DataRules
             if state.dataRules != None:
-                data(dataModel, state)
+                dataModel = data(dataModel, state)
             outputAction.append(dataModel)
             peachState.append(outputAction)
             actionCounter += 1
@@ -97,15 +97,15 @@ def stateModel(pit, done):
     return pit
 
 def data(dataModel, state):
-    data = ET.Element('Data')
     index = 0
     for dataRule in state.dataRules:
-        print(dataRule,' Index: ',index)
+        #print(dataRule,' Index: ',index, 'Field: ',state.dataFields[index])
         for point in dataRule.data:
-            data.append(ET.Element('Field', name='c'+str(state.dataFields)+str(index), attrib={'value':point}))
+            data = ET.Element('Data')
+            data.append(ET.Element('Field', name='c'+str(state.dataFields[index]), attrib={'value':point}))
+            dataModel.append(data)
         index += 1
-    print()
-    dataModel.append(data)
+    return dataModel
 
 def slurpActions(state):
     theRules = []
@@ -116,5 +116,8 @@ def slurpActions(state):
         #construct path to where to write; setXpath
         theRules.append(ET.Element('Action',attrib={'type':'slurp','valueXpath':'?', 'setXpath':'!'}))#, name=str(rule.hist), attirb={'type':'slurp'}))
     return theRules
+
+def createInterState(curState, preHist):
+    return InterState(curState,preHist)
 
 

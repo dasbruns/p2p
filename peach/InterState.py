@@ -30,7 +30,7 @@ class InterState(object):
         return 'InterState{!r}-->{!r}'.format(self.preHist, self.curState)
 
     def __eq__(self,obj):
-        return isinstance(obj,InterState) and self.curState == obj.curState and self.hist == obj.hist
+        return isinstance(obj,InterState) and self.curState == obj.curState and self.hist == obj.hist and self.preHist == obj.preHist
 
     def getCurState(self):
         return self.curState.getCurState()

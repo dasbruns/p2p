@@ -5,6 +5,11 @@
 #from MarkovTransition import MarkovTransition as P
 import prisma
 import peach
+import copy
+
+#def multiAssembler(state, hist, container, model, templates)
+ #   s = peach.createInterState(state.curState,state.preHist)
+
 
 def stateAssembler(state, container, model, templates, UAC=True):
     if 'END' in str(state.curState):
@@ -26,14 +31,22 @@ def stateAssembler(state, container, model, templates, UAC=True):
             #set templates history
             setTemplatesHist(ID, updateState.hist)
             #set preStates postHist
-            setPostHist(container.done, updateState)
             updateState.nextStates = model.model[state.curState]
             updateState.IOAction = 'output'
-            if updateState not in container.done.values():
-                container.doneadd(updateState)
-                for nextState in updateState.nextStates:
-                    nxt = peach.InterState(nextState, updateState.hist)
-                    container.todoadd(nxt)
+            #multiply em here
+            if len(updateState.hist.preTempID) > 1:
+                #print(updateState)
+                for hist in updateState.hist.assembleHist():
+                    cpy = copy.deepcopy(updateState)
+                    cpy.hist = hist
+                    #print(cpy)
+                    setPostHist(container.done, cpy)
+                    appendTodo(container, cpy)
+
+            #set correct postHist in preState
+            else:
+                setPostHist(container.done, updateState)
+                appendTodo(container, updateState)
     #just keep all templates and construct multimodel later
     else:
         if len(state.templates) > 1:
@@ -50,12 +63,14 @@ def stateAssembler(state, container, model, templates, UAC=True):
         setPostHist(container.done, state)
         state.nextStates = model.model[state.curState]
         state.IOAction = 'input'
-        if state not in container.done.values():
-            container.doneadd(state)
-            for nextState in state.nextStates:
-                for hist in state.hist.assembleHist():
-                    nxt = peach.InterState(nextState, state.hist)
-                    container.todoadd(nxt)
+        appendTodo(container, state)
+
+def appendTodo(container, state):
+   if state.hist not in container.done.keys():
+       container.doneadd(state)
+       for nextState in state.nextStates:
+           nxt = peach.InterState(nextState, state.hist)
+           container.todoadd(nxt)
 
 def setPostHist(done, state):
    if container.done[state.preHist].postHist == None:
@@ -124,12 +139,19 @@ if __name__ == '__main__':
     while(container.todo != []):
         state = container.todo[0]
         container.todorem(state)
+        #if parent was multiModel state, create mutiple nextStates
+        #print(state.preHist)
+        #if len(state.preHist.preTempID) > 1:
+        #    for hist in state.preHist.assembleHist():
+        #        #multiAssembler(state, hist, container, model, templates)
+        #       stateAssembler(peach.createInterState(state.curState,state.preHist), container, model, templates)
+        #    continue
         stateAssembler(state, container, model, templates)
 
     #assign rules to state
     for i in container.done.values():
         #print(i.hist,type(i.hist))
-        possibleHist = i.hist.assembleHist()
+        possibleHist = i.hist.assembleHist(True)
         for hist in possibleHist:
             if hist in dataRules.keys():
                 i.dataFields = templates.IDtoTemp[hist.curTempID].fields
