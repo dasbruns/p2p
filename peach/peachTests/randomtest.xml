@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Peach xmlns="http://peachfuzzer.com/2012/Peach" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://peachfuzzer.com/2012/Peach /peach/peach.xsd">
+
+	<!--PythonPath path="/usr/bin/python2"/-->
+	<Import import="randomFixup" />
+
+	<!-- TODO: Create data model -->
+	<DataModel name="M1">
+		<String name="a1" />
+		<String name="a2" />
+	</DataModel>
+	<DataModel name="M2">
+		<String name="c1" value="def"/>
+	</DataModel>
+	<DataModel name="M3">
+			<String name="a1" value="opt1.1" token="true"/>
+			<String name="a2" value="opt1.2" token="true"/>
+	</DataModel>
+	<DataModel name="M4">
+			<String name="a1" value="opt2.1" token="true"/>
+			<String name="a2" value="opt2.2" token="true"/>
+			<String name="a3" value="opt2.3" token="true"/>
+	</DataModel>
+	<DataModel name="M5">
+			<String name="a1" value="a" token="true"/>
+			<String name="a2" value="b" token="true"/>
+			<String name="a3" value="exit" token="true"/>
+	</DataModel>
+
+<!-- multiModel, capable of cracking either of M3,4,5   >
+<    NOTE access considerably unhandy                 -->
+	<DataModel name="M">
+		<Choice name="c1" minOccurs="1" maxOccurs="1">
+			<Block name="o1" ref="M3"/>
+			<Block name="o2" ref="M4"/>
+			<Block name="o3" ref="M5"/>
+		</Choice>
+	</DataModel>
+	<DataModel name="Mdash">
+		<String name="a1"/>
+		<String name="a2"/>
+		<String name="a3" />
+	</DataModel>
+
+<!-- random number generator; range needs to be hardcoded, here 3 -->
+	<DataModel name="rand">
+		<!-- generate random number -->
+		<Number name="c1" valueType="string" size="8" >
+			<Fixup class="SequenceRandomFixup"/>
+		</Number>
+		<!-- crop it to intended range, here 3 -->
+		<Number name="a1" valueType="string" size="8" >
+			<Fixup class="ExpressionFixup">
+				<Param name="ref" value="c1" />
+				<Param name="expression" value="(int(data[0])) % 3" />
+			</Fixup>
+		</Number>
+	</DataModel>
+
+	<DataModel name="alonghere">
+		<String name="a" value="came along here"/>
+	</DataModel>
+	<DataModel name="done">
+		<String name="a" value="finally done"/>
+	</DataModel>
+
+	<StateModel name="StateModel" initialState="InitialState">
+		<State name="InitialState">
+			<Action name="rec" type="input">
+				<DataModel name="read" ref="M" />
+			</Action>
+			<Action type="changeState" ref="muh"/>
+		</State>
+
+		<State name="muh">
+			<Action type="slurp" valueXpath="//StateModel//InitialState//rec//read//a1" setXpath="//StateModel//muh//out//write//a1"/>	
+			<Action type="slurp" valueXpath="//StateModel//InitialState//rec//read//a2" setXpath="//StateModel//muh//out//write//a2"/>	
+			<!--Action type="slurp" valueXpath="//StateModel//InitialState//rec//read//a3" setXpath="//StateModel//muh//out//write//a3" when="str(StateModel.states['muh'].actions[3].dataModel['a1'].InternalValue) != 'opt1.1'"/-->
+			<Action type="slurp" valueXpath="//StateModel//InitialState//rec//read//a3" setXpath="//StateModel//muh//out//write//a3" when="str(StateModel.states['muh'].actions[3].dataModel['a1'].InternalValue) != 'opt1.1'"/>
+			<Action name="out" type="output">
+				<DataModel name="write" ref="Mdash" />
+			</Action>
+
+		<!-- accessing multiModel -->
+			<Action type="changeState" ref="3" when="str(StateModel.states['InitialState'].actions[0].dataModel[0][0][0]['a1'].InternalValue) == 'a'"/>
+			<!--Action type="changeState" ref="3" when="str(StateModel.states['muh'].actions[3].dataModel['a3'].InternalValue) == 'exit'"/-->
+
+		<!-- produce random number -->
+			<Action type="output" publisher="null">
+				<DataModel ref="rand"/>
+			</Action>
+
+		<!-- get random number in changeState action -->
+			<Action type="changeState" ref="4" when="int(StateModel.states['muh'].actions[5].dataModel['a1'].InternalValue) == int(0)"/>
+			<Action type="changeState" ref="5" when="int(StateModel.states['muh'].actions[5].dataModel['a1'].InternalValue) == int(1)"/>
+			<Action type="changeState" ref="InitialState"/>
+		</State>
+
+		<State name="3">
+			<Action type="output">
+				<DataModel ref="done"/>
+			</Action>
+			<Action type="close"/>
+		</State>
+
+		<State name="4">
+			<Action type="output">
+				<DataModel ref="alonghere"/>
+			</Action>
+			<Action type="changeState" ref="InitialState"/>
+		</State>
+
+		<State name="5">
+			<Action type="output">
+				<DataModel ref="alonghere"/>
+			</Action>
+			<Action type="changeState" ref="InitialState"/>
+		</State>
+	</StateModel>
+
+	<!-- TODO: Configure Agent -->
+	<!--Agent name="TheAgent" location="http://127.0.0.1:9000">
+	</Agent-->
+
+	<Agent name="Local">
+		<!--Monitor class="LinuxCrashMonitor"/-->
+		<Monitor class="Process">
+			<Param name="Executable" value="./server"/>
+			<Param name="StartOnCall" value="Start"/>
+			<Param name="Arguments" value="fuzzed.bin"/>
+		</Monitor>
+	</Agent>
+
+	<Test name="Default">
+		<Agent ref="Local"/>
+		<StateModel ref="StateModel"/>
+
+		<!-- TODO: Configure a publisher -->
+		<!--<Publisher class="File">
+			<Param name="FileName" value="fuzzed.png"/>
+		</Publisher>-->
+		<Publisher name="test" class="TcpClient">
+			<Param name="Host" value="127.0.0.1"/>
+			<Param name="Port" value="50007"/>
+		</Publisher>
+
+		<Publisher name="null" class="Null" />
+
+		<!-- OPTIONAL: Configure a strategy -->
+		<!--Strategy class="Random">
+			<Param name="MaxFieldsToMutate" value="0"/>
+		</Strategy-->
+		
+		<Logger class="File">
+			<Param name="Path" value="logs"/>
+		</Logger>
+	</Test>
+
+</Peach>
+<!-- end -->

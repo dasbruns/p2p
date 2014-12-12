@@ -8,6 +8,8 @@ class Template(object):
         self.count = count
         self.fields = fields
         self.content = content
+        #in which context is template observed?
+        self.hists = None
 
     def __str__(self):
         return 'ID {!s} {!s} {!s} {!s}'.format(self.ID,self.state,self.count, self.fields)#str(self.ID) +' '+ self.state

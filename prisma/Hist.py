@@ -9,8 +9,11 @@ class Hist(object):
         self.preTempID = preTempID
         self.curTempID = curTempID
 
+    def update(self, ID):
+        return Hist(self.preTempID, self.curTempID, ID)
+
     def __str__(self):
-        return str(self.prePreTempID) + ':' + str(self.preTempID) + ':' + str(self.curTempID)
+        return str(self.prePreTempID) + ';' + str(self.preTempID) + ';' + str(self.curTempID)
 
     #remove later
     def __repr__(self):
@@ -21,3 +24,12 @@ class Hist(object):
 
     def __eq__(self,obj):
         return isinstance(obj,Hist) and obj.prePreTempID == self.prePreTempID and obj.preTempID == self.preTempID and obj.curTempID == self.curTempID
+
+    def assembleHist(self):
+        allHist = []
+        for ID1 in self.prePreTempID:
+            for ID2 in self.preTempID:
+                for ID3 in self.curTempID:
+                    allHist.append(Hist(ID1, ID2, ID3))
+        return allHist
+            

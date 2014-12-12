@@ -1,0 +1,12 @@
+Peach Fuzzing Run
+=================
+
+Date of run: 12/10/2014 4:16:01 PM
+Peach Version: 0.0.0.0
+Seed: 57196
+Command line: customFixup.xml --debug --1 
+Pit File: customFixup.xml
+. Test starting: Default
+
+. Iteration 1 : 12/10/2014 4:16:06 PM
+. Test finished: Default

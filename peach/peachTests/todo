@@ -1,0 +1,11 @@
+(*)	can crack differrent models within one
+
+(*)	get random number via call/publisher from python script [workaround]
+
+(*)	get random number from dataModel to right location in target changeState actions
+
+(*)	check slurp possibilities [slurping from dataRule?!]
+
+(*)	find out about custom fixups for implementing special copy rules
+		(*/2)	check out more
+

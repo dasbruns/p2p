@@ -26,5 +26,5 @@ class MarkovModel(object):
     def add(self,mtrans):
         if mtrans.curState not in self.model:
             self.model[mtrans.curState] = []
-        self.model[mtrans.curState].append(mtrans)
+        self.model[mtrans.curState].append(mtrans.nextState)
 

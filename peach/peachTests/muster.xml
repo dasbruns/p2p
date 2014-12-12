@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Peach xmlns="http://peachfuzzer.com/2012/Peach" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://peachfuzzer.com/2012/Peach /peach/peach.xsd">
+
+	<!-- TODO: Create data model -->
+	<DataModel name="0">
+		<String name="1" value="huhu"/>
+	</DataModel>
+
+	<DataModel name="1">
+		<String name="1"/>
+	</DataModel>
+
+	<DataModel name="2">
+		<Choice name="1" minOccurs="1" maxOccurs="1">
+			<String name="1" length="4"  value="moep"/>
+			<String name="2" length="3"  value="bla"/>
+		</Choice>
+	</DataModel>
+
+	<!-- TODO: Create state model -->
+	<StateModel name="TheState" initialState="initial">
+		<State name="initial">
+			<Action type="output">
+				<DataModel ref="0"/>
+			</Action>
+			<Action type="changeState" ref="2"/>
+		</State>
+		<State name="2">
+			<Action name="in" type="input">
+				<DataModel name="input" ref="1"/>
+			</Action>
+			<Action type="changeState" ref="3"/>
+		</State>
+		<State name="3">
+			<Action type="slurp" valueXpath="//StateModel//rec//TheReceiveChallenge//Challenge" setXpath="StateModel//out//TheSendChallenge//Challenge"/>
+			<Action type="slurp" valueXpath="//TheState/2/in/input/1" setXpath="out/output/1"/>
+			<Action name="out" type="output">
+				<DataModel name="output" ref="1"/>
+			</Action>
+			<Action type="changeState" ref="2"/>
+		</State>
+
+	</StateModel>
+
+	<!-- TODO: Configure Agent -->
+	<!--Agent name="TheAgent" location="http://127.0.0.1:9000">
+	</Agent-->
+
+	<Agent name="Local">
+		<!--Monitor class="LinuxCrashMonitor"/-->
+		<Monitor class="Process">
+			<Param name="Executable" value="./server"/>
+			<Param name="StartOnCall" value="Start"/>
+			<Param name="Arguments" value="fuzzed.bin"/>
+		</Monitor>
+	</Agent>
+
+	<Test name="Default">
+		<Agent ref="Local"/>
+		<StateModel ref="TheState"/>
+
+		<!-- TODO: Configure a publisher -->
+		<!--<Publisher class="File">
+			<Param name="FileName" value="fuzzed.png"/>
+		</Publisher>-->
+		<Publisher name="test" class="TcpClient">
+			<Param name="Host" value="127.0.0.1"/>
+			<Param name="Port" value="50007"/>
+		</Publisher>
+
+		<Publisher class="stdout.Stdout" />
+
+		<!-- OPTIONAL: Configure a strategy -->
+		<!--Strategy class="Random">
+			<Param name="MaxFieldsToMutate" value="0"/>
+		</Strategy-->
+		
+		<Logger class="File">
+			<Param name="Path" value="logs"/>
+		</Logger>
+	</Test>
+
+</Peach>
+<!-- end -->

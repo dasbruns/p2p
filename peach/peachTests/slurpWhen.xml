@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Peach xmlns="http://peachfuzzer.com/2012/Peach" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://peachfuzzer.com/2012/Peach /peach/peach.xsd">
+
+	<!-- TODO: Create data model -->
+	<DataModel name="M1">
+		<String name="d0" value="nothing "/>
+		<String name="d1" value="else"/>
+		<String name="d2" value=" matters"/>
+	</DataModel>
+	<DataModel name="M2">
+		<String name="c1" value="def"/>
+	</DataModel>
+	<DataModel name="M3">
+			<String name="a1" value="opt1.1" token="true"/>
+			<String name="a2" value="opt1.2" token="true"/>
+	</DataModel>
+	<DataModel name="M4">
+			<String name="a1" value="opt2.1" token="true"/>
+			<String name="a2" value="opt2.2" token="true"/>
+			<String name="a3" value="opt2.3" token="true"/>
+	</DataModel>
+	<DataModel name="M5">
+			<String name="a1" value="a" token="true"/>
+			<String name="a2" value="b" token="true"/>
+			<String name="a3" value="exit" token="true"/>
+	</DataModel>
+	<DataModel name="M">
+		<Choice name="c1" minOccurs="1" maxOccurs="1">
+			<Block name="o1" ref="M3"/>
+			<Block name="o2" ref="M4"/>
+			<Block name="o3" ref="M5"/>
+		</Choice>
+	</DataModel>
+	<DataModel name="end">
+		<String name="c1" value="bye"/>
+	</DataModel>
+
+	<StateModel name="StateModel" initialState="InitialState">
+		<State name="InitialState">
+			<Action name="rec" type="input">
+				<DataModel name="read" ref="M" />
+			</Action>
+			<Action type="changeState" ref="muh"/>
+		</State>
+		<State name="muh">
+			<Action type="slurp" valueXpath="//StateModel//InitialState//rec//read"  setXpath="//StateModel//muh//out//write"/>	
+			<!--Action type="slurp" valueXpath="//StateModel//InitialState//rec//read//c2"  setXpath="//StateModel//muh//out//write//c2"/>	
+			<Action type="slurp" valueXpath="//StateModel//InitialState//rec//read//c3"  setXpath="//StateModel//muh//out//write//c3"/-->	
+			<Action name="out" type="output">
+				<DataModel name="write" ref="M" />
+			</Action>
+			<!--Action type="changeState" ref="3" when="str(StateModel.states['InitialState'].actions[0].dataModel['a3'].InternalValue) == 'exit'"/-->
+			<Action type="changeState" ref="InitialState"/>
+		</State>
+		<State name="3">
+			<Action type="output">
+				<DataModel ref="end"/>
+			</Action>
+			<Action type="close"/>
+		</State>
+	</StateModel>
+
+	<!-- TODO: Configure Agent -->
+	<!--Agent name="TheAgent" location="http://127.0.0.1:9000">
+	</Agent-->
+
+	<Agent name="Local">
+		<!--Monitor class="LinuxCrashMonitor"/-->
+		<Monitor class="Process">
+			<Param name="Executable" value="./server"/>
+			<Param name="StartOnCall" value="Start"/>
+			<Param name="Arguments" value="fuzzed.bin"/>
+		</Monitor>
+	</Agent>
+
+	<Test name="Default">
+		<Agent ref="Local"/>
+		<StateModel ref="StateModel"/>
+
+		<!-- TODO: Configure a publisher -->
+		<!--<Publisher class="File">
+			<Param name="FileName" value="fuzzed.png"/>
+		</Publisher>-->
+		<Publisher name="test" class="TcpClient">
+			<Param name="Host" value="127.0.0.1"/>
+			<Param name="Port" value="50007"/>
+		</Publisher>
+
+		<Publisher class="stdout.Stdout" />
+
+		<!-- OPTIONAL: Configure a strategy -->
+		<!--Strategy class="Random">
+			<Param name="MaxFieldsToMutate" value="0"/>
+		</Strategy-->
+		
+		<Logger class="File">
+			<Param name="Path" value="logs"/>
+		</Logger>
+	</Test>
+
+</Peach>
+<!-- end -->

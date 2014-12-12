@@ -48,6 +48,7 @@ def templateParse(filehandle):
 
 def ruleParse(filehandle):
     rules = RulesContainer()
+    copyRules = RulesContainer()
     dataRules = RulesContainer()
 
     dataFlag = 0
@@ -74,11 +75,13 @@ def ruleParse(filehandle):
             dataFlag = 0
         #TODO handle ptype accurate
         elif ptypeFlag == 1:
-            ptype = line2.split(':')[1]
-            rules.add(CopyRule(hist,srcID,srcField,dstID,dstField,ptype))
+            line2 = line2.strip().split(':')
+            ptype = line2[1].split()[0]
+            content = line2[2].split(',')
+            copyRules.add(CopyRule(hist,srcID,srcField,dstID,dstField,ptype,content))
             ptypeFlag = 0
         else: #assuming: dataFlag == 0 and ptypeFlag == 0:
             rules.add(Rule(hist,srcID,srcField,dstID,dstField))
         line1 = filehandle.readline()
-    return rules, dataRules
+    return rules, copyRules, dataRules
 

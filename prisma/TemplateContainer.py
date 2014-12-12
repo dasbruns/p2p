@@ -25,10 +25,8 @@ class TemplateContainer(object):
         return self.IDtoTemp.keys()
 
     def add(self,template):
-        if template.ID not in self.IDtoTemp:
-            self.IDtoTemp[template.ID] = []
-        self.IDtoTemp[template.ID].append(template)
+        self.IDtoTemp[template.ID] =  template
         if template.state not in self.stateToID:
             self.stateToID[template.state] = []
-        self.stateToID[template.state].append(template)
+        self.stateToID[template.state].append(template.ID)
 

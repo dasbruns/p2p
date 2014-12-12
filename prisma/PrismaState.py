@@ -21,3 +21,5 @@ class PrismaState(object):
     def __hash__(self):
         return hash(self.preState) ^ hash(self.curState)
 
+    def getCurState(self):
+        return self.curState

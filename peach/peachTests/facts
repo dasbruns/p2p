@@ -1,0 +1,32 @@
+DataModel
+	make statement about length or token to crack
+	name attributes beginning with letter
+
+	model multiple dataModels this way (M1,2,3 dataModels itself):
+(*)	<DataModel name="M">
+      <Choice name="c1" minOccurs="1" maxOccurs="1">
+        <Block name="o1" ref="M3"/>
+        <Block name="o2" ref="M4"/>
+        <Block name="o3" ref="M5"/>
+      </Choice>
+  	</DataModel>
+
+Data
+	does not need a name!
+	
+
+when
+	dataModel[0][0][0]['POS'].InternalValue 
+			for structure like in (*) iff no choice elements are referenced at 
+			position POS in specified dataModels; in this case:
+
+	dataModel[0][0][0].InternalValue
+
+	StateModel.states['s2'].actions[3].dataModel['a1'].InternalValue
+
+slurp
+	<Action type="slurp" 	valueXpath="//StateModel//State//Action//DataModel//Attribute" 
+												setXpath="//StateModel//State//Action//DataMOdel//Attribute" />
+	all refs by name
+	DataModel is a concrete one, but a copy of some template; so name it.
+	-- check which DataModel came in to changestate appropiately

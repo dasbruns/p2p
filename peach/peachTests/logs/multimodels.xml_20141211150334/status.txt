@@ -1,0 +1,12 @@
+Peach Fuzzing Run
+=================
+
+Date of run: 12/11/2014 3:03:34 PM
+Peach Version: 0.0.0.0
+Seed: 39890
+Command line: multimodels.xml --debug --1 
+Pit File: multimodels.xml
+. Test starting: Default
+
+. Iteration 1 : 12/11/2014 3:03:37 PM
+. Test finished: Default
