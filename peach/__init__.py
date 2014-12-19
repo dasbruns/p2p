@@ -20,6 +20,10 @@ def dataModel(templates):
                 else:
                     createContent(ID,dataModel,templates)
                 root.append(dataModel)
+    #create random datModel
+    dataModel = ET.Element('DataModel', name= 'rand')
+    dataModel.append(ET.Element('String', name= 'a1'))
+    root.append(dataModel)
     return pit
 
 def multimodel(root, ID, hist, written, templates):
@@ -41,10 +45,14 @@ def createContent(ID, dataModel, templates):
         data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
         dataModel.append(data)
         count += 1
+    #if empty dataModel, insert empty String
+    #later used as discriminative feature
+    if count == 0:
+        dataModel.append(ET.Element('String', name='c0', attrib={'value':''}))
     return dataModel
 
 
-def stateModel(pit, done):
+def stateModel(pit, done, templates):
     #pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
@@ -56,7 +64,7 @@ def stateModel(pit, done):
         peachState = ET.Element('State', name=str(state.hist))
         #implement slurp actions
         if state.IOAction == 'output' and state.rules:
-            theRules = slurpActions(state)
+            theRules = slurpActions(state,done)
             for rule in theRules:
                 peachState.append(rule)
             actionCounter += len(theRules)
@@ -77,47 +85,156 @@ def stateModel(pit, done):
             outputAction.append(dataModel)
             peachState.append(outputAction)
             actionCounter += 1
+        postHist = beatTehRandomness(state,templates)
         #implement random number
-        if state.nextStates != None and len(state.postHist) > 1:
-            randomAction = ET.Element('Action', name='rand', attrib={'publisher':'null', 'onStart':'additionalCode.rand(self,{})'.format(len(state.postHist)-1)})
+        if state.nextStates != None and len(postHist) > 1:
+            randomAction = ET.Element('Action', name='rand', attrib={'publisher':'null', 'onStart':'additionalCode.rand(self,{})'.format(len(postHist)-1)})
             randomAction.append(ET.Element('DataModel', attrib={'ref':'rand'}))
             peachState.append(randomAction)
         #impement changeState actions
-        if state.postHist != None:
-            prob = len(state.postHist) - 1
-            for nextState in state.postHist:
-                if prob == 0:
-                    changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(nextState)})
-                else:
-                    changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(nextState), 
-                        'when':'int(StateModel.states[{}].actions[{}].dataModel["a1"].InternalValue) == int({})'.format(state.hist,actionCounter,prob)})
-                prob -= 1
-                peachState.append(changeState)
+        if postHist != None:
+            prob = len(postHist) - 1
+            for ID,nextState in postHist.items():
+                if len(nextState) > 1:
+                    for ns in nextState:
+                        changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns), 
+                            'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue) == int({2})) and (dataModel.field[0] == {3}) '.format(state.hist,actionCounter,prob,templates[ID].content[0])})
+                        peachState.append(changeState)
+                    prob -= 1
+                else:   changeState = None
         stateModel.append(peachState)
     return pit
 
+def beatTehRandomness(state,templates):
+    postHist = {}
+    if state.postHist != None:# and len(state.postHist) > 1:
+        print('PRE',state.postHist,len(state.postHist))
+        for hist in state.postHist:
+            if hist.curTempID[0] not in postHist.keys():
+                postHist.update({hist.curTempID[0]:[hist]})
+            else:
+                postHist[hist.curTempID[0]] += [hist]
+        print('POST',postHist,len(postHist))
+        print()
+        print('post',state.postHist)
+        getDiscriminativeFields(postHist.keys(),templates)
+    return postHist
+
+def getDiscriminativeFields(IDs, templates):
+    print(list(IDs))
+    IDs = list(IDs)
+    if IDs == ['00']:
+        return
+    fields = {}
+    orderedForLength = []
+    min = -1
+    i = 0
+    while IDs != []:
+        j = 0
+        min = -1
+        while j < len(IDs):
+            if min < 0 or templates[IDs[j]].length < min:
+                min = templates[IDs[j]].length
+                ind = j
+            j += 1
+        orderedForLength.append(IDs.pop(ind))
+    print(orderedForLength)
+    cpy = orderedForLength[:]
+    while orderedForLength != []:
+        ID = orderedForLength[0]
+        if templates[ID].length == 0:
+            fields.update({ID:None})
+            orderedForLength.remove(ID)
+            continue
+        for ind in range(len(templates[ID].content)):
+            if templates[ID].content[ind] == '':
+                continue
+            possible = True
+            for rest in orderedForLength[1:]:
+                if templates[ID].content[ind] == templates[rest].content[ind]:
+                    possible = False
+                    break
+            if possible == True:
+                fields.update({ID:ind})
+                orderedForLength.remove(ID)
+                break
+        if possible != True:
+            print('gotta problem!')
+    print(fields)
+
+
+#manually implement choice elements
+#for data fields in template
+#   compute crossproduct of data fields
+#   and create data set for each tuple
 def data(dataModel, state):
+    #for i in state.dataRules:
+        #print(i,'DST: ',i.dstField, state.dataFields, state.dataFields[i.dstField])
     index = 0
+    data = []
     for dataRule in state.dataRules:
-        #print(dataRule,' Index: ',index, 'Field: ',state.dataFields[index])
-        for point in dataRule.data:
-            data = ET.Element('Data')
-            data.append(ET.Element('Field', name='c'+str(state.dataFields[index]), attrib={'value':point}))
-            dataModel.append(data)
+        data.append([])
+        for d in dataRule.data:
+            if d not in data[index]:
+                data[index].append(d)
         index += 1
+    #print(data)
+    dat = cross(data)
+    #print(dat)
+    for d in dat:
+        data = ET.Element('Data')
+        for i in range(len(d)):
+            #print(state.dataFields[state.dataRules[i].dstField])
+            data.append(ET.Element('Field', name='c'+str(state.fields[state.dataRules[i].dstField]), attrib={'value':d[i]}))
+        dataModel.append(data)
+    #print()
     return dataModel
 
-def slurpActions(state):
+def cross(data,depth=0):
+    #print('\nInto cross lvl{}'.format(depth,),'\n',data)
+    tup = []
+    if len(data) == 1:
+        #print('internal: ',data)
+        for r in data[0]:
+            tup.append([r])
+        return tup
+    dat = data[0]
+    ret = cross(data[1:],depth+1)
+    #print(ret)
+    #ret = ret[0]#cross(data[1:],depth+1)[0]
+    #print('dat: ',dat)
+    #print('Receiving ret on lvl{}: '.format(depth),ret)
+    for d in dat:
+        for r in ret:
+            #print('internal: ',d,r)
+            tup.append([d] + r)
+    return tup
+    #return data
+
+def slurpActions(state,done):
     theRules = []
     #print(state.hist,state.IOAction)
     for rule in state.rules:
+        #print(rule.dstField,state.fields)
         #construct path from where to read; valueXpath
-        #print(rule)
+        valueXpath = '//StateModel//{0}//rec//read//c{1}'.format(*findPreState(state,rule,done))
+        #print(valueXpath)
         #construct path to where to write; setXpath
-        theRules.append(ET.Element('Action',attrib={'type':'slurp','valueXpath':'?', 'setXpath':'!'}))#, name=str(rule.hist), attirb={'type':'slurp'}))
+        setXpath = '//StateModel//{0}//out//write//c{1}'.format(str(state.hist),str(state.fields[rule.dstField]))
+        theRules.append(ET.Element('Action',attrib={'type':'slurp','valueXpath':valueXpath, 'setXpath':setXpath}))
     return theRules
 
-def createInterState(curState, preHist):
-    return InterState(curState,preHist)
-
+def findPreState(state,rule,done):
+    depth = rule.srcID
+    ID = rule.hist.getID(depth)
+    while depth != -1:
+        state = done[state.preHist]
+        depth += 1
+    if not state.isMultiModel:
+        return (state.hist,state.fields[rule.srcField])
+    else:
+        for i in range(len(state.hist.curTempID)):
+            if state.hist.curTempID  == ID:
+                break
+        return (state.hist,state.fields[i][rule.srcField])
 

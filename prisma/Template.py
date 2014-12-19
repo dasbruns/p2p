@@ -2,12 +2,13 @@
 
 class Template(object):
 
-    def __init__(self,ID,state,count,fields,content):
+    def __init__(self,ID,state,count,fields,ntokens,content):
         self.ID = ID
         self.state = state
         self.count = count
         self.fields = fields
         self.content = content
+        self.length = ntokens
         #in which context is template observed?
         self.hists = None
 

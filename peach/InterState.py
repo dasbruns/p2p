@@ -6,12 +6,13 @@ class InterState(object):
         self.nextStates = None
         self.hist = None
         self.templates = None
+        self.fields = None
         self.rules = None
         self.copyRules = None 
         self.dataRules = None 
-        self.dataFields = None
         self.IOAction = None
         self.isinitial = False
+        self.isMultiModel = None
 
     def copy(self,ID):
         a = InterState(self.curState, self.preHist)

@@ -11,7 +11,7 @@ import copy
  #   s = peach.createInterState(state.curState,state.preHist)
 
 
-def stateAssembler(state, container, model, templates, UAC=True):
+def stateAssembler(state, container, model, templates, UAC=False):
     if 'END' in str(state.curState):
         state.hist = state.preHist.update(['00'])
         state.IOAction = 'END'
@@ -130,7 +130,6 @@ if __name__ == '__main__':
     if start.curState in templates.stateToID.keys():
         start.templates = templates.stateToID[start.curState] 
     else:
-        start.templates = []
         start.hist = start.preHist
         container.doneadd(start)
         for nextState in start.nextStates:
@@ -149,29 +148,31 @@ if __name__ == '__main__':
         stateAssembler(state, container, model, templates)
 
     #assign rules to state
-    for i in container.done.values():
-        #print(i.hist,type(i.hist))
-        possibleHist = i.hist.assembleHist(True)
+    for state in container.done.values():
+        possibleHist = state.hist.assembleHist(True)
         for hist in possibleHist:
+            if state.templates != None:
+                if len(state.hist.curTempID)>1:
+                    state.isMultiModel = True
+                    if state.fields == None:
+                        state.fields = []
+                    state.fields.append(templates.IDtoTemp[hist.curTempID].fields)
+                else:
+                    state.isMultiModel = False
+                    state.fields = templates.IDtoTemp[hist.curTempID].fields
             if hist in dataRules.keys():
-                i.dataFields = templates.IDtoTemp[hist.curTempID].fields
-                if i.dataRules == None:
-                    i.dataRules = []
-                i.dataRules += dataRules[hist]
-        for hist in possibleHist:
+                if state.dataRules == None:
+                    state.dataRules = []
+                state.dataRules += dataRules[hist]
             if hist in rules.keys():
-                if i.rules == None:
-                    i.rules = []
-                i.rules += rules[hist]
-        for hist in possibleHist:
+                if state.rules == None:
+                    state.rules = []
+                state.rules += rules[hist]
             if hist in copyRules.keys():
-                if i.copyRules == None:
-                    i.copyRules = []
-                i.copyRules += copyRules[hist]
-        #print(i,'\n')
-    #pit = peach.PIT()
-    #toPeachStates(container.done,pit)
+                if state.copyRules == None:
+                    state.copyRules = []
+                state.copyRules += copyRules[hist]
     pit = peach.dataModel(templates.IDtoTemp)
-    pit = peach.stateModel(pit, container.done)
+    pit = peach.stateModel(pit, container.done, templates.IDtoTemp)
     pit.toFile('pit.xml')
 

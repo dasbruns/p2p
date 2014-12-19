@@ -36,14 +36,15 @@ def templateParse(filehandle):
             else:
                 fields = list(map(int,fields))
             ntokens = int(line[4].split(':')[1])
+            length = ntokens
             content = []
             if ntokens == 0:
-                templates.add(Template(ID,state,count,fields,content))
+                templates.add(Template(ID,state,count,fields,length,content))
         else:
             content.append(line.strip())
             ntokens -= 1
             if ntokens == 0:
-                templates.add(Template(ID,state,count,fields,content))
+                templates.add(Template(ID,state,count,fields,length,content))
     return templates
 
 def ruleParse(filehandle):

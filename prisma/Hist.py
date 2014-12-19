@@ -35,4 +35,14 @@ class Hist(object):
                     else:
                         allHist.append(Hist(ID1, ID2, ID3))
         return allHist
+
+    def getID(self,pos):
+        if pos == -3:
+            return self.prePreTempID
+        if pos == -2:
+            return self.preTempID
+        return self.curTempID
+
+    def differByPre(self,obj):
+        return isinstance(obj,Hist) and obj.prePreTempID == self.prePreTempID and obj.curTempID == self.curTempID and obj.preTempID != self.preTempID
             

@@ -1,3 +1,7 @@
 *~
 *.swp
 *__pycache__*
+peachTests*
+log*
+*.xml
+

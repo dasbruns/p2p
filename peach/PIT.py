@@ -2,6 +2,7 @@ from lxml import etree as ET
 class PIT(object):
     def __init__(self):
         root = ET.Element('Peach')
+        root.append(ET.Element('Import', attrib={'import':'additionalCode'}))
         self.tree = ET.ElementTree(root)
 
     def insertState(self, InterState):
