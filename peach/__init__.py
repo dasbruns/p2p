@@ -89,8 +89,10 @@ def stateModel(pit, done, templates):
             dataModel = ET.Element('DataModel', name='write', attrib={'ref':str(state.hist)})
             #look for DATA to be applied by DataRules
             if state.dataRules != None:
-                dataModel = data(dataModel, state)
+                dataModel, retData = data(dataModel, state)
             outputAction.append(dataModel)
+            for d in retData:
+                outputAction.append(d)
             peachState.append(outputAction)
             actionCounter += 1
         postHist = beatTehRandomness(state,templates)
@@ -259,14 +261,15 @@ def data(dataModel, state):
     #print(data)
     dat = cross(data)
     #print(dat)
+    retDat = []
     for d in dat:
         data = ET.Element('Data')
         for i in range(len(d)):
             #print(state.dataFields[state.dataRules[i].dstField])
             data.append(ET.Element('Field', name='c'+str(state.fields[state.dataRules[i].dstField]), attrib={'value':d[i]}))
-        dataModel.append(data)
+        retDat.append(data)
     #print()
-    return dataModel
+    return dataModel,retDat
 
 def cross(data,depth=0):
     #print('\nInto cross lvl{}'.format(depth,),'\n',data)
