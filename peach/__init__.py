@@ -2,6 +2,7 @@ from .InterState import InterState
 from .InterStateContainer import InterStateContainer
 from .PIT import PIT
 from lxml import etree as ET
+from .additionalCode import manipulate
 
 def dataModel(templates):
     pit = PIT()
@@ -22,7 +23,7 @@ def dataModel(templates):
                 root.append(dataModel)
     #create random datModel
     dataModel = ET.Element('DataModel', name= 'rand')
-    dataModel.append(ET.Element('String', name= 'a1'))
+    dataModel.append(ET.Element('String', name= 'a1', attrib={'mutable':'false'}))
     root.append(dataModel)
     return pit
 
@@ -47,8 +48,8 @@ def createContent(ID, dataModel, templates):
         count += 1
     #if empty dataModel, insert empty String
     #later used as discriminative feature
-    if count == 0:
-        dataModel.append(ET.Element('String', name='c0', attrib={'value':''}))
+    #if count == 0:
+    #    dataModel.append(ET.Element('String', name='c0', attrib={'value':''}))
     return dataModel
 
 
@@ -68,6 +69,9 @@ def stateModel(pit, done, templates):
             for rule in theRules:
                 peachState.append(rule)
             actionCounter += len(theRules)
+        #implement COPY actions
+        #if state.copyRules != None and state.IOAction == 'output':
+            #cpRules = assembleCopyRules(state, done)
         #implement IOactions
         #print(state.hist)
         if state.IOAction == 'input':
@@ -76,8 +80,12 @@ def stateModel(pit, done, templates):
             peachState.append(inputAction)
             actionCounter += 1
         if state.IOAction == 'output':
-            #insert copyRules here in onStart
-            outputAction = ET.Element('Action', name='out', attrib={'type':'output','onStart':'void'})
+            #insert s here in onStart
+            if state.copyRules != None:
+                call = assembleCopyRules(state)
+                outputAction = ET.Element('Action', name='out', attrib={'type':'output','onStart':'{}'.format(call)})
+            else:
+                outputAction = ET.Element('Action', name='out', attrib={'type':'output'})
             dataModel = ET.Element('DataModel', name='write', attrib={'ref':str(state.hist)})
             #look for DATA to be applied by DataRules
             if state.dataRules != None:
@@ -88,40 +96,107 @@ def stateModel(pit, done, templates):
         postHist = beatTehRandomness(state,templates)
         #implement random number
         if state.nextStates != None and len(postHist) > 1:
-            randomAction = ET.Element('Action', name='rand', attrib={'publisher':'null', 'onStart':'additionalCode.rand(self,{})'.format(len(postHist)-1)})
+            randomAction = ET.Element('Action', name='rand', attrib={'type':'output','publisher':'null', 'onStart':'additionalCode.rand(self,{})'.format(len(postHist)-1)})
             randomAction.append(ET.Element('DataModel', attrib={'ref':'rand'}))
             peachState.append(randomAction)
         #impement changeState actions
         if postHist != None:
-            prob = len(postHist) - 1
-            for ID,nextState in postHist.items():
-                if len(nextState) > 1:
-                    for ns in nextState:
-                        changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns), 
-                            'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue) == int({2})) and (dataModel.field[0] == {3}) '.format(state.hist,actionCounter,prob,templates[ID].content[0])})
-                        peachState.append(changeState)
-                    prob -= 1
-                else:   changeState = None
+            change = computeChangeState(state, postHist, actionCounter)
+            #prob = len(postHist) - 1
+            #for ID,nextState in postHist.items():
+            #    if len(nextState) > 1:
+            #        for ns in nextState:
+            #            changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns), 
+            #                'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue) == int({2})) and (dataModel.field[0] == {3}) '.format(state.hist,actionCounter,prob,templates[ID].content[0])})
+            #            peachState.append(changeState)
+            #        prob -= 1
+            #    else:   changeState = None
+            for ch in change:
+                peachState.append(ch)
         stateModel.append(peachState)
     return pit
+
+def assembleCopyRules(state):
+    call = ''
+    for rule in state.copyRules:
+        print(rule.typ)
+        if 'Complete' in rule.typ:
+            print('complete rule')
+            s = ''
+            print(rule.content)
+            for cont in rule.content:
+                s+=(cont+':::')
+            s = s[:-3]
+            #s = "additionalCode.copyComplete(self,{0},c{1},{2})".format(rule.ptype,state.fields[rule.dstField],s)
+            s = "comp,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],s)
+            s = s + ';;;'
+            call += s
+        if 'Partial' in rule.typ:
+            print('partial rule')
+            #rule.cont here is seperator
+            s = "part,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],rule.content)
+            s += ';;;'
+            print(s)
+            #additionalCode.partialCopy(state,s)
+            call += s
+        if 'Seq' in rule.typ:
+            print('sequential rule')
+            s = "seq,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],rule.content)
+    call = call[:-3]
+    call = "additionalCode.manipulate(self,"+ call + ")"
+    print(call)
+    additionalCode.manipulate(state,call.split('self,')[1][:-1])
+    return call
+
+def computeChangeState(state, postHist, actionCounter):
+    #print(state.hist)
+    #print(postHist)
+    #print(len(postHist))
+    change = []
+    if len(postHist) == 0:
+        return change
+    if len(postHist) == 1:
+        #print(list(postHist.values())[0])
+        change.append(ET.Element('Action', attrib={'type':'changeState', 'ref':str(list(postHist.values())[0][0])}))
+        return change
+    prob = len(postHist) - 1
+    for ID, nextState in postHist.items():
+        #print(nextState)
+        for ns in nextState:
+            if len(nextState) > 1:
+                changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns),
+                    'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue == int({2}))) '
+                    'and str(StateModel.states[{0}].actions[0].dataModel[0][0][0].referenceName) == "{3}")'
+                    .format(state.hist, actionCounter, prob, ns.preTempID[0])})
+            else:
+                changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns),
+                    'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue == int({2}))) '
+                    .format(state.hist, actionCounter, prob)})
+            #print(ET.tostring(changeState,pretty_print = True))
+            change.append(changeState)
+        prob -= 1
+    #print('\n')
+    return change
+
 
 def beatTehRandomness(state,templates):
     postHist = {}
     if state.postHist != None:# and len(state.postHist) > 1:
-        print('PRE',state.postHist,len(state.postHist))
+        #print('PRE',state.postHist,len(state.postHist))
         for hist in state.postHist:
             if hist.curTempID[0] not in postHist.keys():
                 postHist.update({hist.curTempID[0]:[hist]})
             else:
                 postHist[hist.curTempID[0]] += [hist]
-        print('POST',postHist,len(postHist))
-        print()
-        print('post',state.postHist)
-        getDiscriminativeFields(postHist.keys(),templates)
+        #print('POST',postHist,len(postHist))
+        #print()
+        #print('post',state.postHist)
+        #TODO attention
+        #getDiscriminativeFields(postHist.keys(),templates)
     return postHist
 
 def getDiscriminativeFields(IDs, templates):
-    print(list(IDs))
+    #print(list(IDs))
     IDs = list(IDs)
     if IDs == ['00']:
         return
@@ -133,12 +208,15 @@ def getDiscriminativeFields(IDs, templates):
         j = 0
         min = -1
         while j < len(IDs):
+            if IDs[j] not in templates.keys():
+                IDs.remove(IDs[j])
+                continue
             if min < 0 or templates[IDs[j]].length < min:
                 min = templates[IDs[j]].length
                 ind = j
             j += 1
         orderedForLength.append(IDs.pop(ind))
-    print(orderedForLength)
+    #print(orderedForLength)
     cpy = orderedForLength[:]
     while orderedForLength != []:
         ID = orderedForLength[0]
@@ -160,7 +238,7 @@ def getDiscriminativeFields(IDs, templates):
                 break
         if possible != True:
             print('gotta problem!')
-    print(fields)
+    #print(fields)
 
 
 #manually implement choice elements

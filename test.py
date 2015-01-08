@@ -171,6 +171,9 @@ if __name__ == '__main__':
             if hist in copyRules.keys():
                 if state.copyRules == None:
                     state.copyRules = []
+                if state.rules == None:
+                    state.rules = []
+                state.rules += copyRules[hist]
                 state.copyRules += copyRules[hist]
     pit = peach.dataModel(templates.IDtoTemp)
     pit = peach.stateModel(pit, container.done, templates.IDtoTemp)

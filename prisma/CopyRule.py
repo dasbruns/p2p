@@ -4,8 +4,9 @@ from .Rule import Rule
 
 class CopyRule(Rule):
 
-    def __init__(self,hist,srcID,srcField,dstID,dstField,ptype,content):
+    def __init__(self,hist,srcID,srcField,dstID,dstField,typ,ptype,content):
         Rule.__init__(self,hist,srcID,srcField,dstID,dstField)
+        self.typ = typ
         self.ptype = ptype
         self.content = content
 

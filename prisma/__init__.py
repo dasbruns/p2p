@@ -54,14 +54,17 @@ def ruleParse(filehandle):
 
     dataFlag = 0
     ptypeFlag = 0
+    seqFlag = 0
 
     line1 = filehandle.readline()
     while line1:
         line2 = filehandle.readline()
         if 'DataRule' in line1:
             dataFlag = 1
-        if 'CopyComplete' in line1:
+        if 'Copy' in line1:
             ptypeFlag = 1
+        if 'Seq' in line1:
+            seqFlag = 1
         line = line1.split()
         hist = Hist(*list(map(int,line[1].split(':')[1].split(';'))))
         srcID = int(line[2].split(':')[1])
@@ -77,10 +80,17 @@ def ruleParse(filehandle):
         #TODO handle ptype accurate
         elif ptypeFlag == 1:
             line2 = line2.strip().split(':')
-            ptype = line2[1].split()[0]
-            content = line2[2].split(',')
-            copyRules.add(CopyRule(hist,srcID,srcField,dstID,dstField,ptype,content))
+            typ = line[5].split(':')[1]
+            ptype = line2[1].split()[0].split('_')[2]
+            if 'Complete' in line1:
+                content = line2[2].split(',')
+            else:
+                content = line2[2]
+            copyRules.add(CopyRule(hist,srcID,srcField,dstID,dstField,typ,ptype,content))
             ptypeFlag = 0
+        elif seqFlag == 1:
+            #TODO
+            seqFlag = 0
         else: #assuming: dataFlag == 0 and ptypeFlag == 0:
             rules.add(Rule(hist,srcID,srcField,dstID,dstField))
         line1 = filehandle.readline()
