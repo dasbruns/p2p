@@ -175,7 +175,7 @@ if __name__ == '__main__':
                     state.rules = []
                 state.rules += copyRules[hist]
                 state.copyRules += copyRules[hist]
-    pit = peach.dataModel(templates.IDtoTemp)
-    pit = peach.stateModel(pit, container.done, templates.IDtoTemp)
+    pit = peach.stateModel(container.done, templates.IDtoTemp)
+    pit = peach.dataModel(pit, templates.IDtoTemp)
     pit.toFile('pit.xml')
 

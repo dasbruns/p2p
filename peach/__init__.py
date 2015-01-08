@@ -4,7 +4,7 @@ from .PIT import PIT
 from lxml import etree as ET
 from .additionalCode import manipulate
 
-def dataModel(templates):
+def dataModel(statePit, templates):
     pit = PIT()
     written = []
     root = pit.tree.getroot()
@@ -25,6 +25,7 @@ def dataModel(templates):
     dataModel = ET.Element('DataModel', name= 'rand')
     dataModel.append(ET.Element('String', name= 'a1', attrib={'mutable':'false'}))
     root.append(dataModel)
+    root.append(statePit.tree.getroot().find('StateModel'))
     return pit
 
 def multimodel(root, ID, hist, written, templates):
@@ -53,8 +54,8 @@ def createContent(ID, dataModel, templates):
     return dataModel
 
 
-def stateModel(pit, done, templates):
-    #pit = PIT()
+def stateModel(done, templates):
+    pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
     for state in done.values():
@@ -88,11 +89,13 @@ def stateModel(pit, done, templates):
                 outputAction = ET.Element('Action', name='out', attrib={'type':'output'})
             dataModel = ET.Element('DataModel', name='write', attrib={'ref':str(state.hist)})
             #look for DATA to be applied by DataRules
+            retData = []
             if state.dataRules != None:
                 dataModel, retData = data(dataModel, state)
             outputAction.append(dataModel)
-            for d in retData:
-                outputAction.append(d)
+            if retData != []:
+                for d in retData:
+                    outputAction.append(d)
             peachState.append(outputAction)
             actionCounter += 1
         postHist = beatTehRandomness(state,templates)
@@ -103,7 +106,7 @@ def stateModel(pit, done, templates):
             peachState.append(randomAction)
         #impement changeState actions
         if postHist != None:
-            change = computeChangeState(state, postHist, actionCounter)
+            change = computeChangeState(state, postHist, actionCounter, templates)
             #prob = len(postHist) - 1
             #for ID,nextState in postHist.items():
             #    if len(nextState) > 1:
@@ -121,36 +124,30 @@ def stateModel(pit, done, templates):
 def assembleCopyRules(state):
     call = ''
     for rule in state.copyRules:
-        print(rule.typ)
         if 'Complete' in rule.typ:
-            print('complete rule')
             s = ''
-            print(rule.content)
             for cont in rule.content:
                 s+=(cont+':::')
             s = s[:-3]
-            #s = "additionalCode.copyComplete(self,{0},c{1},{2})".format(rule.ptype,state.fields[rule.dstField],s)
             s = "comp,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],s)
             s = s + ';;;'
             call += s
         if 'Partial' in rule.typ:
-            print('partial rule')
             #rule.cont here is seperator
             s = "part,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],rule.content)
             s += ';;;'
-            print(s)
             #additionalCode.partialCopy(state,s)
             call += s
         if 'Seq' in rule.typ:
-            print('sequential rule')
-            s = "seq,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],rule.content)
+            s = "seq,c{0},{1}".format(state.fields[rule.dstField],rule.content)
+            s += ';;;'
+            call += s
     call = call[:-3]
     call = "additionalCode.manipulate(self,"+ call + ")"
-    print(call)
     additionalCode.manipulate(state,call.split('self,')[1][:-1])
     return call
 
-def computeChangeState(state, postHist, actionCounter):
+def computeChangeState(state, postHist, actionCounter, templates):
     #print(state.hist)
     #print(postHist)
     #print(len(postHist))
@@ -163,6 +160,9 @@ def computeChangeState(state, postHist, actionCounter):
         return change
     prob = len(postHist) - 1
     for ID, nextState in postHist.items():
+        for ns in nextState:
+            if ns not in templates[ID].hists:
+                templates[ID].hists.append(ns)
         #print(nextState)
         for ns in nextState:
             if len(nextState) > 1:
