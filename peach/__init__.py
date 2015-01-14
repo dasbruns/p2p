@@ -4,7 +4,7 @@ from .PIT import PIT
 from lxml import etree as ET
 from .additionalCode import manipulate
 
-def dataModel(statePit, templates):
+def dataModel(statePit, templates, rules):
     pit = PIT()
     written = []
     root = pit.tree.getroot()
@@ -16,7 +16,7 @@ def dataModel(statePit, templates):
                 #is multimodel
                 if len(hist.curTempID) > 1:
                     #create all models the multimodel is referencing
-                    choice = multimodel(root,ID,hist,written,templates)
+                    choice = multimodel(root,ID,hist,written,templates,rules)
                     dataModel.append(choice)
                 else:
                     createContent(ID,dataModel,templates)
@@ -28,13 +28,23 @@ def dataModel(statePit, templates):
     root.append(statePit.tree.getroot().find('StateModel'))
     return pit
 
-def multimodel(root, ID, hist, written, templates):
+def multimodel(root, ID, hist, written, templates, rules):
     choice = ET.Element('Choice', name='c', attrib={'minOccurs':'1', 'maxOccurs':'1'})
     count = 0
+    #print(hist)
     for ID in hist.curTempID:
+
+        for cont in rules.keys():
+            for hist2, rule in rules[cont]:
+                #print(hist,hist2)
+                asshist = hist.assembleHist(True)
+                if hist2 in asshist:
+                    print(cont)
+                    print(hist, rule)
+
         dataModel = ET.Element('DataModel', name=str(ID))
         createContent(ID,dataModel,templates)
-        choice.append(ET.Element('Block', name='o'+str(count), attrib={'ref':str(ID)}))
+        choice.append(ET.Element('Block', name='o'+str(ID), attrib={'ref':str(ID)}))
         count += 1
         if ID not in written:
             written.append(ID)
@@ -44,7 +54,10 @@ def multimodel(root, ID, hist, written, templates):
 def createContent(ID, dataModel, templates):
     count = 0
     for cont in templates[ID].content:
-        data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
+        if cont != '':
+            data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
+        else:
+            data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
         dataModel.append(data)
         count += 1
     #if empty dataModel, insert empty String
@@ -59,22 +72,24 @@ def stateModel(done, templates):
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
     for state in done.values():
+        if not state.isMultiModel:
+            print(state.hist, state.isMultiModel)
         #set initialState of StateModel
         if state.isinitial == True:
             stateModel.attrib.update({'initialState':str(state.hist)})
         actionCounter = 0
         peachState = ET.Element('State', name=str(state.hist))
         #implement slurp actions
+        #if slurp in input states, change here!
         if state.IOAction == 'output' and state.rules:
             theRules = slurpActions(state,done)
             for rule in theRules:
                 peachState.append(rule)
             actionCounter += len(theRules)
-        #implement COPY actions
         #if state.copyRules != None and state.IOAction == 'output':
             #cpRules = assembleCopyRules(state, done)
         #implement IOactions
-        #print(state.hist)
+        #implement COPY actions
         if state.IOAction == 'input':
             inputAction = ET.Element('Action', name='rec', attrib={'type':'input'})
             inputAction.append(ET.Element('DataModel', name='read', attrib={'ref':str(state.hist)}))
@@ -144,7 +159,7 @@ def assembleCopyRules(state):
             call += s
     call = call[:-3]
     call = "additionalCode.manipulate(self,"+ call + ")"
-    additionalCode.manipulate(state,call.split('self,')[1][:-1])
+    #additionalCode.manipulate(state,call.split('self,')[1][:-1])
     return call
 
 def computeChangeState(state, postHist, actionCounter, templates):
@@ -160,6 +175,9 @@ def computeChangeState(state, postHist, actionCounter, templates):
         return change
     prob = len(postHist) - 1
     for ID, nextState in postHist.items():
+        #need to deal with end states more efficiently...
+        if ID == '00':
+            continue
         for ns in nextState:
             if ns not in templates[ID].hists:
                 templates[ID].hists.append(ns)
@@ -298,7 +316,14 @@ def slurpActions(state,done):
     for rule in state.rules:
         #print(rule.dstField,state.fields)
         #construct path from where to read; valueXpath
-        valueXpath = '//StateModel//{0}//rec//read//c{1}'.format(*findPreState(state,rule,done))
+        preState, hist, IOAction, field, ID = findPreState(state,rule,done)
+        if IOAction == 'input':
+            if not preState.isMultiModel:
+                valueXpath = '//StateModel//{0}//rec//read//c{1}'.format(hist, field)
+            else:
+                valueXpath = '//StateModel//{0}//rec//read//o{1}//c{2}'.format(hist, ID, field)
+        else:
+            valueXpath = '//StateModel//{0}//out//write//c{1}'.format(hist, field)#*findPreState(state,rule,done))
         #print(valueXpath)
         #construct path to where to write; setXpath
         setXpath = '//StateModel//{0}//out//write//c{1}'.format(str(state.hist),str(state.fields[rule.dstField]))
@@ -312,10 +337,10 @@ def findPreState(state,rule,done):
         state = done[state.preHist]
         depth += 1
     if not state.isMultiModel:
-        return (state.hist,state.fields[rule.srcField])
+        return (state, state.hist,state.IOAction,state.fields[rule.srcField], ID)
     else:
         for i in range(len(state.hist.curTempID)):
             if state.hist.curTempID  == ID:
                 break
-        return (state.hist,state.fields[i][rule.srcField])
+        return (state, state.hist,state.IOAction,state.fields[i][rule.srcField], ID)
 
