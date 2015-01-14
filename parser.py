@@ -88,7 +88,7 @@ def toPeachStates(done, pit):
 
 if __name__ == '__main__':
 
-    f = open('samples/ftp.templates','r')
+    f = open('samples/koobface.templates','r')
     templates = prisma.templateParse(f)
     f.close()
     for i,j in templates.IDtoTemp.items():
@@ -98,19 +98,28 @@ if __name__ == '__main__':
         pass
         #print(i,j)
 
-    f = open('samples/ftp.rules','r')
+    f = open('samples/koobface.rules','r')
     rules, copyRules, dataRules = prisma.ruleParse(f)
     f.close()
     count = 0
-    for i in rules.keys():
-        #print(i,rules[i])
-        count += len(rules[i])
-    for i in dataRules.keys():
-        #print(i,dataRules[i])
-        count += len(dataRules[i])
-    #print(count)
+    ##print('===========RULES============')
+    #for i in rules.keys():
+    #    if i.curTempID == 31:
+    #        #print(i,rules[i])
+    #    count += len(rules[i])
+    ##print('===========DATA=============')
+    #for i in dataRules.keys():
+    #    if i.curTempID == 31:
+    #        #print(i,dataRules[i])
+    #    count += len(dataRules[i])
+    ##print('===========COPY=============')
+    #for i in copyRules.keys():
+    #    if i.curTempID == 31:
+    #        #print(i,copyRules[i])
+    #    count += len(copyRules[i])
+    ##print(count)
 
-    f = open('samples/ftp.markovModel','r')
+    f = open('samples/koobface.markovModel','r')
     model = prisma.markovParse(f) 
     f.close()
     for i,j in model.model.items():
@@ -176,6 +185,8 @@ if __name__ == '__main__':
                 state.rules += copyRules[hist]
                 state.copyRules += copyRules[hist]
     pit = peach.stateModel(container.done, templates.IDtoTemp)
-    pit = peach.dataModel(pit, templates.IDtoTemp)
+    #OMG OMG OMG, cant believe im doing this
+    allRules = {'data':dataRules,'rules':rules,'copy':copyRules}
+    pit = peach.dataModel(pit, templates.IDtoTemp, allRules)
     pit.toFile('pit.xml')
 
