@@ -2,7 +2,7 @@ from .InterState import InterState
 from .InterStateContainer import InterStateContainer
 from .PIT import PIT
 from lxml import etree as ET
-from .additionalCode import manipulate
+from .additionalCodeTest import manipulate
 
 def dataModel(statePit, templates, rules):
     pit = PIT()
@@ -34,13 +34,13 @@ def multimodel(root, ID, hist, written, templates, rules):
     #print(hist)
     for ID in hist.curTempID:
 
-        for cont in rules.keys():
-            for hist2, rule in rules[cont]:
-                #print(hist,hist2)
-                asshist = hist.assembleHist(True)
-                if hist2 in asshist:
-                    print(cont)
-                    print(hist, rule)
+        #for cont in rules.keys():
+        #    for hist2, rule in rules[cont]:
+        #        #print(hist,hist2)
+        #        asshist = hist.assembleHist(True)
+        #        if hist2 in asshist:
+        #            print(cont)
+        #            print(hist, rule)
 
         dataModel = ET.Element('DataModel', name=str(ID))
         createContent(ID,dataModel,templates)
@@ -72,8 +72,8 @@ def stateModel(done, templates):
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
     for state in done.values():
-        if not state.isMultiModel:
-            print(state.hist, state.isMultiModel)
+        #if not state.isMultiModel:
+            #print(state.hist, state.isMultiModel)
         #set initialState of StateModel
         if state.isinitial == True:
             stateModel.attrib.update({'initialState':str(state.hist)})

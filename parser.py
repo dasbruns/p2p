@@ -6,6 +6,8 @@
 import prisma
 import peach
 import copy
+import argparse
+import os
 
 #def multiAssembler(state, hist, container, model, templates)
  #   s = peach.createInterState(state.curState,state.preHist)
@@ -88,20 +90,47 @@ def toPeachStates(done, pit):
 
 if __name__ == '__main__':
 
-    f = open('samples/koobface.templates','r')
-    templates = prisma.templateParse(f)
-    f.close()
-    for i,j in templates.IDtoTemp.items():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('folder', help='where to look for files')
+    parser.add_argument('-n', '--name', help='specify name of parsed family')
+    parser.add_argument('-v', '--verbose', action='count', help="tells what's currently going on")
+    args = parser.parse_args()
+    print(args)
+
+    if args.folder[-1] == '/':
+        args.folder = args.folder[:-1]
+    try:
+        if args.name == None:
+            for files in os.listdir(args.folder):
+                if 'markov' in files or 'templates' in files or 'rules' in files:
+                    args.name = files.split('.')[0]
+    except FileNotFoundError:
+        print('specified directory not found')
+        exit()
+
+    if args.verbose:print('Reading Files ... ',end='',flush=True)
+    try:
+        f = open('{0}/{1}.templates'.format(args.folder,args.name),'r')
+        templates = prisma.templateParse(f)
+        f.close()
+    except FileNotFoundError:
+        print('file {0}/{1}.templates not found'.format(args.folder,args.name))
+        exit()
+    #for i,j in templates.IDtoTemp.items():
         #print(i,j)
-        pass
-    for i,j in templates.stateToID.items():
-        pass
+    #    pass
+    #for i,j in templates.stateToID.items():
+    #    pass
         #print(i,j)
 
-    f = open('samples/koobface.rules','r')
-    rules, copyRules, dataRules = prisma.ruleParse(f)
-    f.close()
-    count = 0
+    try:
+        f = open('{0}/{1}.rules'.format(args.folder,args.name),'r')
+        rules, copyRules, dataRules = prisma.ruleParse(f)
+        f.close()
+    except FileNotFoundError:
+        print('file {0}/{1}.rules not found'.format(args.folder,args.name))
+        exit()
+    #count = 0
     ##print('===========RULES============')
     #for i in rules.keys():
     #    if i.curTempID == 31:
@@ -119,15 +148,21 @@ if __name__ == '__main__':
     #    count += len(copyRules[i])
     ##print(count)
 
-    f = open('samples/koobface.markovModel','r')
-    model = prisma.markovParse(f) 
-    f.close()
+    try:
+        f = open('{0}/{1}.markovModel'.format(args.folder,args.name),'r')
+        model = prisma.markovParse(f) 
+        f.close()
+    except FileNotFoundError:
+        print('file {0}/{1}.markovModel not found'.format(args.folder,args.name))
+        exit()
+    if args.verbose:print('Done')
     for i,j in model.model.items():
         #l.append(peach.InterStates(i,prisma.Hist(1,2,3)))
         #print(i,j)
         pass
     #print(model.model[prisma.PrismaState('START','START')])
 
+    if args.verbose:print('Internal Dataprocessing ... ',end='',flush=True)
     #gap to peach
     #Decide which side of communication we are
     container = peach.InterStateContainer()
@@ -184,9 +219,15 @@ if __name__ == '__main__':
                     state.rules = []
                 state.rules += copyRules[hist]
                 state.copyRules += copyRules[hist]
+    if args.verbose:print('Done')
+    if args.verbose:print('Processing StateModel ... ',end='',flush=True)
     pit = peach.stateModel(container.done, templates.IDtoTemp)
+    if args.verbose:print('Done')
     #OMG OMG OMG, cant believe im doing this
     allRules = {'data':dataRules,'rules':rules,'copy':copyRules}
+    if args.verbose:print('Processing DataModels ... ',end='',flush=True)
     pit = peach.dataModel(pit, templates.IDtoTemp, allRules)
-    pit.toFile('pit.xml')
+    if args.verbose:print('Done')
+    if args.verbose:print('Write to {0}/pit.xml'.format(args.folder))
+    pit.toFile('{0}/pit.xml'.format(args.folder))
 
