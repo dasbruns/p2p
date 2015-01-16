@@ -92,6 +92,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('folder', help='where to look for files')
+    parser.add_argument('-r', '--role', help='set if you are server', action='store_true')
     parser.add_argument('-n', '--name', help='specify name of parsed family')
     parser.add_argument('-v', '--verbose', action='count', help="tells what's currently going on")
     args = parser.parse_args()
@@ -189,7 +190,7 @@ if __name__ == '__main__':
         #        #multiAssembler(state, hist, container, model, templates)
         #       stateAssembler(peach.createInterState(state.curState,state.preHist), container, model, templates)
         #    continue
-        stateAssembler(state, container, model, templates)
+        stateAssembler(state, container, model, templates, args.role)
 
     #assign rules to state
     for state in container.done.values():
@@ -228,6 +229,14 @@ if __name__ == '__main__':
     if args.verbose:print('Processing DataModels ... ',end='',flush=True)
     pit = peach.dataModel(pit, templates.IDtoTemp, allRules)
     if args.verbose:print('Done')
-    if args.verbose:print('Write to {0}/pit.xml'.format(args.folder))
-    pit.toFile('{0}/pit.xml'.format(args.folder))
+    if args.verbose:print('Processing Agent/Test area ... ',end='',flush=True)
+    pit = peach.Agent(pit)
+    pit = peach.Test(pit,args.role)
+    if args.verbose:print('Done')
+    if args.role:
+        if args.verbose:print('Write to {0}/pitServer.xml'.format(args.folder))
+        pit.toFile('{0}/pitServer.xml'.format(args.folder))
+    else:
+        if args.verbose:print('Write to {0}/pitClient.xml'.format(args.folder))
+        pit.toFile('{0}/pitClient.xml'.format(args.folder))
 

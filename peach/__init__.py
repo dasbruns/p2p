@@ -4,6 +4,38 @@ from .PIT import PIT
 from lxml import etree as ET
 from .additionalCodeTest import manipulate
 
+def Test(pit,role=False,IP='127.0.0.1', port=21):
+    pit.tree.getroot().append(ET.Element('Test', name='Default'))
+    test = pit.tree.find('Test')
+    test.append(ET.Element('Agent', attrib={'ref':'Local'}))
+    test.append(ET.Element('StateModel', attrib={'ref':'StateModel'}))
+    #append default publisher
+    if role == False:
+        publisher = ET.Element('Publisher', name='test', attrib={'class':'TcpClient'})
+        publisher.append(ET.Element('Param', name='Host', attrib={'value':str(IP)}))
+    else:
+        publisher = ET.Element('Publisher', name='test', attrib={'class':'TcpListener'})
+        publisher.append(ET.Element('Param', name='Interface', attrib={'value':str(IP)}))
+    publisher.append(ET.Element('Param', name='Port', attrib={'value':str(port)}))
+    test.append(publisher)
+    #append publishing device for random number generating
+    test.append(ET.Element('Publisher', name='null', attrib={'class':'Null'}))
+    #append some kind of logger
+    logger = ET.Element('Logger', attrib={'class':'File'})
+    logger.append(ET.Element('Param', name='Path', attrib={'value':'logs'}))
+    test.append(logger)
+    return pit
+
+def Agent(pit):
+    pit.tree.getroot().append(ET.Element('Agent', name='Local'))
+    agent = pit.tree.find('Agent')
+    monitor = ET.Element('Monitor', attrib={'class':'Process'})
+    monitor.append(ET.Element('Param', name='Executable', attrib={'value':'./server'}))
+    monitor.append(ET.Element('Param', name='StartOnCall', attrib={'value':'Start'}))
+    monitor.append(ET.Element('Param', name='Arguments', attrib={'value':'fuzzed.bin'}))
+    agent.append(monitor)
+    return pit
+
 def dataModel(statePit, templates, rules):
     pit = PIT()
     written = []
@@ -121,6 +153,7 @@ def stateModel(done, templates):
             peachState.append(randomAction)
         #impement changeState actions
         if postHist != None:
+            #print(state.hist)
             change = computeChangeState(state, postHist, actionCounter, templates)
             #prob = len(postHist) - 1
             #for ID,nextState in postHist.items():
@@ -178,24 +211,29 @@ def computeChangeState(state, postHist, actionCounter, templates):
         #need to deal with end states more efficiently...
         if ID == '00':
             continue
+        #TODO
+        #what happens here?! PRODUCES MISSING DATAMODELS, BUT WRONG
         for ns in nextState:
             if ns not in templates[ID].hists:
+                #print(type(templates[ID]))
                 templates[ID].hists.append(ns)
+        #print(state.hist)
         #print(nextState)
         for ns in nextState:
             if len(nextState) > 1:
                 changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns),
-                    'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue == int({2}))) '
-                    'and str(StateModel.states[{0}].actions[0].dataModel[0][0][0].referenceName) == "{3}")'
+                    'when':'(int(StateModel.states["{0}"].actions[{1}].dataModel["a1"].InternalValue) == int({2}) '
+                    'and str(StateModel.states["{0}"].actions[0].dataModel[0][0][0].referenceName) == "{3}")'
                     .format(state.hist, actionCounter, prob, ns.preTempID[0])})
             else:
                 changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns),
-                    'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue == int({2}))) '
+                    'when':'(int(StateModel.states["{0}"].actions[{1}].dataModel["a1"].InternalValue) == int({2})) '
                     .format(state.hist, actionCounter, prob)})
             #print(ET.tostring(changeState,pretty_print = True))
             change.append(changeState)
         prob -= 1
     #print('\n')
+    #print()
     return change
 
 
