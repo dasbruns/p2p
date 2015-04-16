@@ -90,8 +90,11 @@ def createContent(ID, dataModel, templates):
     for cont in templates[ID].content:
         if cont != '':
             #unquote encoding...
-            if '%' in cont:
-                cont = parse.unquote(cont)
+            #if '%' in cont:
+                #print(cont)
+                #cont = parse.unquote(cont)
+            #print(cont,type(cont))
+            #print(cont)
             data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
         else:
             data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
@@ -396,7 +399,7 @@ def findPreState(state,rule,done):
         return (state, state.hist,state.IOAction,state.fields[rule.srcField], ID)
     else:
         for i in range(len(state.hist.curTempID)):
-            if state.hist.curTempID  == ID:
+            if state.hist.curTempID[i]  == ID:
                 break
         return (state, state.hist,state.IOAction,state.fields[i][rule.srcField], ID)
 
