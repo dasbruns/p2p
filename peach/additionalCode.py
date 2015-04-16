@@ -1,6 +1,6 @@
-import clr
-clr.AddReference("Peach.Core")
-from Peach.Core import Variant
+#import clr
+#clr.AddReference("Peach.Core")
+#from Peach.Core import Variant
 import random
 
 def prepend(self, pos, string):
@@ -8,55 +8,41 @@ def prepend(self, pos, string):
     val.DefaultValue = Variant(string + str(val.InternalValue))
 
 def manipulate(PeachState, task):
+    print(task)
     tasks = task.split(';;;')
     for task in tasks:
         task = task.split(',',3)
+        print(task)
         if task[0] == 'comp':
+            print('in here')
             copyComplete(PeachState,task[1:])
             continue
         if task[0] == 'part':
+            print('in here')
             partialCopy(PeachState, task[1:])
             continue
-        if task[0] == 'seq':
-            seqCopy(PeachState, task[1:])
 
-def seqCopy(PeachState, task):
-    field = PeachState.dataModel.find(task[0])
-    val = int(field.InternalValue)
-    field.DefaultValue = Variant(val + int(task[1]))
-
-def partialCopy(PeachState, task):
-    field = PeachState.dataModel.find(task[1])
-    val = str(field.InternalValue)
-    split = val.split(task[2],1)
-    if len(split) != 2:
-        val = ''
-        field.DefaultValue = Variant(val)
-        return
-    if task[0] == 'SUFFIX':
-        val = split[1]
-    else:
-        val = split[0]
-    field.DefaultValue = Variant(val)
 
 def copyComplete(self, l):
-    #f = open('self','w')
-    #f.write(str(self.dataModel.referenceName))
-    #f.write(l)
-    #f.close()
     #l = l.split(',',2)
-    #while l != []:
-    #    sub = l[0:3]
-    #    l = l[3:]
-    val = self.dataModel.find(l[1])
-    cur = str(val.InternalValue)
-    content = l[2].split(':::')
-    content = random.choice(content)
-    if l[0] == 'PREFIX':
-        repl = Variant(cur + ' ' + content)
-    else:
-        repl = Variant(content + ' ' + cur)
-    val.DefaultValue = repl
+    while l != []:
+        sub = l[0:3]
+        l = l[3:]
+        #val = self.dataModel.find(sub[1])
+        #cur = str(val.InternalValue)
+        content = sub[2].split(':::')
+        content = random.choice(content)
+        print(sub, content)
+        return
+        if sub[0] == 'PREFIX':
+            repl = Variant(cur + ' ' + content)
+        else:
+            repl = Variant(content + ' ' + cur)
+        #val.DefaultValue = repl
+        return
+
+def partialCopy(self, l):
+    print(l)
 
 def rand(self,num):
     num = random.randint(0,num)

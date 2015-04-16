@@ -2,15 +2,17 @@ from .InterState import InterState
 from .InterStateContainer import InterStateContainer
 from .PIT import PIT
 from lxml import etree as ET
-from .additionalCodeTest import manipulate
+from .additionalCode import manipulate
+import random
+from urllib import parse
 
-def Test(pit,role=False,IP='127.0.0.1', port=21):
+def Test(pit,role=False,IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
     test.append(ET.Element('Agent', attrib={'ref':'Local'}))
     test.append(ET.Element('StateModel', attrib={'ref':'StateModel'}))
     #append default publisher
-    if role == False:
+    if role == True:
         publisher = ET.Element('Publisher', name='test', attrib={'class':'TcpClient'})
         publisher.append(ET.Element('Param', name='Host', attrib={'value':str(IP)}))
     else:
@@ -87,6 +89,9 @@ def createContent(ID, dataModel, templates):
     count = 0
     for cont in templates[ID].content:
         if cont != '':
+            #unquote encoding...
+            if '%' in cont:
+                cont = parse.unquote(cont)
             data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
         else:
             data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
@@ -315,6 +320,12 @@ def data(dataModel, state):
                 data[index].append(d)
         index += 1
     #print(data)
+    #upper-bound number of tuples
+    #limit to 4 per position; experimental
+    for i in range(len(data)):
+        if len(data[i])>4:
+            data[i] = bound(data[i],4)
+    #print(data)
     dat = cross(data)
     #print(dat)
     retDat = []
@@ -326,6 +337,13 @@ def data(dataModel, state):
         retDat.append(data)
     #print()
     return dataModel,retDat
+
+def bound(data, points):
+    ret_data = []
+    for i in range(points):
+        j = random.randint(0,len(data)-1)
+        ret_data.append(data[j])
+    return ret_data
 
 def cross(data,depth=0):
     #print('\nInto cross lvl{}'.format(depth,),'\n',data)

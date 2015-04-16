@@ -13,7 +13,7 @@ import os
  #   s = peach.createInterState(state.curState,state.preHist)
 
 
-def stateAssembler(state, container, model, templates, UAC=False):
+def stateAssembler(state, container, model, templates, UAC=True):
     if 'END' in str(state.curState):
         state.hist = state.preHist.update(['00'])
         state.IOAction = 'END'
@@ -92,11 +92,11 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('folder', help='where to look for files')
-    parser.add_argument('-r', '--role', help='set if you are server', action='store_true')
+    parser.add_argument('-r', '--role', help='set if you are server', action='store_false')
     parser.add_argument('-n', '--name', help='specify name of parsed family')
     parser.add_argument('-v', '--verbose', action='count', help="tells what's currently going on")
     args = parser.parse_args()
-    print(args)
+    #print(args)
 
     if args.folder[-1] == '/':
         args.folder = args.folder[:-1]
@@ -234,9 +234,9 @@ if __name__ == '__main__':
     pit = peach.Test(pit,args.role)
     if args.verbose:print('Done')
     if args.role:
-        if args.verbose:print('Write to {0}/pitServer.xml'.format(args.folder))
-        pit.toFile('{0}/pitServer.xml'.format(args.folder))
-    else:
         if args.verbose:print('Write to {0}/pitClient.xml'.format(args.folder))
         pit.toFile('{0}/pitClient.xml'.format(args.folder))
+    else:
+        if args.verbose:print('Write to {0}/pitServer.xml'.format(args.folder))
+        pit.toFile('{0}/pitServer.xml'.format(args.folder))
 

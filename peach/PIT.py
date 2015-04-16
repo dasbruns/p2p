@@ -1,7 +1,7 @@
 from lxml import etree as ET
 class PIT(object):
-    def __init__(self):
-        root = ET.Element('Peach')
+    def __init__(self,name='Peach'):
+        root = ET.Element(name)
         root.append(ET.Element('Import', attrib={'import':'additionalCode'}))
         self.tree = ET.ElementTree(root)
 
@@ -13,7 +13,7 @@ class PIT(object):
     def __str__(self):
         return str(ET.tostring(self.root,short_empty_elements=False))
 
-    def toFile(self, fileName):
+    def toFile(self, fileName='default.out'):
         #tree = ET.ElementTree(self.root)
         self.tree.write(fileName, pretty_print=True)
         return
