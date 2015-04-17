@@ -89,23 +89,32 @@ def createContent(ID, dataModel, templates):
     count = 0
     for cont in templates[ID].content:
         if cont != '':
+        #no-rule field
+            if '%' in cont:
             #unquote encoding...
-            #if '%' in cont:
-                #print(cont)
+            #use blob in peach
+                #data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
                 #cont = parse.unquote(cont)
-            #print(cont,type(cont))
-            #print(cont)
+                cont = parse.unquote(cont)
+                cont = removeControl(cont)
+                #data = ET.Element('Blob', name='c'+str(count), attrib={'value':cont,'token':'true'})
+            #else:
+            #put it in a string
             data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
         else:
+        #rule field (empty)
             data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
         dataModel.append(data)
         count += 1
-    #if empty dataModel, insert empty String
-    #later used as discriminative feature
-    #if count == 0:
-    #    dataModel.append(ET.Element('String', name='c0', attrib={'value':''}))
     return dataModel
 
+def removeControl(cont):
+    #by now ignores control characters...
+    rmCont= ''
+    for c in cont:
+        if ord(c) <= 126 and ord(c) >= 32:
+            rmCont += c
+    return rmCont
 
 def stateModel(done, templates):
     pit = PIT()
@@ -396,10 +405,17 @@ def findPreState(state,rule,done):
         state = done[state.preHist]
         depth += 1
     if not state.isMultiModel:
-        return (state, state.hist,state.IOAction,state.fields[rule.srcField], ID)
+        return (state, state.hist, state.IOAction, state.fields[rule.srcField], ID)
     else:
-        for i in range(len(state.hist.curTempID)):
-            if state.hist.curTempID[i]  == ID:
+        for j in range(len(state.hist.curTempID)):
+            if state.hist.curTempID[j] == ID:
                 break
-        return (state, state.hist,state.IOAction,state.fields[i][rule.srcField], ID)
+        if ID in state.hist.curTempID:
+            i = state.hist.curTempID.index(ID)
+            if j != i:
+                print('wooooooooooooooooot')
+            return (state, state.hist, state.IOAction, state.fields[i][rule.srcField], ID)
+        else:
+            print('something wrong while fetching previous state')
+            return
 
