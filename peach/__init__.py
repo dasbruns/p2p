@@ -345,7 +345,12 @@ def data(dataModel, state):
         data = ET.Element('Data')
         for i in range(len(d)):
             #print(state.dataFields[state.dataRules[i].dstField])
-            data.append(ET.Element('Field', name='c'+str(state.fields[state.dataRules[i].dstField]), attrib={'value':d[i]}))
+            #unquote field content
+            cont = d[i]
+            if '%' in cont:
+                cont = parse.unquote(cont)
+                cont = removeControl(cont)
+            data.append(ET.Element('Field', name='c'+str(state.fields[state.dataRules[i].dstField]), attrib={'value':cont}))
         retDat.append(data)
     #print()
     return dataModel,retDat
