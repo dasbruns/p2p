@@ -2,9 +2,11 @@ from .InterState import InterState
 from .InterStateContainer import InterStateContainer
 from .PIT import PIT
 from lxml import etree as ET
-from .additionalCode import manipulate
 import random
 from urllib import parse
+
+#testing purpose import
+#from .additionalCode import manipulate
 
 def Test(pit,role=False,IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
