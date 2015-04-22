@@ -3,6 +3,7 @@ from .InterStateContainer import InterStateContainer
 from .PIT import PIT
 from lxml import etree as ET
 import random
+import string
 from urllib import parse
 
 #testing purpose import
@@ -88,9 +89,11 @@ def multimodel(root, ID, hist, written, templates, rules):
     return choice
 
 def createContent(ID, dataModel, templates):
+    dataModel.append(ET.Element('String', name='pre', attrib={'value':'\r\n'}))
     count = 0
     for cont in templates[ID].content:
         if cont != '':
+            data = ''
         #no-rule field
             if '%' in cont:
             #unquote encoding...
@@ -98,11 +101,23 @@ def createContent(ID, dataModel, templates):
                 #data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
                 #cont = parse.unquote(cont)
                 cont = parse.unquote(cont)
-                cont = removeControl(cont)
-                #data = ET.Element('Blob', name='c'+str(count), attrib={'value':cont,'token':'true'})
+                #check if there are non-printable characters
+                escCont = ''.join(c for c in cont if c in string.printable)
+                if not escCont == cont:
+                    #handle 'em
+                    #strip content to pure hex
+                    #model field as hex number; NOT possible.. use BLOB instead
+                    #for sake of ease
+                    #cont = handleControl(cont)
+                    cont = ' '.join(list(map(lambda x :(x[2:].zfill(2)),list(map(hex,parse.unquote_to_bytes(cont))))))
+                    #size = str(int(len(''.join(cont.split()))/2)*8)
+                    data = ET.Element('Blob', name='c'+str(count), attrib={'value':cont,'token':'true'})#,'valueType':'hex','size':size})
             #else:
             #put it in a string
-            data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
+            #print('going to write: ',cont, parse.quote(cont))
+            if data == '':
+                #just a normal string, no non-printables detected
+                data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
         else:
         #rule field (empty)
             data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
@@ -110,12 +125,17 @@ def createContent(ID, dataModel, templates):
         count += 1
     return dataModel
 
-def removeControl(cont):
-    #by now ignores control characters...
+def handleControl(cont,data=False):
+    #by now ignores control characters... NOT!
     rmCont= ''
+    contFlag = False
     for c in cont:
         if ord(c) <= 126 and ord(c) >= 32:
             rmCont += c
+        else:
+            contFlag=True
+        if data==True and contFlag==True:
+            print(parse.quote(cont))
     return rmCont
 
 def stateModel(done, templates):
@@ -351,7 +371,14 @@ def data(dataModel, state):
             cont = d[i]
             if '%' in cont:
                 cont = parse.unquote(cont)
-                cont = removeControl(cont)
+                #check if there are non-printable characters
+                escCont = ''.join(c for c in cont if c in string.printable)
+                if not escCont == cont:
+                    #deal with 'em
+                    print('WARNING: CONTROLL CHARACTERS IN DATARULE')
+                    print('\tunhandled so far...')
+                    #cont = handleControl(cont,True)
+                    cont = escCont
             data.append(ET.Element('Field', name='c'+str(state.fields[state.dataRules[i].dstField]), attrib={'value':cont}))
         retDat.append(data)
     #print()
