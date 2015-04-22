@@ -89,7 +89,7 @@ def multimodel(root, ID, hist, written, templates, rules):
     return choice
 
 def createContent(ID, dataModel, templates):
-    dataModel.append(ET.Element('String', name='pre', attrib={'value':'\r\n'}))
+    dataModel.append(ET.Element('String', name='pre', attrib={'value':''}))
     count = 0
     for cont in templates[ID].content:
         if cont != '':
