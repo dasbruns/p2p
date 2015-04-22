@@ -111,7 +111,7 @@ def createContent(ID, dataModel, templates):
                     #cont = handleControl(cont)
                     cont = ' '.join(list(map(lambda x :(x[2:].zfill(2)),list(map(hex,parse.unquote_to_bytes(cont))))))
                     #size = str(int(len(''.join(cont.split()))/2)*8)
-                    data = ET.Element('Blob', name='c'+str(count), attrib={'value':cont,'token':'true'})#,'valueType':'hex','size':size})
+                    data = ET.Element('Blob', name='c'+str(count), attrib={'value':cont,'token':'true','valueType':'hex'})#,'size':size})
             #else:
             #put it in a string
             #print('going to write: ',cont, parse.quote(cont))
