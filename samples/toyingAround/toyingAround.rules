@@ -1,0 +1,318 @@
+RULE transition:26;11;26 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:-1;2;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:1
+RULE transition:5;14;5 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:7;24;7 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:20;5;14 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:text/parameters
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:44
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:User-Agent%3A
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:iTunes/12.1.2
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:5 type:pulsar.core.rule.DataRule
+data:%20
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:6 type:pulsar.core.rule.DataRule
+data:%28Windows%3B
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:7 type:pulsar.core.rule.DataRule
+data:Microsoft
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:8 type:pulsar.core.rule.DataRule
+data:Windows
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:9 type:pulsar.core.rule.DataRule
+data:7
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:10 type:pulsar.core.rule.DataRule
+data:Enterprise
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:11 type:pulsar.core.rule.DataRule
+data:Edition
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:12 type:pulsar.core.rule.DataRule
+data:Service
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:13 type:pulsar.core.rule.DataRule
+data:Pack
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:14 type:pulsar.core.rule.DataRule
+data:1
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:15 type:pulsar.core.rule.DataRule
+data:%28Build
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:16 type:pulsar.core.rule.DataRule
+data:7601%29%29
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:17 type:pulsar.core.rule.DataRule
+data:%0D%0A
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:18 type:pulsar.core.rule.DataRule
+data:Client-Instance%3A
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:19 type:pulsar.core.rule.DataRule
+data:E792CF181BC5DB83
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:20 type:pulsar.core.rule.DataRule
+data:DACP-ID%3A
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:21 type:pulsar.core.rule.DataRule
+data:Active-Remote%3A
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:22 type:pulsar.core.rule.DataRule
+data:1452138072
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:23 type:pulsar.core.rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:24 type:pulsar.core.rule.DataRule
+data:progress%3A
+RULE transition:20;5;14 srcId:0 srcField:-1 dstField:25 type:pulsar.core.rule.DataRule
+data:3906654043/3906669403/3922002019
+RULE transition:20;5;14 srcId:-1 srcField:17 dstField:26 type:pulsar.core.rule.ExactRule
+
+RULE transition:10;1;26 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:7
+RULE transition:24;7;24 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:14;5;20 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:14;5;20 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:seq%3D16574%3Brtptime%3D3906669403,seq%3D17046%3Brtptime%3D3906835547,seq%3D17875%3Brtptime%3D3907127355
+RULE transition:26;0;4 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:rtsp%3A//192.168.56.101/3511862320
+RULE transition:26;0;4 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:11
+RULE transition:26;0;4 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:59867
+RULE transition:26;0;4 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:rtptime%3D3417228671
+RULE transition:26;13;26 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:21;5;14 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:text/parameters
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:18
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:User-Agent%3A
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:iTunes/12.1.2
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:5 type:pulsar.core.rule.DataRule
+data:%20
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:6 type:pulsar.core.rule.DataRule
+data:%28Windows%3B
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:7 type:pulsar.core.rule.DataRule
+data:Microsoft
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:8 type:pulsar.core.rule.DataRule
+data:Windows
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:9 type:pulsar.core.rule.DataRule
+data:7
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:10 type:pulsar.core.rule.DataRule
+data:Enterprise
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:11 type:pulsar.core.rule.DataRule
+data:Edition
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:12 type:pulsar.core.rule.DataRule
+data:Service
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:13 type:pulsar.core.rule.DataRule
+data:Pack
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:14 type:pulsar.core.rule.DataRule
+data:1
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:15 type:pulsar.core.rule.DataRule
+data:%28Build
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:16 type:pulsar.core.rule.DataRule
+data:7601%29%29
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:17 type:pulsar.core.rule.DataRule
+data:%0D%0A
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:18 type:pulsar.core.rule.DataRule
+data:Client-Instance%3A
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:19 type:pulsar.core.rule.DataRule
+data:E792CF181BC5DB83
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:20 type:pulsar.core.rule.DataRule
+data:DACP-ID%3A
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:21 type:pulsar.core.rule.DataRule
+data:Active-Remote%3A
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:22 type:pulsar.core.rule.DataRule
+data:1452138072
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:23 type:pulsar.core.rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:24 type:pulsar.core.rule.DataRule
+data:volume%3A
+RULE transition:21;5;14 srcId:0 srcField:-1 dstField:25 type:pulsar.core.rule.DataRule
+data:0.000000
+RULE transition:21;5;14 srcId:-1 srcField:17 dstField:26 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;19;5 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:5;17;5 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:17;5;14 srcId:-2 srcField:0 dstField:9 type:pulsar.core.rule.ExactRule
+
+RULE transition:17;5;14 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:text/parameters
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:44
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:User-Agent%3A
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:iTunes/12.1.2
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:5 type:pulsar.core.rule.DataRule
+data:%20
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:6 type:pulsar.core.rule.DataRule
+data:%28Windows%3B
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:7 type:pulsar.core.rule.DataRule
+data:Microsoft
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:8 type:pulsar.core.rule.DataRule
+data:Windows
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:10 type:pulsar.core.rule.DataRule
+data:Enterprise
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:11 type:pulsar.core.rule.DataRule
+data:Edition
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:12 type:pulsar.core.rule.DataRule
+data:Service
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:13 type:pulsar.core.rule.DataRule
+data:Pack
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:14 type:pulsar.core.rule.DataRule
+data:1
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:15 type:pulsar.core.rule.DataRule
+data:%28Build
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:16 type:pulsar.core.rule.DataRule
+data:7601%29%29
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:17 type:pulsar.core.rule.DataRule
+data:%0D%0A
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:18 type:pulsar.core.rule.DataRule
+data:Client-Instance%3A
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:19 type:pulsar.core.rule.DataRule
+data:E792CF181BC5DB83
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:20 type:pulsar.core.rule.DataRule
+data:DACP-ID%3A
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:21 type:pulsar.core.rule.DataRule
+data:Active-Remote%3A
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:22 type:pulsar.core.rule.DataRule
+data:1452138072
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:23 type:pulsar.core.rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:24 type:pulsar.core.rule.DataRule
+data:progress%3A
+RULE transition:17;5;14 srcId:0 srcField:-1 dstField:25 type:pulsar.core.rule.DataRule
+data:3905833179/3905848539/3921181155
+RULE transition:17;5;14 srcId:-1 srcField:17 dstField:26 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;15;5 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:6;21;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:3
+RULE transition:23;8;24 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:3
+RULE transition:19;5;14 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:image/jpeg
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:27852
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:RTP-Info%3A
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:rtptime%3D3906835547
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:5 type:pulsar.core.rule.DataRule
+data:%0D%0A
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:6 type:pulsar.core.rule.DataRule
+data:User-Agent%3A
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:7 type:pulsar.core.rule.DataRule
+data:iTunes/12.1.2
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:8 type:pulsar.core.rule.DataRule
+data:%28Windows%3B
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:9 type:pulsar.core.rule.DataRule
+data:Microsoft
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:10 type:pulsar.core.rule.DataRule
+data:Windows
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:11 type:pulsar.core.rule.DataRule
+data:7
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:12 type:pulsar.core.rule.DataRule
+data:Enterprise
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:13 type:pulsar.core.rule.DataRule
+data:Edition
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:14 type:pulsar.core.rule.DataRule
+data:Service
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:15 type:pulsar.core.rule.DataRule
+data:Pack
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:16 type:pulsar.core.rule.DataRule
+data:1
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:17 type:pulsar.core.rule.DataRule
+data:%20
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:18 type:pulsar.core.rule.DataRule
+data:%28Build
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:19 type:pulsar.core.rule.DataRule
+data:7601%29%29
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:20 type:pulsar.core.rule.DataRule
+data:Client-Instance%3A
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:21 type:pulsar.core.rule.DataRule
+data:DACP-ID%3A
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:22 type:pulsar.core.rule.DataRule
+data:E792CF181BC5DB83
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:24 type:pulsar.core.rule.DataRule
+data:Active-Remote%3A
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:25 type:pulsar.core.rule.DataRule
+data:1452138072
+RULE transition:19;5;14 srcId:0 srcField:-1 dstField:26 type:pulsar.core.rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:19;5;14 srcId:-1 srcField:5 dstField:23 type:pulsar.core.rule.ExactRule
+
+RULE transition:14;5;14 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:text/parameters,text/parameters
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:18,44
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:User-Agent%3A,User-Agent%3A
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:iTunes/12.1.2,iTunes/12.1.2
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:5 type:pulsar.core.rule.DataRule
+data:%20,%20
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:6 type:pulsar.core.rule.DataRule
+data:%28Windows%3B,%28Windows%3B
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:7 type:pulsar.core.rule.DataRule
+data:Microsoft,Microsoft
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:8 type:pulsar.core.rule.DataRule
+data:Windows,Windows
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:9 type:pulsar.core.rule.DataRule
+data:7,7
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:10 type:pulsar.core.rule.DataRule
+data:Enterprise,Enterprise
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:11 type:pulsar.core.rule.DataRule
+data:Edition,Edition
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:12 type:pulsar.core.rule.DataRule
+data:Service,Service
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:13 type:pulsar.core.rule.DataRule
+data:Pack,Pack
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:14 type:pulsar.core.rule.DataRule
+data:1,1
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:15 type:pulsar.core.rule.DataRule
+data:%28Build,%28Build
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:16 type:pulsar.core.rule.DataRule
+data:7601%29%29,7601%29%29
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:17 type:pulsar.core.rule.DataRule
+data:%0D%0A,%0D%0A
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:18 type:pulsar.core.rule.DataRule
+data:Client-Instance%3A,Client-Instance%3A
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:19 type:pulsar.core.rule.DataRule
+data:E792CF181BC5DB83,E792CF181BC5DB83
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:20 type:pulsar.core.rule.DataRule
+data:DACP-ID%3A,DACP-ID%3A
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:21 type:pulsar.core.rule.DataRule
+data:Active-Remote%3A,Active-Remote%3A
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:22 type:pulsar.core.rule.DataRule
+data:1452138072,1452138072
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:23 type:pulsar.core.rule.DataRule
+data:%0D%0A%0D%0A,%0D%0A%0D%0A
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:24 type:pulsar.core.rule.DataRule
+data:volume%3A,progress%3A
+RULE transition:14;5;14 srcId:0 srcField:-1 dstField:25 type:pulsar.core.rule.DataRule
+data:0.000000,3906820187/3906835547/3915663707
+RULE transition:14;5;14 srcId:-1 srcField:17 dstField:26 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;5 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:8;24;7 srcId:-2 srcField:0 dstField:0 type:pulsar.core.rule.SeqRule
+diff:1
+RULE transition:5;16;4 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:rtsp%3A//192.168.56.101/3511862475
+RULE transition:5;16;4 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:17
+RULE transition:5;16;4 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:36061
+RULE transition:5;16;4 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:rtptime%3D3907127355

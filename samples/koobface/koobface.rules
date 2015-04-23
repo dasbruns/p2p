@@ -1,0 +1,818 @@
+RULE transition:7;28;7 srcId:-3 srcField:1 dstField:1 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:2 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:13 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:17 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:20 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:23 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:30 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:40 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:42 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:46 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:48 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:2 dstField:51 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:3 dstField:3 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:3 dstField:57 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:4 dstField:4 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:4 dstField:7 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:4 dstField:10 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:5 dstField:5 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:6 dstField:6 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:8 dstField:8 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:9 dstField:9 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:11 dstField:11 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:12 dstField:12 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:14 dstField:14 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:15 dstField:15 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:16 dstField:16 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:18 dstField:18 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:18 dstField:22 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:19 dstField:19 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:21 dstField:21 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:24 dstField:24 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:25 dstField:25 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:25 dstField:27 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:25 dstField:32 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:25 dstField:34 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:25 dstField:37 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:25 dstField:53 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:25 dstField:55 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:26 dstField:26 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:28 dstField:28 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:29 dstField:29 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:31 dstField:31 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:33 dstField:33 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:35 dstField:35 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:36 dstField:36 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:38 dstField:38 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:39 dstField:39 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:41 dstField:41 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:43 dstField:43 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:44 dstField:44 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:45 dstField:45 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:47 dstField:47 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:49 dstField:49 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:50 dstField:50 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:52 dstField:52 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:54 dstField:54 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:56 dstField:56 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:58 dstField:58 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:59 dstField:59 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:60 dstField:60 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:61 dstField:61 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:-3 srcField:62 dstField:62 type:rule.ExactRule
+
+RULE transition:7;28;7 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:06%3A42%3A45,06%3A42%3A53,06%3A43%3A01,06%3A43%3A11,06%3A43%3A30,06%3A44%3A03
+RULE transition:29;12;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:fredericia-stavgang.dk
+RULE transition:29;10;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:claykelley.net
+RULE transition:29;6;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:becker.webd.pl
+RULE transition:1;25;0 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:chrislobue.com
+RULE transition:27;16;28 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:/.sys/%3Fgetexe%3Dgo.exe
+RULE transition:0;2;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:jgreininghorses.com
+RULE transition:16;28;7 srcId:-2 srcField:0 dstField:43 type:rule.CopyPartialRule
+ptype:COPY_THE_PREFIX sep:%3Fgetexe%3Dgo.exe
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:06%3A42%3A38
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:1 type:rule.DataRule
+data:Apache/2.2.3
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:2 type:rule.DataRule
+data:%20
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:3 type:rule.DataRule
+data:%28CentOS%29
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:4 type:rule.DataRule
+data:%0D%0A
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:5 type:rule.DataRule
+data:Content-Length%3A
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:6 type:rule.DataRule
+data:287
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:8 type:rule.DataRule
+data:Connection%3A
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:9 type:rule.DataRule
+data:close
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:11 type:rule.DataRule
+data:Content-Type%3A
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:12 type:rule.DataRule
+data:text/html%3B
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:14 type:rule.DataRule
+data:charset%3Diso-8859-1
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:15 type:rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:16 type:rule.DataRule
+data:%3C%21DOCTYPE
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:18 type:rule.DataRule
+data:HTML
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:19 type:rule.DataRule
+data:PUBLIC
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:21 type:rule.DataRule
+data:%22-//IETF//DTD
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:24 type:rule.DataRule
+data:2.0//EN%22%3E
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:25 type:rule.DataRule
+data:%0A
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:26 type:rule.DataRule
+data:%3Chtml%3E%3Chead%3E
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:28 type:rule.DataRule
+data:%3Ctitle%3E404
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:29 type:rule.DataRule
+data:Not
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:31 type:rule.DataRule
+data:Found%3C/title%3E
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:33 type:rule.DataRule
+data:%3C/head%3E%3Cbody%3E
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:36 type:rule.DataRule
+data:Found%3C/h1%3E
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:38 type:rule.DataRule
+data:%3Cp%3EThe
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:39 type:rule.DataRule
+data:requested
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:41 type:rule.DataRule
+data:URL
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:44 type:rule.DataRule
+data:was
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:45 type:rule.DataRule
+data:not
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:47 type:rule.DataRule
+data:found
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:49 type:rule.DataRule
+data:on
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:50 type:rule.DataRule
+data:this
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:52 type:rule.DataRule
+data:server.%3C/p%3E
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:54 type:rule.DataRule
+data:%3Chr%3E
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:58 type:rule.DataRule
+data:Server
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:59 type:rule.DataRule
+data:at
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:60 type:rule.DataRule
+data:www.garymakfilm.com
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:61 type:rule.DataRule
+data:Port
+RULE transition:16;28;7 srcId:0 srcField:-1 dstField:62 type:rule.DataRule
+data:80%3C/address%3E
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:13 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:17 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:20 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:23 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:30 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:40 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:42 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:46 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:48 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:2 dstField:51 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:3 dstField:57 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:4 dstField:7 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:4 dstField:10 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:18 dstField:22 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:25 dstField:27 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:25 dstField:32 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:25 dstField:34 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:25 dstField:37 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:25 dstField:53 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:25 dstField:55 type:rule.ExactRule
+
+RULE transition:16;28;7 srcId:-1 srcField:1 dstField:56 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Caddress%3E
+RULE transition:16;28;7 srcId:-1 srcField:29 dstField:35 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Ch1%3E
+RULE transition:29;9;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:www.pwsd1pc.org
+RULE transition:29;11;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:cmpmiami.com
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:HTTP/1.1
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:1 type:rule.DataRule
+data:301
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:2 type:rule.DataRule
+data:Moved
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:3 type:rule.DataRule
+data:Permanently
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:4 type:rule.DataRule
+data:06%3A43%3A26
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:5 type:rule.DataRule
+data:Location%3A
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:6 type:rule.DataRule
+data:http%3A//www.forzadagro.org/.sys/%3Faction%3Dldgen%26v%3D15
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:7 type:rule.DataRule
+data:Content-Length%3A
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:8 type:rule.DataRule
+data:261
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:9 type:rule.DataRule
+data:%0D%0A
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:10 type:rule.DataRule
+data:Connection%3A
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:11 type:rule.DataRule
+data:%20
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:12 type:rule.DataRule
+data:close
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:14 type:rule.DataRule
+data:Content-Type%3A
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:15 type:rule.DataRule
+data:text/html%3B
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:16 type:rule.DataRule
+data:charset%3Diso-8859-1
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:17 type:rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:18 type:rule.DataRule
+data:%3C%21DOCTYPE
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:19 type:rule.DataRule
+data:HTML
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:21 type:rule.DataRule
+data:PUBLIC
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:23 type:rule.DataRule
+data:%22-//IETF//DTD
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:25 type:rule.DataRule
+data:2.0//EN%22%3E
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:26 type:rule.DataRule
+data:%3Chtml%3E%3Chead%3E
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:31 type:rule.DataRule
+data:%0A
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:32 type:rule.DataRule
+data:%3C/head%3E%3Cbody%3E
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:37 type:rule.DataRule
+data:%3Cp%3EThe
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:38 type:rule.DataRule
+data:document
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:39 type:rule.DataRule
+data:has
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:40 type:rule.DataRule
+data:moved
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:41 type:rule.DataRule
+data:%3Ca
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:42 type:rule.DataRule
+data:href%3D%22http%3A//www.forzadagro.org/.sys/%3Faction%3Dldgen%26amp%3Bv%3D15%22%3Ehere%3C/a%3E.%3C/p%3E
+RULE transition:5;29;13 srcId:0 srcField:-1 dstField:43 type:rule.DataRule
+data:%3C/body%3E%3C/html%3E
+RULE transition:5;29;13 srcId:-1 srcField:2 dstField:28 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:9 dstField:13 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:11 dstField:20 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:11 dstField:22 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:11 dstField:29 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:19 dstField:24 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:31 dstField:33 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:31 dstField:36 type:rule.ExactRule
+
+RULE transition:5;29;13 srcId:-1 srcField:1 dstField:27 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Ctitle%3E
+RULE transition:5;29;13 srcId:-1 srcField:2 dstField:34 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Ch1%3E
+RULE transition:5;29;13 srcId:-1 srcField:3 dstField:30 type:rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:%3C/title%3E
+RULE transition:5;29;13 srcId:-1 srcField:3 dstField:35 type:rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:%3C/h1%3E
+RULE transition:29;13;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:sa-vand.dk,drive-class.ru,www.endurancesportscar.com
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:06%3A42%3A52
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:1 type:rule.DataRule
+data:Apache
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:2 type:rule.DataRule
+data:%0D%0A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:3 type:rule.DataRule
+data:Last-Modified%3A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:4 type:rule.DataRule
+data:%20
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:5 type:rule.DataRule
+data:Tue%2C
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:6 type:rule.DataRule
+data:30
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:8 type:rule.DataRule
+data:Sep
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:9 type:rule.DataRule
+data:2008
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:11 type:rule.DataRule
+data:20%3A55%3A57
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:12 type:rule.DataRule
+data:GMT
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:14 type:rule.DataRule
+data:ETag%3A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:16 type:rule.DataRule
+data:%224fc71ef5-c4-4582335d39140%22
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:18 type:rule.DataRule
+data:Accept-Ranges%3A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:19 type:rule.DataRule
+data:bytes
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:21 type:rule.DataRule
+data:Content-Length%3A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:22 type:rule.DataRule
+data:196
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:24 type:rule.DataRule
+data:Connection%3A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:26 type:rule.DataRule
+data:close
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:28 type:rule.DataRule
+data:Content-Type%3A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:29 type:rule.DataRule
+data:text/html
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:30 type:rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:31 type:rule.DataRule
+data:%3C%21DOCTYPE
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:33 type:rule.DataRule
+data:HTML
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:35 type:rule.DataRule
+data:PUBLIC
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:36 type:rule.DataRule
+data:%22-//IETF//DTD
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:39 type:rule.DataRule
+data:2.0//EN%22%3E
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:40 type:rule.DataRule
+data:%0A
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:41 type:rule.DataRule
+data:%3Chtml%3E%3Chead%3E
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:43 type:rule.DataRule
+data:%3Ctitle%3E404
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:44 type:rule.DataRule
+data:Not
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:45 type:rule.DataRule
+data:Found%3C/title%3E
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:47 type:rule.DataRule
+data:%3C/head%3E%3Cbody%3E
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:50 type:rule.DataRule
+data:Found%3C/h1%3E
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:52 type:rule.DataRule
+data:%3Cp%3EThe
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:54 type:rule.DataRule
+data:requested
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:56 type:rule.DataRule
+data:URL
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:57 type:rule.DataRule
+data:was
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:58 type:rule.DataRule
+data:not
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:59 type:rule.DataRule
+data:found
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:60 type:rule.DataRule
+data:on
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:61 type:rule.DataRule
+data:this
+RULE transition:8;29;7 srcId:0 srcField:-1 dstField:62 type:rule.DataRule
+data:server.%3C/p%3E
+RULE transition:8;29;7 srcId:-1 srcField:2 dstField:13 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:2 dstField:17 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:2 dstField:20 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:2 dstField:23 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:2 dstField:27 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:7 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:10 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:15 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:25 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:32 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:34 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:37 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:53 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:4 dstField:55 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:33 dstField:38 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:40 dstField:42 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:40 dstField:46 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:40 dstField:48 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:40 dstField:51 type:rule.ExactRule
+
+RULE transition:8;29;7 srcId:-1 srcField:44 dstField:49 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Ch1%3E
+RULE transition:30;22;0 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:www.Germanamericantax.com
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:HTTP/1.1
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:1 type:rule.DataRule
+data:301
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:2 type:rule.DataRule
+data:Moved
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:3 type:rule.DataRule
+data:Permanently
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:4 type:rule.DataRule
+data:06%3A42%3A55
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:5 type:rule.DataRule
+data:Location%3A
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:6 type:rule.DataRule
+data:http%3A//d55voypa5v.site.aplus.net/.sys/%3Faction%3Dldgen%26v%3D15
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:7 type:rule.DataRule
+data:Content-Length%3A
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:8 type:rule.DataRule
+data:268
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:9 type:rule.DataRule
+data:%0D%0A
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:10 type:rule.DataRule
+data:Connection%3A
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:11 type:rule.DataRule
+data:%20
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:12 type:rule.DataRule
+data:close
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:14 type:rule.DataRule
+data:Content-Type%3A
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:15 type:rule.DataRule
+data:text/html%3B
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:16 type:rule.DataRule
+data:charset%3Diso-8859-1
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:17 type:rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:18 type:rule.DataRule
+data:%3C%21DOCTYPE
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:19 type:rule.DataRule
+data:HTML
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:21 type:rule.DataRule
+data:PUBLIC
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:23 type:rule.DataRule
+data:%22-//IETF//DTD
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:25 type:rule.DataRule
+data:2.0//EN%22%3E
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:26 type:rule.DataRule
+data:%3Chtml%3E%3Chead%3E
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:31 type:rule.DataRule
+data:%0A
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:32 type:rule.DataRule
+data:%3C/head%3E%3Cbody%3E
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:37 type:rule.DataRule
+data:%3Cp%3EThe
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:38 type:rule.DataRule
+data:document
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:39 type:rule.DataRule
+data:has
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:40 type:rule.DataRule
+data:moved
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:41 type:rule.DataRule
+data:%3Ca
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:42 type:rule.DataRule
+data:href%3D%22http%3A//d55voypa5v.site.aplus.net/.sys/%3Faction%3Dldgen%26amp%3Bv%3D15%22%3Ehere%3C/a%3E.%3C/p%3E
+RULE transition:3;29;13 srcId:0 srcField:-1 dstField:43 type:rule.DataRule
+data:%3C/body%3E%3C/html%3E
+RULE transition:3;29;13 srcId:-1 srcField:2 dstField:28 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:9 dstField:13 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:11 dstField:20 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:11 dstField:22 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:11 dstField:29 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:19 dstField:24 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:31 dstField:33 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:31 dstField:36 type:rule.ExactRule
+
+RULE transition:3;29;13 srcId:-1 srcField:1 dstField:27 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Ctitle%3E
+RULE transition:3;29;13 srcId:-1 srcField:2 dstField:34 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Ch1%3E
+RULE transition:3;29;13 srcId:-1 srcField:3 dstField:30 type:rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:%3C/title%3E
+RULE transition:3;29;13 srcId:-1 srcField:3 dstField:35 type:rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:%3C/h1%3E
+RULE transition:0;20;0 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:test.cmis.creator.dp.ua
+RULE transition:29;8;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:odyssey-consultants.com
+RULE transition:29;17;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:exceleronmedical.com
+RULE transition:0;21;0 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:myijji.com
+RULE transition:29;3;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:d55voypa5v.win.aplus.net
+RULE transition:29;14;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:agribasal-me.com
+RULE transition:16;27;16 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:06%3A43%3A32
+RULE transition:7;29;13 srcId:-3 srcField:2 dstField:9 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:2 dstField:13 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:2 dstField:17 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:2 dstField:31 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:2 dstField:33 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:2 dstField:36 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:8 dstField:5 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:9 dstField:6 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:11 dstField:7 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:12 dstField:8 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:14 dstField:10 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:15 dstField:11 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:16 dstField:12 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:18 dstField:14 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:18 dstField:18 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:19 dstField:15 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:21 dstField:16 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:24 dstField:19 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:25 dstField:20 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:25 dstField:22 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:25 dstField:29 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:29 dstField:2 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:29 dstField:24 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:39 dstField:32 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:41 dstField:34 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:43 dstField:35 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:44 dstField:37 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:45 dstField:38 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:47 dstField:39 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:49 dstField:40 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:50 dstField:41 type:rule.ExactRule
+
+RULE transition:7;29;13 srcId:-3 srcField:29 dstField:27 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3CH1%3E
+RULE transition:7;29;13 srcId:-3 srcField:28 dstField:1 type:rule.CopyPartialRule
+ptype:COPY_THE_SUFFIX sep:%3Ctitle%3E
+RULE transition:7;29;13 srcId:-3 srcField:31 dstField:3 type:rule.CopyPartialRule
+ptype:COPY_THE_PREFIX sep:%3C/title%3E
+RULE transition:7;29;13 srcId:-3 srcField:38 dstField:30 type:rule.CopyPartialRule
+ptype:COPY_THE_SUFFIX sep:%3Cp%3E
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:HTTP/1.0
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:4 type:rule.DataRule
+data:06%3A42%3A43
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:21 type:rule.DataRule
+data:%3CHTML%3E%3CHEAD%3E
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:23 type:rule.DataRule
+data:%3CTITLE%3E404
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:25 type:rule.DataRule
+data:Found%3C/TITLE%3E
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:26 type:rule.DataRule
+data:%3C/HEAD%3E%3CBODY%3E
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:28 type:rule.DataRule
+data:Found%3C/H1%3E
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:42 type:rule.DataRule
+data:server.%3CP%3E
+RULE transition:7;29;13 srcId:0 srcField:-1 dstField:43 type:rule.DataRule
+data:%3C/BODY%3E%3C/HTML%3E
+RULE transition:28;7;28 srcId:-2 srcField:43 dstField:0 type:rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:%3Fgetexe%3Dfb.76.exe,%3Fgetexe%3Dbe.18.exe,%3Fgetexe%3Dms.26.exe,%3Fgetexe%3Dhi.15.exe,%3Fgetexe%3Dtg.14.exe,%3Fgetexe%3Dtw.07.exe
+RULE transition:14;29;16 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:06%3A43%3A30
+RULE transition:29;5;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:forzadagro.org
+RULE transition:26;24;0 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:starart.net
+RULE transition:29;4;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:krocketklubben1972.dk
+RULE transition:29;7;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:www.pangea-consulting.com,www.haggards.de
+RULE transition:29;15;29 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:ubetwireless.com
+RULE transition:17;29;7 srcId:-2 srcField:0 dstField:60 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:06%3A39%3A45
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:1 type:rule.DataRule
+data:Apache/2.0.52
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:2 type:rule.DataRule
+data:%20
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:3 type:rule.DataRule
+data:%28CentOS%29
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:4 type:rule.DataRule
+data:%0D%0A
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:5 type:rule.DataRule
+data:Content-Length%3A
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:6 type:rule.DataRule
+data:289
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:8 type:rule.DataRule
+data:Connection%3A
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:9 type:rule.DataRule
+data:close
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:11 type:rule.DataRule
+data:Content-Type%3A
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:12 type:rule.DataRule
+data:text/html%3B
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:14 type:rule.DataRule
+data:charset%3Diso-8859-1
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:15 type:rule.DataRule
+data:%0D%0A%0D%0A
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:16 type:rule.DataRule
+data:%3C%21DOCTYPE
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:18 type:rule.DataRule
+data:HTML
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:19 type:rule.DataRule
+data:PUBLIC
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:21 type:rule.DataRule
+data:%22-//IETF//DTD
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:24 type:rule.DataRule
+data:2.0//EN%22%3E
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:25 type:rule.DataRule
+data:%0A
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:26 type:rule.DataRule
+data:%3Chtml%3E%3Chead%3E
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:28 type:rule.DataRule
+data:%3Ctitle%3E404
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:29 type:rule.DataRule
+data:Not
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:31 type:rule.DataRule
+data:Found%3C/title%3E
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:33 type:rule.DataRule
+data:%3C/head%3E%3Cbody%3E
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:36 type:rule.DataRule
+data:Found%3C/h1%3E
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:38 type:rule.DataRule
+data:%3Cp%3EThe
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:39 type:rule.DataRule
+data:requested
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:41 type:rule.DataRule
+data:URL
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:43 type:rule.DataRule
+data:/.sys/
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:44 type:rule.DataRule
+data:was
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:45 type:rule.DataRule
+data:not
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:47 type:rule.DataRule
+data:found
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:49 type:rule.DataRule
+data:on
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:50 type:rule.DataRule
+data:this
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:52 type:rule.DataRule
+data:server.%3C/p%3E
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:54 type:rule.DataRule
+data:%3Chr%3E
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:58 type:rule.DataRule
+data:Server
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:59 type:rule.DataRule
+data:at
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:61 type:rule.DataRule
+data:Port
+RULE transition:17;29;7 srcId:0 srcField:-1 dstField:62 type:rule.DataRule
+data:80%3C/address%3E
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:13 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:17 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:20 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:23 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:30 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:40 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:42 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:46 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:48 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:2 dstField:51 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:3 dstField:57 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:4 dstField:7 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:4 dstField:10 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:18 dstField:22 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:25 dstField:27 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:25 dstField:32 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:25 dstField:34 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:25 dstField:37 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:25 dstField:53 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:25 dstField:55 type:rule.ExactRule
+
+RULE transition:17;29;7 srcId:-1 srcField:1 dstField:56 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Caddress%3E
+RULE transition:17;29;7 srcId:-1 srcField:29 dstField:35 type:rule.CopyCompleteRule
+ptype:COPY_AS_SUFFIX rest:%3Ch1%3E
+RULE transition:0;18;0 srcId:0 srcField:-1 dstField:0 type:rule.DataRule
+data:www.financialnewsanalyst.com

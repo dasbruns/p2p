@@ -1,0 +1,34 @@
+strict digraph  {
+	"6.UAC|6.UAS"	 [fillcolor=pink,
+		style=filled];
+	"6.UAS|6.UAC"	 [fillcolor=grey,
+		style=filled];
+	"6.UAC|6.UAS" -> "6.UAS|6.UAC";
+	"None.UAS|None.UAC"	 [fillcolor=grey,
+		style=filled];
+	"None.UAC|None.UAS"	 [fillcolor=pink,
+		style=filled];
+	"None.UAS|None.UAC" -> "None.UAC|None.UAS";
+	"None.UAC|None.UAC"	 [fillcolor=grey,
+		style=filled];
+	"None.UAS|None.UAC" -> "None.UAC|None.UAC";
+	"6.UAC|7.UAS" -> "7.UAS|7.UAC";
+	"START|None.UAC" -> "None.UAC|None.UAS";
+	"None.UAC|None.UAS" -> "None.UAS|None.UAC";
+	"None.UAC|None.UAC" -> "None.UAC|END";
+	"7.UAC|6.UAS" -> "6.UAS|7.UAC";
+	"7.UAS|7.UAC" -> "7.UAC|6.UAS";
+	"7.UAC|7.UAS"	 [fillcolor=pink,
+		style=filled];
+	"7.UAS|7.UAC" -> "7.UAC|7.UAS";
+	"7.UAC|7.UAS" -> "7.UAS|7.UAC";
+	"7.UAC|7.UAS" -> "7.UAS|None.UAC";
+	"6.UAS|7.UAC" -> "7.UAC|7.UAS";
+	"6.UAS|6.UAC" -> "6.UAC|6.UAS";
+	"6.UAS|6.UAC" -> "6.UAC|7.UAS";
+	"7.UAS|None.UAC" -> "None.UAC|None.UAC";
+	"START|1.UAC" -> "6.UAC|6.UAS";
+	"START|1.UAC" -> "None.UAC|None.UAC";
+	"START|START" -> "START|None.UAC";
+	"START|START" -> "START|1.UAC";
+}
