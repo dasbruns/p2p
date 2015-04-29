@@ -1,5 +1,6 @@
-from .InterState import InterState
-from .InterStateContainer import InterStateContainer
+#import prisma.Hist
+from .PeachState import PeachState
+from .PeachStateContainer import PeachStateContainer
 from .PIT import PIT
 from lxml import etree as ET
 import random
@@ -186,7 +187,9 @@ def stateModel(done, templates):
             actionCounter += 1
         postHist = beatTehRandomness(state,templates)
         #implement random number
-        if state.nextStates != None and len(postHist) > 1:
+        if state.nextStates != None and len(state.postHist) > 1:
+            print(state.nextStates)
+            print(state.postHist)
             randomAction = ET.Element('Action', name='rand', attrib={'type':'output','publisher':'null', 'onStart':'additionalCode.rand(self,{})'.format(len(postHist)-1)})
             randomAction.append(ET.Element('DataModel', attrib={'ref':'rand'}))
             peachState.append(randomAction)
@@ -248,14 +251,16 @@ def computeChangeState(state, postHist, actionCounter, templates):
     prob = len(postHist) - 1
     for ID, nextState in postHist.items():
         #need to deal with end states more efficiently...
-        if ID == '00':
+        print('THEHIST >>>>>',state.hist)
+        print('>>>>>',ID,nextState)
+        if ID == -2:
             continue
-        #TODO
+        #TODO removed for design changes
         #what happens here?! PRODUCES MISSING DATAMODELS, BUT WRONG
-        for ns in nextState:
-            if ns not in templates[ID].hists:
-                #print(type(templates[ID]))
-                templates[ID].hists.append(ns)
+        #for ns in nextState:
+        #    if ns not in templates[ID].hists:
+        #        #print(type(templates[ID]))
+        #        templates[ID].hists.append(ns)
         #print(state.hist)
         #print(nextState)
         for ns in nextState:
@@ -276,26 +281,29 @@ def computeChangeState(state, postHist, actionCounter, templates):
     return change
 
 
+#compute s states nextStates
+#returns dict tempID:hists of nextStates
 def beatTehRandomness(state,templates):
     postHist = {}
     if state.postHist != None:# and len(state.postHist) > 1:
         #print('PRE',state.postHist,len(state.postHist))
         for hist in state.postHist:
-            if hist.curTempID[0] not in postHist.keys():
-                postHist.update({hist.curTempID[0]:[hist]})
+            #print('HIST',hist)
+            if hist.theHist[-1][0] not in postHist.keys():
+                postHist.update({hist.theHist[-1][0]:[hist]})
             else:
-                postHist[hist.curTempID[0]] += [hist]
+                postHist[hist.theHist[-1][0]] += [hist]
         #print('POST',postHist,len(postHist))
         #print()
         #print('post',state.postHist)
-        #TODO attention
-        #getDiscriminativeFields(postHist.keys(),templates)
+#        #TODO attention
+#        #getDiscriminativeFields(postHist.keys(),templates)
     return postHist
 
 def getDiscriminativeFields(IDs, templates):
     #print(list(IDs))
     IDs = list(IDs)
-    if IDs == ['00']:
+    if IDs == [-2]:
         return
     fields = {}
     orderedForLength = []
@@ -453,3 +461,46 @@ def findPreState(state,rule,done):
             print('something wrong while fetching previous state')
             return
 
+def stateAssembler(state, container, model, templates, rules, copyRules, dataRules, UAC=True):
+    print('=====TODOSTATE=====', state, state.hist)
+    #fetch ioAction
+    if (UAC == True and 'UAC' in state.getCurState()) or (UAC == False and 'UAC' not in state.getCurState()):
+        state.ioAction = 'output'
+    else:
+        state.ioAction = 'input'
+    #fetch emittable Template IDs
+    #compute hist of nextStates
+    if state.curState in templates.stateToID.keys():
+        state.templates = templates.stateToID[state.curState]
+        state.nextHist = state.hist.update(state.templates)
+        print(state.nextHist)
+    else:
+        #no emittable templates? at least warn here
+        print('There is no template for state ',state)
+        print('Should be TERMINAL state')
+
+    #fetch nextStates
+    if state.curState in model.model.keys():
+        state.nextStates = model.model[state.curState]
+    else:
+        #no nextStates ==>> END STATE
+        print('this is terminal state', state)
+
+    #fetch rules
+    if state.hist in rules.keys():
+        state.rules = rules[state.hist]
+    if state.hist in dataRules.keys():
+        state.dataRules = dataRules[state.hist]
+    if state.hist in copyRules.keys():
+        state.copyRules = copyRules[state.hist]
+
+    print('=====DONESTATE=====', state,state.nextStates, state.isInit())
+    appendTodo(container, state)
+    return
+
+def appendTodo(container, state):
+   if state.hist not in container.done.keys():
+       container.doneadd(state)
+       for nextState in state.nextStates:
+           nxt = PeachState(nextState, state.hist, state.nextHist)
+           container.todoadd(nxt)

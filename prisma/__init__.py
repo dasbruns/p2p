@@ -14,8 +14,8 @@ def markovParse(filehandle):
     for line in filehandle:
         line = line.split(',',1)[0]
         left, right = line.split('->')
-        curState = PrismaState(*left.split('|'))
-        nextState = PrismaState(*right.split('|'))
+        curState = PrismaState(left.split('|'))
+        nextState = PrismaState(right.split('|'))
         transition = MarkovTransition(curState,nextState)
         model.add(transition)
     return model
@@ -27,8 +27,8 @@ def templateParse(filehandle):
         if ntokens == 0:
             line = line.split()
             ID = int(line[1].split(':')[1])
-            left, right = line[2].split(':')[1].split('|')
-            state = PrismaState(left,right)
+            hist = line[2].split(':')[1].split('|')
+            state = PrismaState(hist)
             count = int(line[3].split(':')[1])
             fields = line[5].split(':')[1].split(',')
             if fields == ['']:
@@ -57,6 +57,8 @@ def ruleParse(filehandle):
     seqFlag = 0
 
     line1 = filehandle.readline()
+    theHistLength = len(list(map(int,line1.split()[1].split(':')[1].split(';'))))-1
+    #print(theHistLength)
     while line1:
         line2 = filehandle.readline()
         if 'DataRule' in line1:
@@ -66,18 +68,22 @@ def ruleParse(filehandle):
         if 'Seq' in line1:
             seqFlag = 1
         line = line1.split()
-        hist = Hist(*list(map(int,line[1].split(':')[1].split(';'))))
+        #TODO/done
+        #dirty fix on mutlimodel stuff...
+        hist = list(map(int,line[1].split(':')[1].split(';')))
+        hist = [[i] for i in hist]
+        #NOTE 
+        dstID = hist[-1]
+        hist = Hist(hist=hist[:-1])
         srcID = int(line[2].split(':')[1])
         srcField = int(line[3].split(':')[1])
         dstField = int(line[4].split(':')[1])
-        #NOTE 
-        dstID = hist.curTempID
         if dataFlag == 1:
             data = line2.split(':')[1].split(',')
             data[-1] = data[-1].strip()
             dataRules.add(DataRule(hist,srcID,srcField,dstID,dstField,data))
             dataFlag = 0
-        #TODO handle ptype accurate
+        #handle ptype accurate
         elif ptypeFlag == 1:
             line2 = line2.strip().split(':')
             typ = line[5].split(':')[1]
@@ -97,5 +103,5 @@ def ruleParse(filehandle):
         else: #assuming: dataFlag == 0 and ptypeFlag == 0:
             rules.add(Rule(hist,srcID,srcField,dstID,dstField))
         line1 = filehandle.readline()
-    return rules, copyRules, dataRules
+    return rules, copyRules, dataRules, theHistLength
 

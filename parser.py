@@ -15,7 +15,8 @@ import os
 
 def stateAssembler(state, container, model, templates, UAC=True):
     if 'END' in str(state.curState):
-        state.hist = state.preHist.update(['00'])
+        #-2 indicates the satte being terminal
+        state.hist = state.preHist.update([-2])
         state.IOAction = 'END'
         #set preStates postHist
         setPostHist(container.done, state)
@@ -36,9 +37,11 @@ def stateAssembler(state, container, model, templates, UAC=True):
             updateState.nextStates = model.model[state.curState]
             updateState.IOAction = 'output'
             #multiply em here
-            if len(updateState.hist.preTempID) > 1:
+            #if len(updateState.hist.preTempID) > 1:
+            if len(updateState.hist.theHist[-2]) > 1:
                 #print(updateState)
                 for hist in updateState.hist.assembleHist():
+                    #hist = prisma.Hist(hist)
                     cpy = copy.deepcopy(updateState)
                     cpy.hist = hist
                     #print(cpy)
@@ -71,7 +74,7 @@ def appendTodo(container, state):
    if state.hist not in container.done.keys():
        container.doneadd(state)
        for nextState in state.nextStates:
-           nxt = peach.InterState(nextState, state.hist)
+           nxt = peach.PeachState(nextState, state.hist)
            container.todoadd(nxt)
 
 def setPostHist(done, state):
@@ -109,76 +112,88 @@ if __name__ == '__main__':
         print('specified directory not found')
         exit()
 
-    if args.verbose:print('Reading Files ... ',end='',flush=True)
+    if args.verbose:print('Reading Files...\n',end='',flush=True)
     try:
         f = open('{0}/{1}.templates'.format(args.folder,args.name),'r')
+        if args.verbose:print('  \\__Processing Templates...\n',end='',flush=True)
         templates = prisma.templateParse(f)
         f.close()
     except FileNotFoundError:
         print('file {0}/{1}.templates not found'.format(args.folder,args.name))
         exit()
-    #for i,j in templates.IDtoTemp.items():
-        #print(i,j)
+    print('=============ID2TEMPS===============')
+    for i,j in templates.IDtoTemp.items():
+        print(i,j)
     #    pass
-    #for i,j in templates.stateToID.items():
+    print('=============STATE2ID===============')
+    for i,j in templates.stateToID.items():
     #    pass
-        #print(i,j)
+        print(i,j)
 
     try:
         f = open('{0}/{1}.rules'.format(args.folder,args.name),'r')
-        rules, copyRules, dataRules = prisma.ruleParse(f)
+        if args.verbose:print('  \\__Processing Rules...\n',end='',flush=True)
+        rules, copyRules, dataRules, theHistLength = prisma.ruleParse(f)
         f.close()
     except FileNotFoundError:
         print('file {0}/{1}.rules not found'.format(args.folder,args.name))
         exit()
-    #count = 0
-    ##print('===========RULES============')
-    #for i in rules.keys():
-    #    if i.curTempID == 31:
-    #        #print(i,rules[i])
-    #    count += len(rules[i])
-    ##print('===========DATA=============')
-    #for i in dataRules.keys():
-    #    if i.curTempID == 31:
-    #        #print(i,dataRules[i])
-    #    count += len(dataRules[i])
-    ##print('===========COPY=============')
-    #for i in copyRules.keys():
-    #    if i.curTempID == 31:
-    #        #print(i,copyRules[i])
-    #    count += len(copyRules[i])
-    ##print(count)
+    count = 0
+    print('===========RULES============')
+    for i in rules.keys():
+        print(i,rules[i])
+        count += len(rules[i])
+    print('===========DATA=============')
+    for i in dataRules.keys():
+        print(i,dataRules[i])
+        count += len(dataRules[i])
+    print('===========COPY=============')
+    for i in copyRules.keys():
+        print(i,copyRules[i])
+        count += len(copyRules[i])
+    print(count)
 
     try:
         f = open('{0}/{1}.markovModel'.format(args.folder,args.name),'r')
+        if args.verbose:print('  \\__Processing MarkovModel...\n',end='',flush=True)
         model = prisma.markovParse(f) 
         f.close()
     except FileNotFoundError:
         print('file {0}/{1}.markovModel not found'.format(args.folder,args.name))
         exit()
     if args.verbose:print('Done')
+    print('=============MARKOVMODEL================')
     for i,j in model.model.items():
         #l.append(peach.InterStates(i,prisma.Hist(1,2,3)))
-        #print(i,j)
-        pass
+        print(i,j)
     #print(model.model[prisma.PrismaState('START','START')])
 
     if args.verbose:print('Internal Dataprocessing ... ',end='',flush=True)
     #gap to peach
     #Decide which side of communication we are
-    container = peach.InterStateContainer()
+    container = peach.PeachStateContainer()
 
     #create first state
-    start = peach.InterState(prisma.PrismaState('START','START'),prisma.Hist([-1],[-1],[-1]))
+    # [-11] indicates true start xD
+    # in case start does not emit symbol on transition
+    start = peach.PeachState(prisma.PrismaState(theHistLength*['START']), None ,prisma.Hist(hist=[[-11]]+(theHistLength-1)*[[-1]]))
     start.nextStates = model.model[start.curState]
     start.isinitial = True
+    #fetch possible Templates for this State
     if start.curState in templates.stateToID.keys():
         start.templates = templates.stateToID[start.curState] 
+        start.nextHist = start.hist.update(start.templates)
     else:
-        start.hist = start.preHist
-        container.doneadd(start)
-        for nextState in start.nextStates:
-            container.todoadd(peach.InterState(nextState,start.preHist))
+        start.nextHist = start.hist.update([-1])
+    print('\n===START===')
+    print(start, start.isInit())
+    container.doneadd(start)
+    for nextState in start.nextStates:
+        container.todoadd(peach.PeachState(nextState, start.hist, start.nextHist))
+    print('====================TODO===================')
+    print(container.todo)
+    print('====================DONE===================')
+    print(container.done)
     #create other states
     while(container.todo != []):
         state = container.todo[0]
@@ -190,21 +205,28 @@ if __name__ == '__main__':
         #        #multiAssembler(state, hist, container, model, templates)
         #       stateAssembler(peach.createInterState(state.curState,state.preHist), container, model, templates)
         #    continue
-        stateAssembler(state, container, model, templates, args.role)
+        peach.stateAssembler(state, container, model, templates, rules, copyRules, dataRules, args.role)
+    #print(model.model)
+    #print(len(container.done) ==len(model.model))
+    for i in container.done.values():
+        print()
+        print(i)
+    print(rules)
+    exit()
 
     #assign rules to state
     for state in container.done.values():
-        possibleHist = state.hist.assembleHist(True)
+        possibleHist = state.hist.assembleHist()
         for hist in possibleHist:
             if state.templates != None:
-                if len(state.hist.curTempID)>1:
-                    state.isMultiModel = True
+                if len(state.hist.theHist[-1])>1:
+                    #state.isMultiModel = True
                     if state.fields == None:
                         state.fields = []
-                    state.fields.append(templates.IDtoTemp[hist.curTempID].fields)
+                    state.fields.append(templates.IDtoTemp[hist.theHist[-1][0]].fields)
                 else:
-                    state.isMultiModel = False
-                    state.fields = templates.IDtoTemp[hist.curTempID].fields
+                    #state.isMultiModel = False
+                    state.fields = templates.IDtoTemp[hist.theHist[-1][0]].fields
             if hist in dataRules.keys():
                 if state.dataRules == None:
                     state.dataRules = []
@@ -220,6 +242,9 @@ if __name__ == '__main__':
                     state.rules = []
                 state.rules += copyRules[hist]
                 state.copyRules += copyRules[hist]
+            print(state, state.isMulti())
+    exit()
+
     if args.verbose:print('Done')
     if args.verbose:print('Processing StateModel ... ',end='',flush=True)
     pit = peach.stateModel(container.done, templates.IDtoTemp)
