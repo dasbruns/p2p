@@ -49,4 +49,5 @@ class PeachState(object):
     def __hash__(self):
         return hash(self.hist)
 
-
+    def __eq__(self,obj):
+        return isinstance(obj,PeachState) and self.__dict__ == obj.__dict__

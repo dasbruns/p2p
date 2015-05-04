@@ -121,14 +121,14 @@ if __name__ == '__main__':
     except FileNotFoundError:
         print('file {0}/{1}.templates not found'.format(args.folder,args.name))
         exit()
-    print('=============ID2TEMPS===============')
-    for i,j in templates.IDtoTemp.items():
-        print(i,j)
-    #    pass
-    print('=============STATE2ID===============')
-    for i,j in templates.stateToID.items():
-    #    pass
-        print(i,j)
+    #print('=============ID2TEMPS===============')
+    #for i,j in templates.IDtoTemp.items():
+    #    print(i,j)
+    ##    pass
+    #print('=============STATE2ID===============')
+    #for i,j in templates.stateToID.items():
+    ##    pass
+    #    print(i,j)
 
     try:
         f = open('{0}/{1}.rules'.format(args.folder,args.name),'r')
@@ -138,20 +138,20 @@ if __name__ == '__main__':
     except FileNotFoundError:
         print('file {0}/{1}.rules not found'.format(args.folder,args.name))
         exit()
-    count = 0
-    print('===========RULES============')
-    for i in rules.keys():
-        print(i,rules[i])
-        count += len(rules[i])
-    print('===========DATA=============')
-    for i in dataRules.keys():
-        print(i,dataRules[i])
-        count += len(dataRules[i])
-    print('===========COPY=============')
-    for i in copyRules.keys():
-        print(i,copyRules[i])
-        count += len(copyRules[i])
-    print(count)
+    #count = 0
+    #print('===========RULES============')
+    #for i in rules.keys():
+    #    print(i,rules[i])
+    #    count += len(rules[i])
+    #print('===========DATA=============')
+    #for i in dataRules.keys():
+    #    print(i,dataRules[i])
+    #    count += len(dataRules[i])
+    #print('===========COPY=============')
+    #for i in copyRules.keys():
+    #    print(i,copyRules[i])
+    #    count += len(copyRules[i])
+    #print(count)
 
     try:
         f = open('{0}/{1}.markovModel'.format(args.folder,args.name),'r')
@@ -162,10 +162,10 @@ if __name__ == '__main__':
         print('file {0}/{1}.markovModel not found'.format(args.folder,args.name))
         exit()
     if args.verbose:print('Done')
-    print('=============MARKOVMODEL================')
-    for i,j in model.model.items():
+    #print('=============MARKOVMODEL================')
+    #for i,j in model.model.items():
         #l.append(peach.InterStates(i,prisma.Hist(1,2,3)))
-        print(i,j)
+        #print(i,j)
     #print(model.model[prisma.PrismaState('START','START')])
 
     if args.verbose:print('Internal Dataprocessing ... ',end='',flush=True)
@@ -185,15 +185,15 @@ if __name__ == '__main__':
         start.nextHist = start.hist.update(start.templates)
     else:
         start.nextHist = start.hist.update([-1])
-    print('\n===START===')
-    print(start, start.isInit())
+    #print('\n===START===')
+    #print(start, start.isInit())
     container.doneadd(start)
     for nextState in start.nextStates:
         container.todoadd(peach.PeachState(nextState, start.hist, start.nextHist))
-    print('====================TODO===================')
-    print(container.todo)
-    print('====================DONE===================')
-    print(container.done)
+    #print('====================TODO===================')
+    #print(container.todo)
+    #print('====================DONE===================')
+    #print(container.done)
     #create other states
     while(container.todo != []):
         state = container.todo[0]
@@ -208,10 +208,17 @@ if __name__ == '__main__':
         peach.stateAssembler(state, container, model, templates, rules, copyRules, dataRules, args.role)
     #print(model.model)
     #print(len(container.done) ==len(model.model))
-    for i in container.done.values():
-        print()
-        print(i)
-    print(rules)
+    #for i in container.done.values():
+        #print()
+        #print(i)
+    #print(rules)
+    #print('============woot==============')
+    #for i,j in container.done.items():
+    #    if len(j)>1:
+    #        print(i)
+    #        for x in j:
+    #            print('\t',x.__dict__)
+    #print(len(container.done),len(model.model))
     exit()
 
     #assign rules to state

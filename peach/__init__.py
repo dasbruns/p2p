@@ -462,31 +462,31 @@ def findPreState(state,rule,done):
             return
 
 def stateAssembler(state, container, model, templates, rules, copyRules, dataRules, UAC=True):
-    print('=====TODOSTATE=====', state, state.hist)
+
     #fetch ioAction
     if (UAC == True and 'UAC' in state.getCurState()) or (UAC == False and 'UAC' not in state.getCurState()):
         state.ioAction = 'output'
     else:
         state.ioAction = 'input'
+
     #fetch emittable Template IDs
     #compute hist of nextStates
     if state.curState in templates.stateToID.keys():
         state.templates = templates.stateToID[state.curState]
         state.nextHist = state.hist.update(state.templates)
-        print(state.nextHist)
+        #print(state.nextHist)
     else:
-        #no emittable templates? at least warn here
-        print('There is no template for state ',state)
-        print('Should be TERMINAL state')
+        state.nextHist = state.hist.update([-2])
 
     #fetch nextStates
     if state.curState in model.model.keys():
         state.nextStates = model.model[state.curState]
     else:
         #no nextStates ==>> END STATE
-        print('this is terminal state', state)
+        state.nextStates = []
 
     #fetch rules
+    print(rules)
     if state.hist in rules.keys():
         state.rules = rules[state.hist]
     if state.hist in dataRules.keys():
@@ -499,8 +499,15 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     return
 
 def appendTodo(container, state):
-   if state.hist not in container.done.keys():
-       container.doneadd(state)
-       for nextState in state.nextStates:
-           nxt = PeachState(nextState, state.hist, state.nextHist)
-           container.todoadd(nxt)
+   if state.hist in container.done.keys():
+       #print()
+       #print('DUP ',state)
+       #print('ORG ',container.done[state.hist])
+       #print(state == container.done[state.hist])
+       for stateDash in container.done[state.hist]:
+           if state == stateDash:
+               return
+   container.doneadd(state)
+   for nextState in state.nextStates:
+       nxt = PeachState(nextState, state.hist, state.nextHist)
+       container.todoadd(nxt)

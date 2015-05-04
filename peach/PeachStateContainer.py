@@ -20,7 +20,12 @@ class PeachStateContainer(object):
         self.todo.remove(state)
 
     def doneadd(self,state):
-        self.done.update({state.hist:state})
+        if state.hist not in self.done.keys():
+            self.done.update({state.hist:[]})
+        self.done.update({state.hist:self.done[state.hist]+[state]})
+
+    #def doneadd(self,state):
+        #self.done.update({state.hist:state})
 
     #def donerem(self,state):
      #   self.done.remove(state)
