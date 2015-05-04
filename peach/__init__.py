@@ -42,30 +42,6 @@ def Agent(pit):
     agent.append(monitor)
     return pit
 
-def dataModel(statePit, templates, rules):
-    pit = PIT()
-    written = []
-    root = pit.tree.getroot()
-    for ID in templates.keys():
-        for hist in templates[ID].hists:
-            if hist not in written:
-                written.append(hist)
-                dataModel = ET.Element('DataModel', name= str(hist))
-                #is multimodel
-                if len(hist.curTempID) > 1:
-                    #create all models the multimodel is referencing
-                    choice = multimodel(root,ID,hist,written,templates,rules)
-                    dataModel.append(choice)
-                else:
-                    createContent(ID,dataModel,templates)
-                root.append(dataModel)
-    #create random datModel
-    dataModel = ET.Element('DataModel', name= 'rand')
-    dataModel.append(ET.Element('String', name= 'a1', attrib={'mutable':'false'}))
-    root.append(dataModel)
-    root.append(statePit.tree.getroot().find('StateModel'))
-    return pit
-
 def multimodel(root, ID, hist, written, templates, rules):
     choice = ET.Element('Choice', name='c', attrib={'minOccurs':'1', 'maxOccurs':'1'})
     count = 0
@@ -90,6 +66,7 @@ def multimodel(root, ID, hist, written, templates, rules):
     return choice
 
 def createContent(ID, dataModel, templates):
+    #in case something unexpected arrives before our first token
     dataModel.append(ET.Element('String', name='pre', attrib={'value':''}))
     count = 0
     for cont in templates[ID].content:
@@ -138,6 +115,33 @@ def handleControl(cont,data=False):
         if data==True and contFlag==True:
             print(parse.quote(cont))
     return rmCont
+
+def dataModel(templates):
+    pit = PIT()
+    #written = []
+    root = pit.tree.getroot()
+    dataModel = ET.Element('DataModel', name= 'rand')
+    dataModel.append(ET.Element('String', name= 'a1', attrib={'mutable':'false'}))
+    root.append(dataModel)
+    for ID in templates.keys():
+        dataModel = ET.Element('DataModel', name = str(ID))
+        createContent(ID,dataModel,templates)
+        root.append(dataModel)
+        #for hist in templates[ID].hists:
+        #    if hist not in written:
+        #        written.append(hist)
+        #        dataModel = ET.Element('DataModel', name= str(hist))
+        #        #is multimodel
+        #        if len(hist.curTempID) > 1:
+        #            #create all models the multimodel is referencing
+        #            choice = multimodel(root,ID,hist,written,templates,rules)
+        #            dataModel.append(choice)
+        #        else:
+        #            createContent(ID,dataModel,templates)
+        #        root.append(dataModel)
+    #create random datModel
+    #root.append(statePit.tree.getroot().find('StateModel'))
+    return pit
 
 def stateModel(done, templates):
     pit = PIT()
@@ -486,28 +490,47 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
         state.nextStates = []
 
     #fetch rules
-    print(rules)
-    if state.hist in rules.keys():
-        state.rules = rules[state.hist]
-    if state.hist in dataRules.keys():
-        state.dataRules = dataRules[state.hist]
-    if state.hist in copyRules.keys():
-        state.copyRules = copyRules[state.hist]
+    lenHist = len(state.hist.theHist)
+    possibleHists = state.hist.assembleHist(lenHist)
+    #normal rules
+    for hist in possibleHists:
+        if  hist in rules.keys():
+            state.rules.append(rules[hist])
+    #data rules
+    for hist in possibleHists:
+        if  hist in dataRules.keys():
+            state.dataRules.append(dataRules[hist])
+    #copy rules
+    for hist in possibleHists:
+        if  hist in copyRules.keys():
+            state.copyRules.append(copyRules[hist])
 
-    print('=====DONESTATE=====', state,state.nextStates, state.isInit())
+    #if state.hist in dataRules.keys():
+    #    state.dataRules = dataRules[state.hist]
+    #if state.hist in copyRules.keys():
+    #    state.copyRules = copyRules[state.hist]
+
+    #print('=====DONESTATE=====', state,state.nextStates, state.isInit(),state.nextHist,'\n')
     appendTodo(container, state)
     return
 
-def appendTodo(container, state):
-   if state.hist in container.done.keys():
-       #print()
-       #print('DUP ',state)
-       #print('ORG ',container.done[state.hist])
-       #print(state == container.done[state.hist])
-       for stateDash in container.done[state.hist]:
-           if state == stateDash:
-               return
-   container.doneadd(state)
-   for nextState in state.nextStates:
-       nxt = PeachState(nextState, state.hist, state.nextHist)
-       container.todoadd(nxt)
+def appendTodo(container, state, endFlag=False):
+    if state.hist in container.done.keys():
+        #print()
+        #print('DUP ',state)
+        #print('ORG ',container.done[state.hist])
+        #print(state == container.done[state.hist])
+        for stateDash in container.done[state.hist]:
+            if state == stateDash:
+                return
+    container.doneadd(state)
+    if endFlag == True:
+        return
+    if state.nextStates != []:
+        for nextState in state.nextStates:
+            nxt = PeachState(nextState, state.hist, state.nextHist)
+            container.todoadd(nxt)
+    else:
+        #create END state
+        end = PeachState(None, state.hist, state.nextHist)
+        appendTodo(container,end,True)

@@ -11,10 +11,10 @@ class PeachState(object):
         self.templates = None
         self.fields = None
         #these are DIFFERENT RULE objects
-        self.rules = None
-        self.copyRules = None 
-        self.dataRules = None 
-        self.ioAction = None
+        self.rules = []
+        self.copyRules = []
+        self.dataRules = []
+        self.ioAction = []
         #self.isinitial = False
         #self.isMultiModel = None
 

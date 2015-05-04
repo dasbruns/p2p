@@ -219,47 +219,51 @@ if __name__ == '__main__':
     #        for x in j:
     #            print('\t',x.__dict__)
     #print(len(container.done),len(model.model))
-    exit()
 
-    #assign rules to state
-    for state in container.done.values():
-        possibleHist = state.hist.assembleHist()
-        for hist in possibleHist:
-            if state.templates != None:
-                if len(state.hist.theHist[-1])>1:
-                    #state.isMultiModel = True
-                    if state.fields == None:
-                        state.fields = []
-                    state.fields.append(templates.IDtoTemp[hist.theHist[-1][0]].fields)
-                else:
-                    #state.isMultiModel = False
-                    state.fields = templates.IDtoTemp[hist.theHist[-1][0]].fields
-            if hist in dataRules.keys():
-                if state.dataRules == None:
-                    state.dataRules = []
-                state.dataRules += dataRules[hist]
-            if hist in rules.keys():
-                if state.rules == None:
-                    state.rules = []
-                state.rules += rules[hist]
-            if hist in copyRules.keys():
-                if state.copyRules == None:
-                    state.copyRules = []
-                if state.rules == None:
-                    state.rules = []
-                state.rules += copyRules[hist]
-                state.copyRules += copyRules[hist]
-            print(state, state.isMulti())
-    exit()
+    #unnecessary, done in peach/__init__
+    ##assign rules to state
+    #for state in container.done.values():
+    #    possibleHist = state.hist.assembleHist()
+    #    for hist in possibleHist:
+    #        if state.templates != None:
+    #            if len(state.hist.theHist[-1])>1:
+    #                #state.isMultiModel = True
+    #                if state.fields == None:
+    #                    state.fields = []
+    #                state.fields.append(templates.IDtoTemp[hist.theHist[-1][0]].fields)
+    #            else:
+    #                #state.isMultiModel = False
+    #                state.fields = templates.IDtoTemp[hist.theHist[-1][0]].fields
+    #        if hist in dataRules.keys():
+    #            if state.dataRules == None:
+    #                state.dataRules = []
+    #            state.dataRules += dataRules[hist]
+    #        if hist in rules.keys():
+    #            if state.rules == None:
+    #                state.rules = []
+    #            state.rules += rules[hist]
+    #        if hist in copyRules.keys():
+    #            if state.copyRules == None:
+    #                state.copyRules = []
+    #            if state.rules == None:
+    #                state.rules = []
+    #            state.rules += copyRules[hist]
+    #            state.copyRules += copyRules[hist]
+    #        print(state, state.isMulti())
+
+    #for i in container.done.keys():
+    #    print(container.done[i])
+    #    print()
+    #print(len(container.done),len(model.model))
 
     if args.verbose:print('Done')
-    if args.verbose:print('Processing StateModel ... ',end='',flush=True)
-    pit = peach.stateModel(container.done, templates.IDtoTemp)
-    if args.verbose:print('Done')
+    #if args.verbose:print('Processing StateModel ... ',end='',flush=True)
+    #pit = peach.stateModel(container.done, templates.IDtoTemp)
+    #if args.verbose:print('Done')
     #OMG OMG OMG, cant believe im doing this
-    allRules = {'data':dataRules,'rules':rules,'copy':copyRules}
+    #allRules = {'data':dataRules,'rules':rules,'copy':copyRules}
     if args.verbose:print('Processing DataModels ... ',end='',flush=True)
-    pit = peach.dataModel(pit, templates.IDtoTemp, allRules)
+    pit = peach.dataModel(templates.IDtoTemp)
     if args.verbose:print('Done')
     if args.verbose:print('Processing Agent/Test area ... ',end='',flush=True)
     pit = peach.Agent(pit)

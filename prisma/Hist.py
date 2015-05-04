@@ -49,21 +49,19 @@ class Hist(object):
         #return isinstance(obj,Hist) and obj.prePreTempID == self.prePreTempID and obj.preTempID == self.preTempID and obj.curTempID == self.curTempID
         return isinstance(obj,Hist) and obj.theHist == self.theHist
 
+
    # TODO
-    def assembleHist(self,flag=False):
-        allHist = []
-        hist = (self.theHist[:-2],self.theHist[-2],self.theHist[-1])
-        for i in hist[1]:
-            allHist.append(Hist(hist[0]+[[i]]+[hist[2]]))
+    def assembleHist(self, lenHist, flag=False):
+        allHist = [Hist(lenHist*[-3])]
+        remain = self.theHist
+        while(len(remain) != 0):
+            allHist = crossProd(remain[0], allHist)
+            remain = remain[1:]
         return allHist
-#
-#    def getID(self,pos):
-#        if pos == -3:
-#            return self.prePreTempID
-#        if pos == -2:
-#            return self.preTempID
-#        return self.curTempID
-#
-#    def differByPre(self,obj):
-#        return isinstance(obj,Hist) and obj.prePreTempID == self.prePreTempID and obj.curTempID == self.curTempID and obj.preTempID != self.preTempID
             
+def crossProd(longList, allHist):
+    histContain = []
+    for ID in longList:
+        for hists in allHist:
+            histContain.append(hists.update([ID]))
+    return histContain
