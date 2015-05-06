@@ -1,0 +1,480 @@
+RULE transition:3;8;13;6;17;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:SYST,SYST
+RULE transition:20;6;19;5;19;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:RETR,RETR,STOR,STOR,STOR,STOR,STOR,STOR,STOR,STOR,RETR,RETR,RETR,RETR,RETR,RETR,RETR,RETR
+RULE transition:20;6;19;5;19;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:tcpflow,derrick,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaad,xaaaaaaaaam,xaaaaaaaaan,xaaaaaaaaaj,xaaaaaaaaah,capture.pcap,xaaaaaaaaai,xaaaaaaaaas
+RULE transition:19;6;21;6;16;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:CDUP,CDUP,CDUP,CDUP,CDUP,CDUP,CDUP,CDUP,CDUP,PWD,CDUP,QUIT
+RULE transition:5;20;6;18;6;18 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;18;6;18 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;18;6;18 srcId:-3 srcField:2 dstField:2 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;18;6;18 srcId:-3 srcField:3 dstField:3 type:pulsar.core.rule.ExactRule
+
+RULE transition:19;6;21;6;16;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:TYPE,TYPE,TYPE,MDTM
+RULE transition:19;6;21;6;16;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:I,I,I,xaaaaaaaaad
+RULE transition:6;16;5;18;5;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:257,257,257,257,257,257,257,257,257,257,257
+RULE transition:6;16;5;18;5;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%22/usr/local%22,%22/usr/local%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22
+RULE transition:8;13;6;17;5;18 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:215,215
+RULE transition:8;13;6;17;5;18 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:UNIX,UNIX
+RULE transition:8;13;6;17;5;18 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Type%3A,Type%3A
+RULE transition:8;13;6;17;5;18 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:L8,L8
+RULE transition:12;14;11;1;16;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV
+RULE transition:19;5;19;6;19;5 srcId:-5 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:19;5;20;6;16;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:TYPE,TYPE
+RULE transition:19;5;20;6;16;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:I,I
+RULE transition:6;16;5;16;6;16 srcId:-5 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;16;5;16;6;16 srcId:-5 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;19;6;19 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;19;6;19 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;19;6;19 srcId:-3 srcField:2 dstField:2 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;19;6;19 srcId:-3 srcField:3 dstField:3 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;19;6;19 srcId:-3 srcField:4 dstField:4 type:pulsar.core.rule.ExactRule
+
+RULE transition:17;5;19;5;20;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:TYPE
+RULE transition:17;5;19;5;20;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:I
+RULE transition:19;6;18;6;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV,PASV,PASV
+RULE transition:21;6;16;6;16;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:TYPE
+RULE transition:21;6;16;6;16;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:I
+RULE transition:6;21;6;16;6;16 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;21;6;16;6;16 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:16;6;19;5;19;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:RETR,STOR,STOR,RETR,RETR,RETR,RETR,RETR
+RULE transition:16;6;19;5;19;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaaa,xaaaaaaaaad,xaaaaaaaaae,xaaaaaaaaaf,xaaaaaaaaah,xaaaaaaaaad
+RULE transition:6;21;6;16;6;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:200,200,200
+RULE transition:6;21;6;16;6;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Switching,Switching,Switching
+RULE transition:6;21;6;16;6;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:to,to,to
+RULE transition:6;21;6;16;6;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Binary,Binary,Binary
+RULE transition:6;21;6;16;6;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:mode.,mode.,mode.
+RULE transition:11;1;16;5;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:LIST
+RULE transition:6;19;5;19;6;21 srcId:-2 srcField:1 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;5;19;6;21 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%2864150,%2838557,%281000,%281000,%281000,%281000,%281000,%281000,%281000,%281000,%281000,%281000,%281000,%2881920,%281000,%281000
+RULE transition:5;20;5;18;5;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:257,257,257,257,257,257,257,257,257,257,257,257
+RULE transition:5;20;5;18;5;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%22/%22,%22/home/pownme%22,%22/home%22,%22/home/pownme%22,%22/home/pownme%22,%22/home%22,%22/home%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home/pownme%22,%22/home%22
+RULE transition:9;12;14;11;1;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:257
+RULE transition:9;12;14;11;1;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%22/%22
+RULE transition:20;6;19;6;19;6 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:20;6;19;6;19;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:/vmlinuz,/vmlinuz,/vmlinuz,/vmlinuz
+RULE transition:6;18;6;18;6;18 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;18;6;18;6;18 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;18;6;18;6;18 srcId:-3 srcField:2 dstField:2 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;18;6;18;6;18 srcId:-3 srcField:3 dstField:3 type:pulsar.core.rule.ExactRule
+
+RULE transition:18;6;18;6;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV
+RULE transition:18;6;18;5;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PWD
+RULE transition:5;16;6;16;5;16 srcId:-5 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;16;6;16;5;16 srcId:-5 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;18;5;18;5;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:257
+RULE transition:6;18;5;18;5;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%22/usr%22
+RULE transition:18;6;18;5;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:LIST,LIST,LIST,LIST,LIST,LIST
+RULE transition:5;16;6;16;5;18 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:250
+RULE transition:5;16;6;16;5;18 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Directory
+RULE transition:5;16;6;16;5;18 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:successfully
+RULE transition:5;16;6;16;5;18 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:changed.
+RULE transition:17;5;19;5;20;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:QUIT,PWD
+RULE transition:-1;2;3;8;13;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASS,PASS
+RULE transition:-1;2;3;8;13;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:ftpuser%40,ftpuser%40
+RULE transition:20;5;18;5;16;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV
+RULE transition:6;21;6;16;5;18 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:250,250,250,250,250,250,250,250,250,250
+RULE transition:6;21;6;16;5;18 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory
+RULE transition:6;21;6;16;5;18 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully
+RULE transition:6;21;6;16;5;18 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.
+RULE transition:6;21;6;16;5;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:257
+RULE transition:6;21;6;16;5;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%22/home/pownme/data%22
+RULE transition:19;6;19;5;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST
+RULE transition:18;5;18;5;16;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV
+RULE transition:13;6;17;5;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PWD,PWD
+RULE transition:6;19;6;18;6;18 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;18;6;18 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;18;6;18 srcId:-3 srcField:2 dstField:2 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;18;6;18 srcId:-3 srcField:3 dstField:3 type:pulsar.core.rule.ExactRule
+
+RULE transition:18;5;16;5;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST
+RULE transition:16;5;18;5;16;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV
+RULE transition:5;18;5;16;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227
+RULE transition:5;18;5;16;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering
+RULE transition:5;18;5;16;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive
+RULE transition:5;18;5;16;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode
+RULE transition:5;18;5;16;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C184%2C88%29.,%2810%2C0%2C0%2C2%2C223%2C224%29.,%2810%2C0%2C0%2C2%2C38%2C47%29.,%2810%2C0%2C0%2C2%2C84%2C163%29.,%2810%2C0%2C0%2C2%2C64%2C255%29.,%2810%2C0%2C0%2C2%2C182%2C64%29.,%2810%2C0%2C0%2C2%2C191%2C164%29.,%2810%2C0%2C0%2C2%2C71%2C128%29.,%2810%2C0%2C0%2C2%2C51%2C102%29.,%2810%2C0%2C0%2C2%2C179%2C79%29.,%2810%2C0%2C0%2C2%2C232%2C46%29.,%2810%2C0%2C0%2C2%2C245%2C127%29.,%2810%2C0%2C0%2C2%2C181%2C102%29.,%2810%2C0%2C0%2C2%2C57%2C197%29.,%2810%2C0%2C0%2C2%2C52%2C66%29.,%2810%2C0%2C0%2C2%2C100%2C223%29.,%2810%2C0%2C0%2C2%2C225%2C163%29.,%2810%2C0%2C0%2C2%2C122%2C208%29.,%2810%2C0%2C0%2C2%2C190%2C163%29.,%2810%2C0%2C0%2C2%2C108%2C6%29.,%2810%2C0%2C0%2C2%2C255%2C246%29.,%2810%2C0%2C0%2C2%2C81%2C154%29.,%2810%2C0%2C0%2C2%2C65%2C168%29.,%2810%2C0%2C0%2C2%2C33%2C70%29.,%2810%2C0%2C0%2C2%2C165%2C84%29.,%2810%2C0%2C0%2C2%2C47%2C210%29.
+RULE transition:5;19;6;21;6;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:213,213,213,213,213,213,213,213,213,213,213,213,213,213,213,213
+RULE transition:5;19;6;21;6;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:20140630120657,20140423195035,20140716183948,20140716183948,20140716183948,20140716235346,20140716235346,20140716235346,20140716235346,20140716183948,20140716235346,20140716235346,20140716235346,20140716235750,20140716235346,20140716183948
+RULE transition:19;5;19;6;21;6 srcId:-2 srcField:0 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:19;5;19;6;21;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM,MDTM
+RULE transition:19;5;20;5;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD
+RULE transition:20;6;18;6;18;6 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:20;6;18;6;18;6 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:bin/,/bin/
+RULE transition:20;6;18;6;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:CDUP
+RULE transition:2;3;8;13;6;17 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:230,230
+RULE transition:2;3;8;13;6;17 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Login,Login
+RULE transition:2;3;8;13;6;17 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:successful.,successful.
+RULE transition:16;6;16;5;16;6 srcId:-5 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:16;6;16;5;16;6 srcId:-5 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:21;6;16;6;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV,PASV
+RULE transition:6;17;5;18;5;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:257,257
+RULE transition:6;17;5;18;5;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%22/%22,%22/%22
+RULE transition:19;6;19;6;19;6 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:19;6;19;6;19;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:/vmlinuz.old,/,/vmlinuz.old,/,/vmlinuz.old,/,/vmlinuz.old,/
+RULE transition:5;19;5;20;6;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:213,213
+RULE transition:5;19;5;20;6;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:20140716183948,20140716235346
+RULE transition:5;19;5;20;6;17 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:550,550,550
+RULE transition:5;19;5;20;6;17 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Permission,Permission,Permission
+RULE transition:5;19;5;20;6;17 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:denied.,denied.,denied.
+RULE transition:6;19;5;19;6;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:553,553,553,553,553,553,553,553,553,553
+RULE transition:6;19;5;19;6;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Could,Could,Could,Could,Could,Could,Could,Could,Could,Could
+RULE transition:6;19;5;19;6;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:not,not,not,not,not,not,not,not,not,not
+RULE transition:6;19;5;19;6;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:create,create,create,create,create,create,create,create,create,create
+RULE transition:6;19;5;19;6;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:file.,file.,file.,file.,file.,file.,file.,file.,file.,file.
+RULE transition:5;19;5;20;6;18 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250
+RULE transition:5;19;5;20;6;18 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory
+RULE transition:5;19;5;20;6;18 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully
+RULE transition:5;19;5;20;6;18 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.
+RULE transition:5;19;5;20;6;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:550,200,200,550,550,200,200,200,200,200,200,200,200,200,200,200,200,550,200,200,200,200
+RULE transition:5;19;5;20;6;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Failed,Switching,Switching,Failed,Failed,Switching,Switching,Switching,Switching,Switching,Switching,Switching,Switching,Switching,Switching,Switching,Switching,Failed,Switching,Switching,Switching,Switching
+RULE transition:5;19;5;20;6;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:to,to,to,to,to,to,to,to,to,to,to,to,to,to,to,to,to,to,to,to,to,to
+RULE transition:5;19;5;20;6;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:change,Binary,Binary,change,change,Binary,Binary,Binary,Binary,Binary,Binary,Binary,Binary,Binary,Binary,Binary,Binary,change,Binary,Binary,Binary,Binary
+RULE transition:5;19;5;20;6;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:directory.,mode.,mode.,directory.,directory.,mode.,mode.,mode.,mode.,mode.,mode.,mode.,mode.,mode.,mode.,mode.,mode.,directory.,mode.,mode.,mode.,mode.
+RULE transition:5;20;5;16;6;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:213
+RULE transition:5;20;5;16;6;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:20140716183948
+RULE transition:5;20;5;16;6;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:200
+RULE transition:5;20;5;16;6;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Switching
+RULE transition:5;20;5;16;6;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:to
+RULE transition:5;20;5;16;6;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Binary
+RULE transition:5;20;5;16;6;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:mode.
+RULE transition:14;11;1;16;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227
+RULE transition:14;11;1;16;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering
+RULE transition:14;11;1;16;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive
+RULE transition:14;11;1;16;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode
+RULE transition:14;11;1;16;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C57%2C40%29.
+RULE transition:21;6;16;5;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD,PWD
+RULE transition:6;16;6;16;6;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:200
+RULE transition:6;16;6;16;6;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Switching
+RULE transition:6;16;6;16;6;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:to
+RULE transition:6;16;6;16;6;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Binary
+RULE transition:6;16;6;16;6;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:mode.
+RULE transition:19;5;19;5;20;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:TYPE,TYPE,TYPE,TYPE,TYPE,TYPE,TYPE,TYPE,CWD
+RULE transition:19;5;19;5;20;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:I,I,I,I,I,I,I,I,/home/pownme/data/
+RULE transition:5;16;6;16;6;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:200
+RULE transition:5;16;6;16;6;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Switching
+RULE transition:5;16;6;16;6;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:to
+RULE transition:5;16;6;16;6;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Binary
+RULE transition:5;16;6;16;6;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:mode.
+RULE transition:5;20;6;18;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227
+RULE transition:5;20;6;18;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering
+RULE transition:5;20;6;18;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive
+RULE transition:5;20;6;18;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode
+RULE transition:5;20;6;18;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C72%2C244%29.,%2810%2C0%2C0%2C2%2C81%2C198%29.,%2810%2C0%2C0%2C2%2C248%2C13%29.,%2810%2C0%2C0%2C2%2C25%2C38%29.,%2810%2C0%2C0%2C2%2C98%2C111%29.,%2810%2C0%2C0%2C2%2C27%2C187%29.,%2810%2C0%2C0%2C2%2C244%2C103%29.,%2810%2C0%2C0%2C2%2C75%2C205%29.,%2810%2C0%2C0%2C2%2C102%2C64%29.,%2810%2C0%2C0%2C2%2C108%2C209%29.,%2810%2C0%2C0%2C2%2C137%2C69%29.,%2810%2C0%2C0%2C2%2C96%2C51%29.,%2810%2C0%2C0%2C2%2C43%2C158%29.,%2810%2C0%2C0%2C2%2C213%2C162%29.,%2810%2C0%2C0%2C2%2C175%2C156%29.,%2810%2C0%2C0%2C2%2C147%2C120%29.,%2810%2C0%2C0%2C2%2C116%2C245%29.,%2810%2C0%2C0%2C2%2C236%2C35%29.,%2810%2C0%2C0%2C2%2C25%2C200%29.,%2810%2C0%2C0%2C2%2C251%2C25%29.,%2810%2C0%2C0%2C2%2C137%2C152%29.,%2810%2C0%2C0%2C2%2C80%2C87%29.,%2810%2C0%2C0%2C2%2C240%2C86%29.,%2810%2C0%2C0%2C2%2C55%2C151%29.,%2810%2C0%2C0%2C2%2C34%2C104%29.,%2810%2C0%2C0%2C2%2C143%2C239%29.
+RULE transition:5;19;5;20;5;16 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:257,257
+RULE transition:5;19;5;20;5;16 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:%22/home/pownme/data%22,%22/home/pownme%22
+RULE transition:16;6;16;5;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PWD
+RULE transition:5;19;5;20;5;18 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:250,250,250,250,250,250,250,250,250,250,250,250
+RULE transition:5;19;5;20;5;18 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory,Directory
+RULE transition:5;19;5;20;5;18 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully,successfully
+RULE transition:5;19;5;20;5;18 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.,changed.
+RULE transition:6;18;6;18;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227,227,227,227,227,227
+RULE transition:6;18;6;18;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering,Entering,Entering,Entering,Entering,Entering
+RULE transition:6;18;6;18;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive,Passive,Passive,Passive,Passive,Passive
+RULE transition:6;18;6;18;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode,Mode,Mode,Mode,Mode,Mode
+RULE transition:6;18;6;18;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C114%2C22%29.,%2810%2C0%2C0%2C2%2C168%2C237%29.,%2810%2C0%2C0%2C2%2C174%2C138%29.,%2810%2C0%2C0%2C2%2C98%2C153%29.,%2810%2C0%2C0%2C2%2C83%2C101%29.,%2810%2C0%2C0%2C2%2C208%2C145%29.
+RULE transition:6;18;6;18;5;18 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;18;6;18;5;18 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;18;6;18;5;18 srcId:-3 srcField:2 dstField:2 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;18;6;18;5;18 srcId:-3 srcField:3 dstField:3 type:pulsar.core.rule.ExactRule
+
+RULE transition:20;5;16;6;16;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:TYPE
+RULE transition:20;5;16;6;16;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:I
+RULE transition:19;5;20;6;18;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV
+RULE transition:19;5;20;6;18;6 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:19;5;20;6;18;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:/usr/local/,/usr/local,/usr/local
+RULE transition:5;16;6;19;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227
+RULE transition:5;16;6;19;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering
+RULE transition:5;16;6;19;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive
+RULE transition:5;16;6;19;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode
+RULE transition:5;16;6;19;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C250%2C175%29.
+RULE transition:19;5;20;6;19;6 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:19;5;20;6;19;6 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:.old,.old,.old,.old
+RULE transition:19;5;20;6;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV,PASV
+RULE transition:20;5;16;6;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV
+RULE transition:18;5;19;5;20;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:CWD,CWD,TYPE,TYPE,CWD,CWD,DELE,CWD,CWD,MDTM,CWD,DELE,CWD,TYPE,TYPE,CWD,MDTM,TYPE,TYPE,CWD,CWD,DELE,TYPE,TYPE,TYPE
+RULE transition:18;5;19;5;20;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:/usr/local/,/usr/local/man,I,I,/home/pownme/,/home/pownme/test/,xaaaaaaaaaa,/home/pownme/,/home/pownme/data/,xaaaaaaaaaa,/home/pownme/data/,xaaaaaaaaaa,/home/pownme/data/,I,I,/home/pownme/test/,xaaaaaaaaad,I,I,/home/pownme/,/home/pownme/test/,xaaaaaaaaaa,I,I,I
+RULE transition:18;5;19;5;20;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:CDUP,CDUP,CDUP,CDUP,CDUP,CDUP,QUIT
+RULE transition:17;5;18;5;16;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV
+RULE transition:5;20;6;17;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227,227,227
+RULE transition:5;20;6;17;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering,Entering,Entering
+RULE transition:5;20;6;17;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive,Passive,Passive
+RULE transition:5;20;6;17;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode,Mode,Mode
+RULE transition:5;20;6;17;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C217%2C91%29.,%2810%2C0%2C0%2C2%2C232%2C188%29.,%2810%2C0%2C0%2C2%2C197%2C218%29.
+RULE transition:5;19;6;19;5;19 srcId:-5 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;19;6;19;5;19 srcId:-5 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;19;6;19;5;19 srcId:-5 srcField:2 dstField:2 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;19;6;19;5;19 srcId:-5 srcField:3 dstField:3 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;19;6;19;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C55%2C100%29.,%2810%2C0%2C0%2C2%2C235%2C86%29.,%2810%2C0%2C0%2C2%2C238%2C211%29.,%2810%2C0%2C0%2C2%2C153%2C181%29.,%2810%2C0%2C0%2C2%2C248%2C180%29.,%2810%2C0%2C0%2C2%2C185%2C142%29.,%2810%2C0%2C0%2C2%2C29%2C136%29.,%2810%2C0%2C0%2C2%2C36%2C5%29.,%2810%2C0%2C0%2C2%2C29%2C47%29.,%2810%2C0%2C0%2C2%2C169%2C131%29.
+RULE transition:20;6;17;5;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:LIST,LIST,LIST
+RULE transition:19;6;19;6;18;6 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:19;6;19;6;18;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:/usr,/home,/home,/home
+RULE transition:20;6;18;5;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST,LIST
+RULE transition:20;6;16;6;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV
+RULE transition:19;5;20;5;16;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:MDTM,TYPE
+RULE transition:19;5;20;5;16;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:xaaaaaaaaaa,I
+RULE transition:19;5;20;6;17;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV,PASV
+RULE transition:16;6;16;6;19;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PASV,PASV
+RULE transition:16;5;19;5;20;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:CDUP,CDUP,PWD,CDUP,CDUP,CDUP
+RULE transition:16;5;19;5;20;6 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD,CWD
+RULE transition:16;5;19;5;20;6 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:/initrd.img,/usr/local/man,/usr/local/man,/initrd.img,/initrd.img,/home/pownme/data/,/home/pownme/,/home/pownme/,/home/pownme/data/,/home/pownme/,/home/pownme/test/,/home/pownme/data/,/home/pownme/test/,/home/pownme/data/,/home/pownme/data/,/home/pownme/test/,/home/pownme/,/initrd.img,/home/pownme/data/,/home/pownme/test/,/home/pownme/data/
+RULE transition:16;5;16;6;16;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:PWD,CDUP
+RULE transition:6;16;6;19;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227,227,227,227,227,227,227
+RULE transition:6;16;6;19;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering,Entering,Entering,Entering,Entering,Entering,Entering
+RULE transition:6;16;6;19;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive,Passive,Passive,Passive,Passive,Passive,Passive
+RULE transition:6;16;6;19;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode,Mode,Mode,Mode,Mode,Mode,Mode
+RULE transition:6;16;6;19;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C87%2C112%29.,%2810%2C0%2C0%2C2%2C119%2C194%29.,%2810%2C0%2C0%2C2%2C185%2C64%29.,%2810%2C0%2C0%2C2%2C116%2C230%29.,%2810%2C0%2C0%2C2%2C229%2C50%29.,%2810%2C0%2C0%2C2%2C84%2C69%29.,%2810%2C0%2C0%2C2%2C203%2C59%29.
+RULE transition:19;5;19;5;20;5 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:CDUP
+RULE transition:5;20;6;19;5;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227
+RULE transition:5;20;6;19;5;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering,Entering
+RULE transition:5;20;6;19;5;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive,Passive
+RULE transition:5;20;6;19;5;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode,Mode
+RULE transition:5;20;6;19;5;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:%2810%2C0%2C0%2C2%2C68%2C86%29.,%2810%2C0%2C0%2C2%2C249%2C28%29.,%2810%2C0%2C0%2C2%2C188%2C79%29.,%2810%2C0%2C0%2C2%2C248%2C198%29.,%2810%2C0%2C0%2C2%2C221%2C146%29.,%2810%2C0%2C0%2C2%2C37%2C177%29.,%2810%2C0%2C0%2C2%2C219%2C134%29.,%2810%2C0%2C0%2C2%2C197%2C94%29.,%2810%2C0%2C0%2C2%2C98%2C88%29.,%2810%2C0%2C0%2C2%2C125%2C236%29.,%2810%2C0%2C0%2C2%2C246%2C86%29.,%2810%2C0%2C0%2C2%2C251%2C167%29.,%2810%2C0%2C0%2C2%2C42%2C210%29.,%2810%2C0%2C0%2C2%2C237%2C96%29.,%2810%2C0%2C0%2C2%2C210%2C158%29.,%2810%2C0%2C0%2C2%2C77%2C177%29.,%2810%2C0%2C0%2C2%2C185%2C74%29.,%2810%2C0%2C0%2C2%2C60%2C2%29.
+RULE transition:21;6;16;5;16;6 srcId:-5 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:21;6;16;5;16;6 srcId:-5 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;19;6;18 srcId:-3 srcField:3 dstField:3 type:pulsar.core.rule.CopyCompleteRule
+ptype:COPY_AS_PREFIX rest:d.,d.,d.,d.
+RULE transition:6;19;6;19;6;18 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:250,250,250,250
+RULE transition:6;19;6;19;6;18 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Directory,Directory,Directory,Directory
+RULE transition:6;19;6;19;6;18 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:successfully,successfully,successfully,successfully
+RULE transition:6;19;6;19;6;19 srcId:-3 srcField:0 dstField:0 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;19;6;19 srcId:-3 srcField:1 dstField:1 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;19;6;19 srcId:-3 srcField:2 dstField:2 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;19;6;19 srcId:-3 srcField:3 dstField:3 type:pulsar.core.rule.ExactRule
+
+RULE transition:6;19;6;19;6;19 srcId:-3 srcField:4 dstField:4 type:pulsar.core.rule.ExactRule
+
+RULE transition:5;20;6;16;6;19 srcId:0 srcField:-1 dstField:0 type:pulsar.core.rule.DataRule
+data:200,200
+RULE transition:5;20;6;16;6;19 srcId:0 srcField:-1 dstField:1 type:pulsar.core.rule.DataRule
+data:Switching,Switching
+RULE transition:5;20;6;16;6;19 srcId:0 srcField:-1 dstField:2 type:pulsar.core.rule.DataRule
+data:to,to
+RULE transition:5;20;6;16;6;19 srcId:0 srcField:-1 dstField:3 type:pulsar.core.rule.DataRule
+data:Binary,Binary
+RULE transition:5;20;6;16;6;19 srcId:0 srcField:-1 dstField:4 type:pulsar.core.rule.DataRule
+data:mode.,mode.

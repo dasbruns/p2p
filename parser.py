@@ -257,13 +257,11 @@ if __name__ == '__main__':
     #print(len(container.done),len(model.model))
 
     if args.verbose:print('Done')
-    #if args.verbose:print('Processing StateModel ... ',end='',flush=True)
-    #pit = peach.stateModel(container.done, templates.IDtoTemp)
-    #if args.verbose:print('Done')
-    #OMG OMG OMG, cant believe im doing this
-    #allRules = {'data':dataRules,'rules':rules,'copy':copyRules}
     if args.verbose:print('Processing DataModels ... ',end='',flush=True)
     pit = peach.dataModel(templates.IDtoTemp)
+    if args.verbose:print('Done')
+    if args.verbose:print('Processing StateModel ... ',end='',flush=True)
+    pit = peach.stateModel(pit, container.done)
     if args.verbose:print('Done')
     if args.verbose:print('Processing Agent/Test area ... ',end='',flush=True)
     pit = peach.Agent(pit)

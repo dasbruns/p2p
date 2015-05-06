@@ -1,0 +1,750 @@
+
+220 (vsFTPd 3.0.2)
+USER anonymous
+331 Please specify the password.
+PASS ftpuser@
+230 Login successful.
+SYST
+215 UNIX Type: L8
+PWD
+257 "/"
+PASV
+227 Entering Passive Mode (10,0,0,2,57,40).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /initrd.img
+550 Failed to change directory.
+CWD /initrd.img.old
+550 Failed to change directory.
+CWD /vmlinuz
+550 Failed to change directory.
+CWD /vmlinuz.old
+550 Failed to change directory.
+CWD /
+250 Directory successfully changed.
+CWD /home
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,83,101).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,25,38).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,98,111).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+MDTM xaaaaaaaaaa
+213 20140716183948
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,87,112).
+RETR xaaaaaaaaaa
+150 Opening BINARY mode data connection for xaaaaaaaaaa (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaaa
+213 20140716183948
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,182,64).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,27,187).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,191,164).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home"
+PASV
+227 Entering Passive Mode (10,0,0,2,71,128).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,244,103).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,75,205).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+DELE xaaaaaaaaaa
+550 Permission denied.
+PASV
+227 Entering Passive Mode (10,0,0,2,232,188).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+PWD
+257 "/home/pownme/data"
+MDTM xaaaaaaaaaa
+213 20140716183948
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,119,194).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,55,100).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,188,79).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,235,86).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,248,198).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,238,211).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,221,146).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,153,181).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,37,177).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,248,180).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,51,102).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+PWD
+257 "/home/pownme"
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,250,175).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,185,142).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,219,134).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,29,136).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,197,94).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,36,5).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,98,88).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,29,47).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,125,236).
+STOR xaaaaaaaaaa
+553 Could not create file.
+PASV
+227 Entering Passive Mode (10,0,0,2,169,131).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,102,64).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,179,79).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home"
+PASV
+227 Entering Passive Mode (10,0,0,2,232,46).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,108,209).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,137,69).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,246,86).
+RETR xaaaaaaaaad
+150 Opening BINARY mode data connection for xaaaaaaaaad (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaad
+213 20140716183948
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,245,127).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,96,51).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,251,167).
+RETR xaaaaaaaaam
+150 Opening BINARY mode data connection for xaaaaaaaaam (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaam
+213 20140716183948
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,181,102).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home"
+PASV
+227 Entering Passive Mode (10,0,0,2,57,197).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,43,158).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/test/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,213,162).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,52,66).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/test/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,175,156).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,100,223).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,147,120).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,225,163).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/test/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,116,245).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+MDTM xaaaaaaaaad
+213 20140716235346
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,185,64).
+RETR xaaaaaaaaad
+150 Opening BINARY mode data connection for xaaaaaaaaad (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaad
+213 20140716235346
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,116,230).
+RETR xaaaaaaaaae
+150 Opening BINARY mode data connection for xaaaaaaaaae (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaae
+213 20140716235346
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,229,50).
+RETR xaaaaaaaaaf
+150 Opening BINARY mode data connection for xaaaaaaaaaf (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaaf
+213 20140716235346
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,84,69).
+RETR xaaaaaaaaah
+150 Opening BINARY mode data connection for xaaaaaaaaah (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaah
+213 20140716235346
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,122,208).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,236,35).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,42,210).
+RETR xaaaaaaaaan
+150 Opening BINARY mode data connection for xaaaaaaaaan (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaan
+213 20140716183948
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,190,163).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,25,200).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,108,6).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/test/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,251,25).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,237,96).
+RETR xaaaaaaaaaj
+150 Opening BINARY mode data connection for xaaaaaaaaaj (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaaj
+213 20140716235346
+MDTM xaaaaaaaaad
+213 20140716235346
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,203,59).
+RETR xaaaaaaaaad
+150 Opening BINARY mode data connection for xaaaaaaaaad (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaad
+213 20140716235346
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,255,246).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home"
+PASV
+227 Entering Passive Mode (10,0,0,2,81,154).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,137,152).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+QUIT
+
+
+220 (vsFTPd 3.0.2)
+USER anonymous
+331 Please specify the password.
+PASS ftpuser@
+230 Login successful.
+SYST
+215 UNIX Type: L8
+PWD
+257 "/"
+PASV
+227 Entering Passive Mode (10,0,0,2,184,88).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /initrd.img
+550 Failed to change directory.
+CWD /initrd.img.old
+550 Failed to change directory.
+CWD /vmlinuz
+550 Failed to change directory.
+CWD /vmlinuz.old
+550 Failed to change directory.
+CWD /
+250 Directory successfully changed.
+CWD /usr
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,114,22).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /usr/local/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,72,244).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /usr/local/man
+250 Directory successfully changed.
+CWD /usr/local/
+250 Directory successfully changed.
+CWD /usr/local/bin/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,168,237).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,68,86).
+RETR tcpflow
+150 Opening BINARY mode data connection for tcpflow (64150 bytes). 226 Transfer complete.
+MDTM tcpflow
+213 20140630120657
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/usr/local"
+PASV
+227 Entering Passive Mode (10,0,0,2,223,224).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /usr/local/man
+250 Directory successfully changed.
+CWD /usr/local
+250 Directory successfully changed.
+CWD /usr/local/bin/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,174,138).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,249,28).
+RETR derrick
+150 Opening BINARY mode data connection for derrick (38557 bytes). 226 Transfer complete.
+MDTM derrick
+213 20140423195035
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/usr/local"
+PASV
+227 Entering Passive Mode (10,0,0,2,38,47).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /usr/local/man
+250 Directory successfully changed.
+CWD /usr/local
+250 Directory successfully changed.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/usr"
+PASV
+227 Entering Passive Mode (10,0,0,2,84,163).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/"
+PASV
+227 Entering Passive Mode (10,0,0,2,64,255).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /initrd.img
+550 Failed to change directory.
+CWD /initrd.img.old
+550 Failed to change directory.
+CWD /vmlinuz
+550 Failed to change directory.
+CWD /vmlinuz.old
+550 Failed to change directory.
+CWD /
+250 Directory successfully changed.
+CWD /home
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,98,153).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,81,198).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/test/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,248,13).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+DELE xaaaaaaaaaa
+550 Permission denied.
+PASV
+227 Entering Passive Mode (10,0,0,2,217,91).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+QUIT
+
+
+220 (vsFTPd 3.0.2)
+USER anonymous
+331 Please specify the password.
+PASS ftpuser@
+230 Login successful.
+SYST
+215 UNIX Type: L8
+PWD
+257 "/"
+PASV
+227 Entering Passive Mode (10,0,0,2,65,168).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /initrd.img
+550 Failed to change directory.
+CWD /initrd.img.old
+550 Failed to change directory.
+CWD /vmlinuz
+550 Failed to change directory.
+CWD /vmlinuz.old
+550 Failed to change directory.
+CWD /
+250 Directory successfully changed.
+CWD /home
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,208,145).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,80,87).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/test/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,240,86).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+DELE xaaaaaaaaaa
+550 Permission denied.
+PASV
+227 Entering Passive Mode (10,0,0,2,197,218).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,210,158).
+RETR xaaaaaaaaah
+150 Opening BINARY mode data connection for xaaaaaaaaah (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaah
+213 20140716235346
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,33,70).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,55,151).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,77,177).
+RETR capture.pcap
+150 Opening BINARY mode data connection for capture.pcap (81920 bytes). 226 Transfer complete.
+MDTM capture.pcap
+213 20140716235750
+PWD
+257 "/home/pownme/data"
+MDTM capture.pcap
+213 20140716235750
+PWD
+257 "/home/pownme/data"
+MDTM capture.pcap
+213 20140716235750
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,165,84).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/test/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,34,104).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,185,74).
+RETR xaaaaaaaaai
+150 Opening BINARY mode data connection for xaaaaaaaaai (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaai
+213 20140716235346
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/home/pownme"
+PASV
+227 Entering Passive Mode (10,0,0,2,47,210).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+CWD /home/pownme/data/
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (10,0,0,2,143,239).
+LIST
+150 Here comes the directory listing. 226 Directory send OK.
+TYPE I
+200 Switching to Binary mode.
+PASV
+227 Entering Passive Mode (10,0,0,2,60,2).
+RETR xaaaaaaaaas
+150 Opening BINARY mode data connection for xaaaaaaaaas (1000 bytes). 226 Transfer complete.
+MDTM xaaaaaaaaas
+213 20140716183948
+QUIT
+

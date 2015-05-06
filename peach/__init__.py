@@ -118,8 +118,8 @@ def handleControl(cont,data=False):
 
 def dataModel(templates):
     pit = PIT()
-    #written = []
     root = pit.tree.getroot()
+    #create random dataModel
     dataModel = ET.Element('DataModel', name= 'rand')
     dataModel.append(ET.Element('String', name= 'a1', attrib={'mutable':'false'}))
     root.append(dataModel)
@@ -127,68 +127,62 @@ def dataModel(templates):
         dataModel = ET.Element('DataModel', name = str(ID))
         createContent(ID,dataModel,templates)
         root.append(dataModel)
-        #for hist in templates[ID].hists:
-        #    if hist not in written:
-        #        written.append(hist)
-        #        dataModel = ET.Element('DataModel', name= str(hist))
-        #        #is multimodel
-        #        if len(hist.curTempID) > 1:
-        #            #create all models the multimodel is referencing
-        #            choice = multimodel(root,ID,hist,written,templates,rules)
-        #            dataModel.append(choice)
-        #        else:
-        #            createContent(ID,dataModel,templates)
-        #        root.append(dataModel)
-    #create random datModel
-    #root.append(statePit.tree.getroot().find('StateModel'))
     return pit
 
-def stateModel(done, templates):
+def stateModel(dataPit, done):
     pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
-    for state in done.values():
-        #if not state.isMultiModel:
-            #print(state.hist, state.isMultiModel)
-        #set initialState of StateModel
-        if state.isinitial == True:
-            stateModel.attrib.update({'initialState':str(state.hist)})
-        actionCounter = 0
-        peachState = ET.Element('State', name=str(state.hist))
-        #implement slurp actions
-        #if slurp in input states, change here!
-        if state.IOAction == 'output' and state.rules:
-            theRules = slurpActions(state,done)
-            for rule in theRules:
-                peachState.append(rule)
-            actionCounter += len(theRules)
-        #if state.copyRules != None and state.IOAction == 'output':
-            #cpRules = assembleCopyRules(state, done)
-        #implement IOactions
-        #implement COPY actions
-        if state.IOAction == 'input':
-            inputAction = ET.Element('Action', name='rec', attrib={'type':'input'})
-            inputAction.append(ET.Element('DataModel', name='read', attrib={'ref':str(state.hist)}))
-            peachState.append(inputAction)
-            actionCounter += 1
-        if state.IOAction == 'output':
-            #insert s here in onStart
-            if state.copyRules != None:
-                call = assembleCopyRules(state)
-                outputAction = ET.Element('Action', name='out', attrib={'type':'output','onStart':'{}'.format(call)})
-            else:
-                outputAction = ET.Element('Action', name='out', attrib={'type':'output'})
-            dataModel = ET.Element('DataModel', name='write', attrib={'ref':str(state.hist)})
-            #look for DATA to be applied by DataRules
-            retData = []
-            if state.dataRules != None:
-                dataModel, retData = data(dataModel, state)
-            outputAction.append(dataModel)
-            if retData != []:
-                for d in retData:
-                    outputAction.append(d)
-            peachState.append(outputAction)
-            actionCounter += 1
+    for listOstates in done.values():
+        for state in listOstates:
+            #if not state.isMultiModel:
+                #print(state.hist, state.isMultiModel)
+            #set initialState of StateModel
+            if state.isInit() == True:
+                stateModel.attrib.update({'initialState':str(state.hist)})
+            actionCounter = 0
+            peachState = ET.Element('State', name=str(state.hist) +' '+ str(state.curState))
+
+            #implement slurp actions
+            #if slurp in input states, change here!
+            #if state.IOAction == 'output' and state.rules:
+            #    theRules = slurpActions(state,done)
+            #    for rule in theRules:
+            #        peachState.append(rule)
+            #    actionCounter += len(theRules)
+            #if state.copyRules != None and state.IOAction == 'output':
+                #cpRules = assembleCopyRules(state, done)
+            #implement IOactions
+            #implement COPY actions
+            if state.ioAction == 'input':
+                inputAction = ET.Element('Action', name='in', attrib={'type':'input'})
+                inputAction.append(ET.Element('DataModel', name='read', attrib={'ref':str(state.hist.theHist[-1])}))
+                peachState.append(inputAction)
+                actionCounter += 1
+            if state.ioAction == 'output':
+                #TODO
+                #insert copyRuless here in onStart-Action
+                if False:# state.copyRules != None:
+                    call = assembleCopyRules(state)
+                    outputAction = ET.Element('Action', name='out', attrib={'type':'output','onStart':'{}'.format(call)})
+                else:
+                    outputAction = ET.Element('Action', name='out', attrib={'type':'output'})
+                dataModel = ET.Element('DataModel', name='write', attrib={'ref':str(state.hist.theHist[-1])})
+                peachState.append(outputAction)
+                #TODO
+                #look for DATA to be applied by DataRules
+                #retData = []
+                #if state.dataRules != None:
+                #    dataModel, retData = data(dataModel, state)
+                #outputAction.append(dataModel)
+                #if retData != []:
+                #    for d in retData:
+                #        outputAction.append(d)
+                #peachState.append(outputAction)
+                actionCounter += 1
+            stateModel.append(peachState)
+            continue
+        continue
         postHist = beatTehRandomness(state,templates)
         #implement random number
         if state.nextStates != None and len(state.postHist) > 1:
@@ -213,7 +207,8 @@ def stateModel(done, templates):
             for ch in change:
                 peachState.append(ch)
         stateModel.append(peachState)
-    return pit
+    dataPit.tree.getroot().append(pit.tree.getroot().find('StateModel'))
+    return dataPit
 
 def assembleCopyRules(state):
     call = ''
