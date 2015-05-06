@@ -2,7 +2,7 @@ class PeachState(object):
     def __init__(self, curState, preHist, hist):
         #these are PRISMA states
         self.curState = curState
-        self.nextStates = None
+        self.nextStates = []
         #these are HIST objects
         self.preHist = preHist
         self.hist = hist

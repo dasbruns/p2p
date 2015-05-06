@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#from PrismaState import PrismaState as S
+# from PrismaState import PrismaState as S
 #from MarkovModel import MarkovModel
 #from MarkovTransition import MarkovTransition as P
 import prisma
@@ -8,9 +8,6 @@ import peach
 import copy
 import argparse
 import os
-
-#def multiAssembler(state, hist, container, model, templates)
- #   s = peach.createInterState(state.curState,state.preHist)
 
 
 def stateAssembler(state, container, model, templates, UAC=True):
@@ -33,7 +30,7 @@ def stateAssembler(state, container, model, templates, UAC=True):
             updateState = state.copy(ID)
             #set templates history
             setTemplatesHist(ID, updateState.hist)
-            #set preStates postHist
+            # set preStates postHist
             updateState.nextStates = model.model[state.curState]
             updateState.IOAction = 'output'
             #multiply em here
@@ -70,26 +67,31 @@ def stateAssembler(state, container, model, templates, UAC=True):
         state.IOAction = 'input'
         appendTodo(container, state)
 
+
 def appendTodo(container, state):
-   if state.hist not in container.done.keys():
-       container.doneadd(state)
-       for nextState in state.nextStates:
-           nxt = peach.PeachState(nextState, state.hist)
-           container.todoadd(nxt)
+    if state.hist not in container.done.keys():
+        container.doneadd(state)
+        for nextState in state.nextStates:
+            nxt = peach.PeachState(nextState, state.hist)
+            container.todoadd(nxt)
+
 
 def setPostHist(done, state):
-   if container.done[state.preHist].postHist == None:
-       container.done[state.preHist].postHist = []
-   container.done[state.preHist].postHist.append(state.hist)
+    if container.done[state.preHist].postHist == None:
+        container.done[state.preHist].postHist = []
+    container.done[state.preHist].postHist.append(state.hist)
+
 
 def setTemplatesHist(ID, hist):
-   if templates.IDtoTemp[ID].hists == None:
-       templates.IDtoTemp[ID].hists = []
-   templates.IDtoTemp[ID].hists.append(hist)
+    if templates.IDtoTemp[ID].hists == None:
+        templates.IDtoTemp[ID].hists = []
+    templates.IDtoTemp[ID].hists.append(hist)
+
 
 def toPeachStates(done, pit):
     for state in done:
         pit.insertState(state)
+
 
 if __name__ == '__main__':
 
@@ -112,14 +114,14 @@ if __name__ == '__main__':
         print('specified directory not found')
         exit()
 
-    if args.verbose:print('Reading Files...\n',end='',flush=True)
+    if args.verbose: print('Reading Files...\n', end='', flush=True)
     try:
-        f = open('{0}/{1}.templates'.format(args.folder,args.name),'r')
-        if args.verbose:print('  \\__Processing Templates...\n',end='',flush=True)
+        f = open('{0}/{1}.templates'.format(args.folder, args.name), 'r')
+        if args.verbose: print('  \\__Processing Templates...\n', end='', flush=True)
         templates = prisma.templateParse(f)
         f.close()
     except FileNotFoundError:
-        print('file {0}/{1}.templates not found'.format(args.folder,args.name))
+        print('file {0}/{1}.templates not found'.format(args.folder, args.name))
         exit()
     #print('=============ID2TEMPS===============')
     #for i,j in templates.IDtoTemp.items():
@@ -131,12 +133,12 @@ if __name__ == '__main__':
     #    print(i,j)
 
     try:
-        f = open('{0}/{1}.rules'.format(args.folder,args.name),'r')
-        if args.verbose:print('  \\__Processing Rules...\n',end='',flush=True)
+        f = open('{0}/{1}.rules'.format(args.folder, args.name), 'r')
+        if args.verbose: print('  \\__Processing Rules...\n', end='', flush=True)
         rules, copyRules, dataRules, theHistLength = prisma.ruleParse(f)
         f.close()
     except FileNotFoundError:
-        print('file {0}/{1}.rules not found'.format(args.folder,args.name))
+        print('file {0}/{1}.rules not found'.format(args.folder, args.name))
         exit()
     #count = 0
     #print('===========RULES============')
@@ -154,21 +156,21 @@ if __name__ == '__main__':
     #print(count)
 
     try:
-        f = open('{0}/{1}.markovModel'.format(args.folder,args.name),'r')
-        if args.verbose:print('  \\__Processing MarkovModel...\n',end='',flush=True)
-        model = prisma.markovParse(f) 
+        f = open('{0}/{1}.markovModel'.format(args.folder, args.name), 'r')
+        if args.verbose: print('  \\__Processing MarkovModel...\n', end='', flush=True)
+        model = prisma.markovParse(f)
         f.close()
     except FileNotFoundError:
-        print('file {0}/{1}.markovModel not found'.format(args.folder,args.name))
+        print('file {0}/{1}.markovModel not found'.format(args.folder, args.name))
         exit()
-    if args.verbose:print('Done')
+    if args.verbose: print('Done')
     #print('=============MARKOVMODEL================')
     #for i,j in model.model.items():
-        #l.append(peach.InterStates(i,prisma.Hist(1,2,3)))
-        #print(i,j)
+    #l.append(peach.InterStates(i,prisma.Hist(1,2,3)))
+    #print(i,j)
     #print(model.model[prisma.PrismaState('START','START')])
 
-    if args.verbose:print('Internal Dataprocessing ... ',end='',flush=True)
+    if args.verbose: print('Internal Dataprocessing ... ', end='', flush=True)
     #gap to peach
     #Decide which side of communication we are
     container = peach.PeachStateContainer()
@@ -176,12 +178,13 @@ if __name__ == '__main__':
     #create first state
     # [-11] indicates true start xD
     # in case start does not emit symbol on transition
-    start = peach.PeachState(prisma.PrismaState(theHistLength*['START']), None ,prisma.Hist(hist=[[-11]]+(theHistLength-1)*[[-1]]))
+    start = peach.PeachState(prisma.PrismaState(theHistLength * ['START']), None,
+                             prisma.Hist(hist=[[-11]] + (theHistLength - 1) * [[-1]]))
     start.nextStates = model.model[start.curState]
     start.isinitial = True
     #fetch possible Templates for this State
     if start.curState in templates.stateToID.keys():
-        start.templates = templates.stateToID[start.curState] 
+        start.templates = templates.stateToID[start.curState]
         start.nextHist = start.hist.update(start.templates)
     else:
         start.nextHist = start.hist.update([-1])
@@ -195,7 +198,7 @@ if __name__ == '__main__':
     #print('====================DONE===================')
     #print(container.done)
     #create other states
-    while(container.todo != []):
+    while (container.todo != []):
         state = container.todo[0]
         container.todorem(state)
         #if parent was multiModel state, create mutiple nextStates
@@ -206,9 +209,9 @@ if __name__ == '__main__':
         #       stateAssembler(peach.createInterState(state.curState,state.preHist), container, model, templates)
         #    continue
         peach.stateAssembler(state, container, model, templates, rules, copyRules, dataRules, args.role)
-    #print(model.model)
-    #print(len(container.done) ==len(model.model))
-    #for i in container.done.values():
+        #print(model.model)
+        #print(len(container.done) ==len(model.model))
+        #for i in container.done.values():
         #print()
         #print(i)
     #print(rules)
@@ -256,21 +259,21 @@ if __name__ == '__main__':
     #    print()
     #print(len(container.done),len(model.model))
 
-    if args.verbose:print('Done')
-    if args.verbose:print('Processing DataModels ... ',end='',flush=True)
+    if args.verbose: print('Done')
+    if args.verbose: print('Processing DataModels ... ', end='', flush=True)
     pit = peach.dataModel(templates.IDtoTemp)
-    if args.verbose:print('Done')
-    if args.verbose:print('Processing StateModel ... ',end='',flush=True)
+    if args.verbose: print('Done')
+    if args.verbose: print('Processing StateModel ... ', end='', flush=True)
     pit = peach.stateModel(pit, container.done)
-    if args.verbose:print('Done')
-    if args.verbose:print('Processing Agent/Test area ... ',end='',flush=True)
+    if args.verbose: print('Done')
+    if args.verbose: print('Processing Agent/Test area ... ', end='', flush=True)
     pit = peach.Agent(pit)
-    pit = peach.Test(pit,args.role)
-    if args.verbose:print('Done')
+    pit = peach.Test(pit, args.role)
+    if args.verbose: print('Done')
     if args.role:
-        if args.verbose:print('Write to {0}/pitClient.xml'.format(args.folder))
+        if args.verbose: print('Write to {0}/pitClient.xml'.format(args.folder))
         pit.toFile('{0}/pitClient.xml'.format(args.folder))
     else:
-        if args.verbose:print('Write to {0}/pitServer.xml'.format(args.folder))
+        if args.verbose: print('Write to {0}/pitServer.xml'.format(args.folder))
         pit.toFile('{0}/pitServer.xml'.format(args.folder))
 

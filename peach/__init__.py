@@ -1,4 +1,4 @@
-#import prisma.Hist
+# import prisma.Hist
 from .PeachState import PeachState
 from .PeachStateContainer import PeachStateContainer
 from .PIT import PIT
@@ -7,75 +7,78 @@ import random
 import string
 from urllib import parse
 
-#testing purpose import
-#from .additionalCode import manipulate
+# testing purpose import
+# from .additionalCode import manipulate
 
-def Test(pit,role=False,IP='127.0.0.1', port=80):
+def Test(pit, role=False, IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
-    test.append(ET.Element('Agent', attrib={'ref':'Local'}))
-    test.append(ET.Element('StateModel', attrib={'ref':'StateModel'}))
+    test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
+    test.append(ET.Element('StateModel', attrib={'ref': 'StateModel'}))
     #append default publisher
     if role == True:
-        publisher = ET.Element('Publisher', name='test', attrib={'class':'TcpClient'})
-        publisher.append(ET.Element('Param', name='Host', attrib={'value':str(IP)}))
+        publisher = ET.Element('Publisher', name='test', attrib={'class': 'TcpClient'})
+        publisher.append(ET.Element('Param', name='Host', attrib={'value': str(IP)}))
     else:
-        publisher = ET.Element('Publisher', name='test', attrib={'class':'TcpListener'})
-        publisher.append(ET.Element('Param', name='Interface', attrib={'value':str(IP)}))
-    publisher.append(ET.Element('Param', name='Port', attrib={'value':str(port)}))
+        publisher = ET.Element('Publisher', name='test', attrib={'class': 'TcpListener'})
+        publisher.append(ET.Element('Param', name='Interface', attrib={'value': str(IP)}))
+    publisher.append(ET.Element('Param', name='Port', attrib={'value': str(port)}))
     test.append(publisher)
     #append publishing device for random number generating
-    test.append(ET.Element('Publisher', name='null', attrib={'class':'Null'}))
+    test.append(ET.Element('Publisher', name='null', attrib={'class': 'Null'}))
     #append some kind of logger
-    logger = ET.Element('Logger', attrib={'class':'File'})
-    logger.append(ET.Element('Param', name='Path', attrib={'value':'logs'}))
+    logger = ET.Element('Logger', attrib={'class': 'File'})
+    logger.append(ET.Element('Param', name='Path', attrib={'value': 'logs'}))
     test.append(logger)
     return pit
+
 
 def Agent(pit):
     pit.tree.getroot().append(ET.Element('Agent', name='Local'))
     agent = pit.tree.find('Agent')
-    monitor = ET.Element('Monitor', attrib={'class':'Process'})
-    monitor.append(ET.Element('Param', name='Executable', attrib={'value':'./server'}))
-    monitor.append(ET.Element('Param', name='StartOnCall', attrib={'value':'Start'}))
-    monitor.append(ET.Element('Param', name='Arguments', attrib={'value':'fuzzed.bin'}))
+    monitor = ET.Element('Monitor', attrib={'class': 'Process'})
+    monitor.append(ET.Element('Param', name='Executable', attrib={'value': './server'}))
+    monitor.append(ET.Element('Param', name='StartOnCall', attrib={'value': 'Start'}))
+    monitor.append(ET.Element('Param', name='Arguments', attrib={'value': 'fuzzed.bin'}))
     agent.append(monitor)
     return pit
 
-def multimodel(root, ID, hist, written, templates, rules):
-    choice = ET.Element('Choice', name='c', attrib={'minOccurs':'1', 'maxOccurs':'1'})
-    count = 0
-    #print(hist)
-    for ID in hist.curTempID:
 
-        #for cont in rules.keys():
-        #    for hist2, rule in rules[cont]:
-        #        #print(hist,hist2)
-        #        asshist = hist.assembleHist(True)
-        #        if hist2 in asshist:
-        #            print(cont)
-        #            print(hist, rule)
+#def multimodel(root, ID, hist, written, templates, rules):
+#    choice = ET.Element('Choice', name='c', attrib={'minOccurs': '1', 'maxOccurs': '1'})
+#    count = 0
+#    #print(hist)
+#    for ID in hist.curTempID:
+#
+#        #for cont in rules.keys():
+#        #    for hist2, rule in rules[cont]:
+#        #        #print(hist,hist2)
+#        #        asshist = hist.assembleHist(True)
+#        #        if hist2 in asshist:
+#        #            print(cont)
+#        #            print(hist, rule)
+#
+#        dataModel = ET.Element('DataModel', name=str(ID))
+#        createContent(ID, dataModel, templates)
+#        choice.append(ET.Element('Block', name='o' + str(ID), attrib={'ref': str(ID)}))
+#        count += 1
+#        if ID not in written:
+#            written.append(ID)
+#            root.append(dataModel)
+#    return choice
 
-        dataModel = ET.Element('DataModel', name=str(ID))
-        createContent(ID,dataModel,templates)
-        choice.append(ET.Element('Block', name='o'+str(ID), attrib={'ref':str(ID)}))
-        count += 1
-        if ID not in written:
-            written.append(ID)
-            root.append(dataModel)
-    return choice
 
 def createContent(ID, dataModel, templates):
     #in case something unexpected arrives before our first token
-    dataModel.append(ET.Element('String', name='pre', attrib={'value':''}))
+    dataModel.append(ET.Element('String', name='pre', attrib={'value': ''}))
     count = 0
     for cont in templates[ID].content:
         if cont != '':
             data = ''
-        #no-rule field
+            #no-rule field
             if '%' in cont:
-            #unquote encoding...
-            #use blob in peach
+                #unquote encoding...
+                #use blob in peach
                 #data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
                 #cont = parse.unquote(cont)
                 cont = parse.unquote(cont)
@@ -87,128 +90,126 @@ def createContent(ID, dataModel, templates):
                     #model field as hex number; NOT possible.. use BLOB instead
                     #for sake of ease
                     #cont = handleControl(cont)
-                    cont = ' '.join(list(map(lambda x :(x[2:].zfill(2)),list(map(hex,parse.unquote_to_bytes(cont))))))
+                    cont = ' '.join(list(map(lambda x: (x[2:].zfill(2)), list(map(hex, parse.unquote_to_bytes(cont))))))
                     #size = str(int(len(''.join(cont.split()))/2)*8)
-                    data = ET.Element('Blob', name='c'+str(count), attrib={'value':cont,'token':'true','valueType':'hex'})#,'size':size})
+                    data = ET.Element('Blob', name='c' + str(count),
+                                      attrib={'value': cont, 'token': 'true', 'valueType': 'hex'})  #,'size':size})
             #else:
             #put it in a string
             #print('going to write: ',cont, parse.quote(cont))
             if data == '':
                 #just a normal string, no non-printables detected
-                data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
+                data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': 'true'})
         else:
-        #rule field (empty)
-            data = ET.Element('String', name='c'+str(count), attrib={'value':cont})
+            #rule field (empty)
+            data = ET.Element('String', name='c' + str(count), attrib={'value': cont})
         dataModel.append(data)
         count += 1
     return dataModel
 
-def handleControl(cont,data=False):
+
+def handleControl(cont, data=False):
     #by now ignores control characters... NOT!
-    rmCont= ''
+    rmCont = ''
     contFlag = False
     for c in cont:
         if ord(c) <= 126 and ord(c) >= 32:
             rmCont += c
         else:
-            contFlag=True
-        if data==True and contFlag==True:
+            contFlag = True
+        if data == True and contFlag == True:
             print(parse.quote(cont))
     return rmCont
+
 
 def dataModel(templates):
     pit = PIT()
     root = pit.tree.getroot()
     #create random dataModel
-    dataModel = ET.Element('DataModel', name= 'rand')
-    dataModel.append(ET.Element('String', name= 'a1', attrib={'mutable':'false'}))
+    dataModel = ET.Element('DataModel', name='rand')
+    dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
     root.append(dataModel)
     for ID in templates.keys():
-        dataModel = ET.Element('DataModel', name = str(ID))
-        createContent(ID,dataModel,templates)
+        dataModel = ET.Element('DataModel', name='[{}]'.format(str(ID)))
+        createContent(ID, dataModel, templates)
         root.append(dataModel)
     return pit
+
+def createMultiModel(dataModelID):
+    multiModel = ET.Element('DataModel', name=str(dataModelID))
+    choice = ET.Element('Choice', name='c', attrib={'minOccurs': '1', 'maxOccurs': '1'})
+    for dataModel in dataModelID:
+        choice.append(ET.Element('Block', name='o[{}]'.format(str(dataModel)), attrib={'ref': '[{}]'.format(str(dataModel))}))
+        multiModel.append(choice)
+    return multiModel
+
 
 def stateModel(dataPit, done):
     pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
+    multiModels = {}
     for listOstates in done.values():
         for state in listOstates:
-            #if not state.isMultiModel:
-                #print(state.hist, state.isMultiModel)
-            #set initialState of StateModel
-            if state.isInit() == True:
-                stateModel.attrib.update({'initialState':str(state.hist)})
             actionCounter = 0
-            peachState = ET.Element('State', name=str(state.hist) +' '+ str(state.curState))
+            if state.isInit() == True:
+                stateModel.attrib.update({'initialState': str(state.hist)})
+            peachState = ET.Element('State', name=str(state.hist) + ' ' + str(state.curState))
 
-            #implement slurp actions
-            #if slurp in input states, change here!
-            #if state.IOAction == 'output' and state.rules:
-            #    theRules = slurpActions(state,done)
-            #    for rule in theRules:
-            #        peachState.append(rule)
-            #    actionCounter += len(theRules)
-            #if state.copyRules != None and state.IOAction == 'output':
-                #cpRules = assembleCopyRules(state, done)
-            #implement IOactions
-            #implement COPY actions
+            # handle ioActions
+            dataModelIDs = state.hist.theHist[-1]
             if state.ioAction == 'input':
-                inputAction = ET.Element('Action', name='in', attrib={'type':'input'})
-                inputAction.append(ET.Element('DataModel', name='read', attrib={'ref':str(state.hist.theHist[-1])}))
+                if len(dataModelIDs) > 1 and tuple(dataModelIDs) not in multiModels.keys():
+                    multiModels.update({tuple(dataModelIDs): createMultiModel(dataModelIDs)})
+                inputAction = ET.Element('Action', name='in', attrib={'type': 'input'})
+                inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': str(state.hist.theHist[-1])}))
                 peachState.append(inputAction)
                 actionCounter += 1
-            if state.ioAction == 'output':
-                #TODO
-                #insert copyRuless here in onStart-Action
-                if False:# state.copyRules != None:
-                    call = assembleCopyRules(state)
-                    outputAction = ET.Element('Action', name='out', attrib={'type':'output','onStart':'{}'.format(call)})
-                else:
-                    outputAction = ET.Element('Action', name='out', attrib={'type':'output'})
-                dataModel = ET.Element('DataModel', name='write', attrib={'ref':str(state.hist.theHist[-1])})
+            else:
+                # check here for slurpActions
+
+                # have multiple output options
+                count = 0
+                if len(dataModelIDs) > 1:
+                    outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'rand', 'onStart': 'additionalCode(self,{})'.format(len(dataModelIDs)-1), 'publisher': 'null'})
+                    outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
+                    peachState.append(outputAction)
+                    count = len(dataModelIDs)-1
+                    actionCounter += 1
+                for ID in dataModelIDs:
+                    outputAction = ET.Element('Action', attrib={'type': 'output'})
+                    if count > 0:
+                        whenExpression = 'int(self.parent.actions[0].dataModel["a1"].InternalValue) == int({})'.format(count)
+                        outputAction.append(ET.Element('DataModel', attrib={'ref': '[{}]'.format(ID), 'when': whenExpression}))
+                        count -= 1
+                    else:
+                        outputAction.append(ET.Element('DataModel', attrib={'ref': '[{}]'.format(ID)}))
+                    peachState.append(outputAction)
+                    actionCounter += 1
+            # handle changeStateActions
+            count = 0
+            if len(state.nextStates) > 1:
+                count = len(state.nextStates) - 1
+                outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'rand', 'onStart': 'additionalCode(self,{})'.format(len(state.nextStates)-1), 'publisher': 'null'})
+                outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                 peachState.append(outputAction)
-                #TODO
-                #look for DATA to be applied by DataRules
-                #retData = []
-                #if state.dataRules != None:
-                #    dataModel, retData = data(dataModel, state)
-                #outputAction.append(dataModel)
-                #if retData != []:
-                #    for d in retData:
-                #        outputAction.append(d)
-                #peachState.append(outputAction)
-                actionCounter += 1
+            for nxt in state.nextStates:
+                stateRef = '{} {}'.format(state.nextHist, nxt)
+                if count > 0:
+                    whenExpression = 'int(self.parent.actions[{0}].dataModel["a1"].InternalValue) == int({1})'.format(actionCounter, count)
+                    changeAction = ET.Element('Action', attrib={'type': 'changeState', 'ref': stateRef, 'when': whenExpression})
+                    count -= 1
+                else:
+                    changeAction = ET.Element('Action', attrib={'type': 'changeState', 'ref': stateRef})
+                peachState.append(changeAction)
             stateModel.append(peachState)
-            continue
-        continue
-        postHist = beatTehRandomness(state,templates)
-        #implement random number
-        if state.nextStates != None and len(state.postHist) > 1:
-            print(state.nextStates)
-            print(state.postHist)
-            randomAction = ET.Element('Action', name='rand', attrib={'type':'output','publisher':'null', 'onStart':'additionalCode.rand(self,{})'.format(len(postHist)-1)})
-            randomAction.append(ET.Element('DataModel', attrib={'ref':'rand'}))
-            peachState.append(randomAction)
-        #impement changeState actions
-        if postHist != None:
-            #print(state.hist)
-            change = computeChangeState(state, postHist, actionCounter, templates)
-            #prob = len(postHist) - 1
-            #for ID,nextState in postHist.items():
-            #    if len(nextState) > 1:
-            #        for ns in nextState:
-            #            changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns), 
-            #                'when':'(int(StateModel.states[{0}].actions[{1}].dataModel["a1"].InternalValue) == int({2})) and (dataModel.field[0] == {3}) '.format(state.hist,actionCounter,prob,templates[ID].content[0])})
-            #            peachState.append(changeState)
-            #        prob -= 1
-            #    else:   changeState = None
-            for ch in change:
-                peachState.append(ch)
         stateModel.append(peachState)
-    dataPit.tree.getroot().append(pit.tree.getroot().find('StateModel'))
+    dataPitRoot = dataPit.tree.getroot()
+    for ID in multiModels.values():
+        dataPitRoot.append(ID)
+    dataPitRoot.append(pit.tree.getroot().find('StateModel'))
     return dataPit
+
 
 def assembleCopyRules(state):
     call = ''
@@ -216,25 +217,26 @@ def assembleCopyRules(state):
         if 'Complete' in rule.typ:
             s = ''
             for cont in rule.content:
-                s+=(cont+':::')
+                s += (cont + ':::')
             s = s[:-3]
-            s = "comp,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],s)
-            s = s + ';;;'
+            s = "comp,{0},c{1},{2}".format(rule.ptype, state.fields[rule.dstField], s)
+            s += ';;;'
             call += s
         if 'Partial' in rule.typ:
-            #rule.cont here is seperator
-            s = "part,{0},c{1},{2}".format(rule.ptype,state.fields[rule.dstField],rule.content)
+            # rule.cont here is seperator
+            s = "part,{0},c{1},{2}".format(rule.ptype, state.fields[rule.dstField], rule.content)
             s += ';;;'
-            #additionalCode.partialCopy(state,s)
+            # additionalCode.partialCopy(state,s)
             call += s
         if 'Seq' in rule.typ:
-            s = "seq,c{0},{1}".format(state.fields[rule.dstField],rule.content)
+            s = "seq,c{0},{1}".format(state.fields[rule.dstField], rule.content)
             s += ';;;'
             call += s
     call = call[:-3]
-    call = "additionalCode.manipulate(self,"+ call + ")"
-    #additionalCode.manipulate(state,call.split('self,')[1][:-1])
+    call = "additionalCode.manipulate(self,{})".format(call)
+    # additionalCode.manipulate(state,call.split('self,')[1][:-1])
     return call
+
 
 def computeChangeState(state, postHist, actionCounter, templates):
     #print(state.hist)
@@ -245,13 +247,13 @@ def computeChangeState(state, postHist, actionCounter, templates):
         return change
     if len(postHist) == 1:
         #print(list(postHist.values())[0])
-        change.append(ET.Element('Action', attrib={'type':'changeState', 'ref':str(list(postHist.values())[0][0])}))
+        change.append(ET.Element('Action', attrib={'type': 'changeState', 'ref': str(list(postHist.values())[0][0])}))
         return change
     prob = len(postHist) - 1
     for ID, nextState in postHist.items():
         #need to deal with end states more efficiently...
-        print('THEHIST >>>>>',state.hist)
-        print('>>>>>',ID,nextState)
+        print('THEHIST >>>>>', state.hist)
+        print('>>>>>', ID, nextState)
         if ID == -2:
             continue
         #TODO removed for design changes
@@ -264,14 +266,14 @@ def computeChangeState(state, postHist, actionCounter, templates):
         #print(nextState)
         for ns in nextState:
             if len(nextState) > 1:
-                changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns),
-                    'when':'(int(StateModel.states["{0}"].actions[{1}].dataModel["a1"].InternalValue) == int({2}) '
-                    'and str(StateModel.states["{0}"].actions[0].dataModel[0][0][0].referenceName) == "{3}")'
-                    .format(state.hist, actionCounter, prob, ns.preTempID[0])})
+                changeState = ET.Element('Action', attrib={'type': 'changeState', 'ref': str(ns),
+                                                           'when': '(int(StateModel.states["{0}"].actions[{1}].dataModel["a1"].InternalValue) == int({2}) '
+                                                                   'and str(StateModel.states["{0}"].actions[0].dataModel[0][0][0].referenceName) == "{3}")'
+                                         .format(state.hist, actionCounter, prob, ns.preTempID[0])})
             else:
-                changeState = ET.Element('Action', attrib={'type':'changeState', 'ref':str(ns),
-                    'when':'(int(StateModel.states["{0}"].actions[{1}].dataModel["a1"].InternalValue) == int({2})) '
-                    .format(state.hist, actionCounter, prob)})
+                changeState = ET.Element('Action', attrib={'type': 'changeState', 'ref': str(ns),
+                                                           'when': '(int(StateModel.states["{0}"].actions[{1}].dataModel["a1"].InternalValue) == int({2})) '
+                                         .format(state.hist, actionCounter, prob)})
             #print(ET.tostring(changeState,pretty_print = True))
             change.append(changeState)
         prob -= 1
@@ -282,22 +284,23 @@ def computeChangeState(state, postHist, actionCounter, templates):
 
 #compute s states nextStates
 #returns dict tempID:hists of nextStates
-def beatTehRandomness(state,templates):
+def beatTehRandomness(state, templates):
     postHist = {}
-    if state.postHist != None:# and len(state.postHist) > 1:
+    if state.postHist != None:  # and len(state.postHist) > 1:
         #print('PRE',state.postHist,len(state.postHist))
         for hist in state.postHist:
             #print('HIST',hist)
             if hist.theHist[-1][0] not in postHist.keys():
-                postHist.update({hist.theHist[-1][0]:[hist]})
+                postHist.update({hist.theHist[-1][0]: [hist]})
             else:
                 postHist[hist.theHist[-1][0]] += [hist]
-        #print('POST',postHist,len(postHist))
-        #print()
-        #print('post',state.postHist)
-#        #TODO attention
-#        #getDiscriminativeFields(postHist.keys(),templates)
+                #print('POST',postHist,len(postHist))
+                #print()
+                #print('post',state.postHist)
+                #        #TODO attention
+                #        #getDiscriminativeFields(postHist.keys(),templates)
     return postHist
+
 
 def getDiscriminativeFields(IDs, templates):
     #print(list(IDs))
@@ -325,7 +328,7 @@ def getDiscriminativeFields(IDs, templates):
     while orderedForLength != []:
         ID = orderedForLength[0]
         if templates[ID].length == 0:
-            fields.update({ID:None})
+            fields.update({ID: None})
             orderedForLength.remove(ID)
             continue
         for ind in range(len(templates[ID].content)):
@@ -337,12 +340,12 @@ def getDiscriminativeFields(IDs, templates):
                     possible = False
                     break
             if possible == True:
-                fields.update({ID:ind})
+                fields.update({ID: ind})
                 orderedForLength.remove(ID)
                 break
         if possible != True:
             print('gotta problem!')
-    #print(fields)
+            #print(fields)
 
 
 #manually implement choice elements
@@ -351,7 +354,7 @@ def getDiscriminativeFields(IDs, templates):
 #   and create data set for each tuple
 def data(dataModel, state):
     #for i in state.dataRules:
-        #print(i,'DST: ',i.dstField, state.dataFields, state.dataFields[i.dstField])
+    #print(i,'DST: ',i.dstField, state.dataFields, state.dataFields[i.dstField])
     index = 0
     data = []
     for dataRule in state.dataRules:
@@ -364,8 +367,8 @@ def data(dataModel, state):
     #upper-bound number of tuples
     #limit to 4 per position; experimental
     for i in range(len(data)):
-        if len(data[i])>4:
-            data[i] = bound(data[i],4)
+        if len(data[i]) > 4:
+            data[i] = bound(data[i], 4)
     #print(data)
     dat = cross(data)
     #print(dat)
@@ -386,19 +389,22 @@ def data(dataModel, state):
                     print('\tunhandled so far...')
                     #cont = handleControl(cont,True)
                     cont = escCont
-            data.append(ET.Element('Field', name='c'+str(state.fields[state.dataRules[i].dstField]), attrib={'value':cont}))
+            data.append(
+                ET.Element('Field', name='c' + str(state.fields[state.dataRules[i].dstField]), attrib={'value': cont}))
         retDat.append(data)
     #print()
-    return dataModel,retDat
+    return dataModel, retDat
+
 
 def bound(data, points):
     ret_data = []
     for i in range(points):
-        j = random.randint(0,len(data)-1)
+        j = random.randint(0, len(data) - 1)
         ret_data.append(data[j])
     return ret_data
 
-def cross(data,depth=0):
+
+def cross(data, depth=0):
     #print('\nInto cross lvl{}'.format(depth,),'\n',data)
     tup = []
     if len(data) == 1:
@@ -407,7 +413,7 @@ def cross(data,depth=0):
             tup.append([r])
         return tup
     dat = data[0]
-    ret = cross(data[1:],depth+1)
+    ret = cross(data[1:], depth + 1)
     #print(ret)
     #ret = ret[0]#cross(data[1:],depth+1)[0]
     #print('dat: ',dat)
@@ -419,27 +425,29 @@ def cross(data,depth=0):
     return tup
     #return data
 
-def slurpActions(state,done):
+
+def slurpActions(state, done):
     theRules = []
     #print(state.hist,state.IOAction)
     for rule in state.rules:
         #print(rule.dstField,state.fields)
         #construct path from where to read; valueXpath
-        preState, hist, IOAction, field, ID = findPreState(state,rule,done)
+        preState, hist, IOAction, field, ID = findPreState(state, rule, done)
         if IOAction == 'input':
             if not preState.isMultiModel:
                 valueXpath = '//StateModel//{0}//rec//read//c{1}'.format(hist, field)
             else:
                 valueXpath = '//StateModel//{0}//rec//read//o{1}//c{2}'.format(hist, ID, field)
         else:
-            valueXpath = '//StateModel//{0}//out//write//c{1}'.format(hist, field)#*findPreState(state,rule,done))
+            valueXpath = '//StateModel//{0}//out//write//c{1}'.format(hist, field)  #*findPreState(state,rule,done))
         #print(valueXpath)
         #construct path to where to write; setXpath
-        setXpath = '//StateModel//{0}//out//write//c{1}'.format(str(state.hist),str(state.fields[rule.dstField]))
-        theRules.append(ET.Element('Action',attrib={'type':'slurp','valueXpath':valueXpath, 'setXpath':setXpath}))
+        setXpath = '//StateModel//{0}//out//write//c{1}'.format(str(state.hist), str(state.fields[rule.dstField]))
+        theRules.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': valueXpath, 'setXpath': setXpath}))
     return theRules
 
-def findPreState(state,rule,done):
+
+def findPreState(state, rule, done):
     depth = rule.srcID
     ID = rule.hist.getID(depth)
     while depth != -1:
@@ -460,8 +468,8 @@ def findPreState(state,rule,done):
             print('something wrong while fetching previous state')
             return
 
-def stateAssembler(state, container, model, templates, rules, copyRules, dataRules, UAC=True):
 
+def stateAssembler(state, container, model, templates, rules, copyRules, dataRules, UAC=True):
     #fetch ioAction
     if (UAC == True and 'UAC' in state.getCurState()) or (UAC == False and 'UAC' not in state.getCurState()):
         state.ioAction = 'output'
@@ -489,15 +497,15 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     possibleHists = state.hist.assembleHist(lenHist)
     #normal rules
     for hist in possibleHists:
-        if  hist in rules.keys():
+        if hist in rules.keys():
             state.rules.append(rules[hist])
     #data rules
     for hist in possibleHists:
-        if  hist in dataRules.keys():
+        if hist in dataRules.keys():
             state.dataRules.append(dataRules[hist])
     #copy rules
     for hist in possibleHists:
-        if  hist in copyRules.keys():
+        if hist in copyRules.keys():
             state.copyRules.append(copyRules[hist])
 
     #if state.hist in dataRules.keys():
@@ -508,6 +516,7 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     #print('=====DONESTATE=====', state,state.nextStates, state.isInit(),state.nextHist,'\n')
     appendTodo(container, state)
     return
+
 
 def appendTodo(container, state, endFlag=False):
     if state.hist in container.done.keys():
@@ -528,4 +537,4 @@ def appendTodo(container, state, endFlag=False):
     else:
         #create END state
         end = PeachState(None, state.hist, state.nextHist)
-        appendTodo(container,end,True)
+        appendTodo(container, end, True)
