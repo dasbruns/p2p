@@ -179,7 +179,8 @@ if __name__ == '__main__':
     # [-11] indicates true start xD
     # in case start does not emit symbol on transition
     start = peach.PeachState(prisma.PrismaState(theHistLength * ['START']), None,
-                             prisma.Hist(hist=[[-11]] + (theHistLength - 1) * [[-1]]))
+                             prisma.Hist([[-11]] + (theHistLength - 1) * [[-1]]))
+                             # prisma.Hist(hist=[[-11]] + (theHistLength - 1) * [[-1]]))
     start.nextStates = model.model[start.curState]
     start.isinitial = True
     #fetch possible Templates for this State
@@ -188,6 +189,7 @@ if __name__ == '__main__':
         start.nextHist = start.hist.update(start.templates)
     else:
         start.nextHist = start.hist.update([-1])
+    #print(start.nextHist)
     #print('\n===START===')
     #print(start, start.isInit())
     container.doneadd(start)

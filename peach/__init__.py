@@ -125,9 +125,14 @@ def handleControl(cont, data=False):
 def dataModel(templates):
     pit = PIT()
     root = pit.tree.getroot()
-    #create random dataModel
+    # create random dataModel
     dataModel = ET.Element('DataModel', name='rand')
     dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
+    root.append(dataModel)
+    # create history dataModel
+    dataModel = ET.Element('DataModel', name='hist')
+    dataModel.append(ET.Element('String', name='c2', attrib={'mutable': 'false'}))  # the prePreState's name, a Hist-Obj
+    dataModel.append(ET.Element('String', name='c1', attrib={'mutable': 'false'}))  # the preState's name
     root.append(dataModel)
     for ID in templates.keys():
         dataModel = ET.Element('DataModel', name='[{}]'.format(str(ID)))
@@ -152,26 +157,28 @@ def stateModel(dataPit, done):
     for listOstates in done.values():
         for state in listOstates:
             actionCounter = 0
+            stateName = '{} {}'.format(state.hist,state.curState)
             if state.isInit() == True:
-                stateModel.attrib.update({'initialState': str(state.hist)})
-            peachState = ET.Element('State', name=str(state.hist) + ' ' + str(state.curState))
+                stateModel.attrib.update({'initialState': stateName})
+            peachState = ET.Element('State', name=stateName)
 
             # handle ioActions
-            dataModelIDs = state.hist.theHist[-1]
+            if state.ioAction != 'END':
+                dataModelIDs = state.nextHist.theHist[-1]
             if state.ioAction == 'input':
                 if len(dataModelIDs) > 1 and tuple(dataModelIDs) not in multiModels.keys():
                     multiModels.update({tuple(dataModelIDs): createMultiModel(dataModelIDs)})
                 inputAction = ET.Element('Action', name='in', attrib={'type': 'input'})
-                inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': str(state.hist.theHist[-1])}))
+                inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': str(dataModelIDs)}))
                 peachState.append(inputAction)
                 actionCounter += 1
-            else:
+            elif state.ioAction == 'output':
                 # check here for slurpActions
 
                 # have multiple output options
                 count = 0
                 if len(dataModelIDs) > 1:
-                    outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'rand', 'onStart': 'additionalCode(self,{})'.format(len(dataModelIDs)-1), 'publisher': 'null'})
+                    outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut', 'onStart': 'additionalCode(self,{})'.format(len(dataModelIDs)-1), 'publisher': 'null'})
                     outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                     peachState.append(outputAction)
                     count = len(dataModelIDs)-1
@@ -186,11 +193,36 @@ def stateModel(dataPit, done):
                         outputAction.append(ET.Element('DataModel', attrib={'ref': '[{}]'.format(ID)}))
                     peachState.append(outputAction)
                     actionCounter += 1
+
+            # handle history update
+            histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null', 'name': 'theHist'})
+            histAction.append(ET.Element('DataModel', attrib={'ref': 'hist'}))
+            peachState.append(histAction)
+            if state.isInit():
+                histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null', 'onStart': 'additionalCode.updateHist(self)'})
+                histAction.append(ET.Element('DataModel', attrib={'ref': 'hist', 'name': '{} Hist'.format(stateName)}))
+                peachState.append(histAction)
+                slurpAction = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//{}//theHist//c1'.format(stateName),
+                                                             'setXpath': '//StateModel//hist//c2'})
+                peachState.append(slurpAction)
+                slurpAction = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//{}//{} Hist//c1'.format(stateName, stateName),
+                                                             'setXpath': '//StateModel//hist//c1'})
+                peachState.append(slurpAction)
+            else:
+                slurpAction = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//{}//theHist//c1'.format(stateName),
+                                                           'setXpath': '//StateModel//hist//c2'})
+                peachState.append(slurpAction)
+                histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null', 'onStart': 'additionalCode.updateHist(self)'})
+                histAction.append(ET.Element('DataModel', attrib={'ref': 'hist', 'name': '{} Hist'.format(stateName)}))
+                peachState.append(histAction)
+                slurpAction = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//{}//{} Hist//c1'.format(stateName, stateName),
+                                                           'setXpath': '//StateModel//hist//c1'})
+                peachState.append(slurpAction)
             # handle changeStateActions
             count = 0
             if len(state.nextStates) > 1:
                 count = len(state.nextStates) - 1
-                outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'rand', 'onStart': 'additionalCode(self,{})'.format(len(state.nextStates)-1), 'publisher': 'null'})
+                outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randChange', 'onStart': 'additionalCode(self,{})'.format(len(state.nextStates)-1), 'publisher': 'null'})
                 outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                 peachState.append(outputAction)
             for nxt in state.nextStates:
@@ -476,21 +508,25 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     else:
         state.ioAction = 'input'
 
+    if 'END' == state.getCurState():
+        state.ioAction = 'END'
+
     #fetch emittable Template IDs
     #compute hist of nextStates
     if state.curState in templates.stateToID.keys():
         state.templates = templates.stateToID[state.curState]
         state.nextHist = state.hist.update(state.templates)
         #print(state.nextHist)
-    else:
-        state.nextHist = state.hist.update([-2])
 
     #fetch nextStates
     if state.curState in model.model.keys():
         state.nextStates = model.model[state.curState]
     else:
-        #no nextStates ==>> END STATE
+        # no nextStates ==>> END STATE
+        # handle directly
         state.nextStates = []
+        appendTodo(container, state)
+        return
 
     #fetch rules
     lenHist = len(state.hist.theHist)
@@ -518,23 +554,14 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     return
 
 
-def appendTodo(container, state, endFlag=False):
+def appendTodo(container, state):
     if state.hist in container.done.keys():
-        #print()
-        #print('DUP ',state)
-        #print('ORG ',container.done[state.hist])
-        #print(state == container.done[state.hist])
         for stateDash in container.done[state.hist]:
             if state == stateDash:
                 return
     container.doneadd(state)
-    if endFlag == True:
-        return
     if state.nextStates != []:
         for nextState in state.nextStates:
             nxt = PeachState(nextState, state.hist, state.nextHist)
             container.todoadd(nxt)
-    else:
-        #create END state
-        end = PeachState(None, state.hist, state.nextHist)
-        appendTodo(container, end, True)
+    return

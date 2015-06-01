@@ -63,6 +63,11 @@ def rand(self,num):
     val = self.dataModel.find('a1')
     val.DefaultValue = Variant(num)
 
+def updateHist(self):
+    hist = self.parent.name
+    val = self.dataModel.find('c1')
+    val.DefaultValue = Variant(hist)
+
 def test(self):
     f=open('self','a')
     f.write('self:\n')
