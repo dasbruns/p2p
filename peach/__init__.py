@@ -402,6 +402,7 @@ def computeChangeState(state, postHist, actionCounter, templates):
 #                #print('POST',postHist,len(postHist))
 #                #print()
 #                #print('post',state.postHist)
+
 #                #        #getDiscriminativeFields(postHist.keys(),templates)
 #    return postHist
 
