@@ -74,6 +74,7 @@ def ruleParse(filehandle):
         hist = [[i] for i in hist]
         #NOTE 
         dstID = hist[-1]
+        ruleHist = Hist(hist=hist)
         hist = Hist(hist=hist[:-1])
         srcID = int(line[2].split(':')[1])
         srcField = int(line[3].split(':')[1])
@@ -81,7 +82,7 @@ def ruleParse(filehandle):
         if dataFlag == 1:
             data = line2.split(':')[1].split(',')
             data[-1] = data[-1].strip()
-            dataRules.add(DataRule(hist,srcID,srcField,dstID,dstField,data))
+            dataRules.add(DataRule(hist, ruleHist,srcID,srcField,dstID,dstField,data))
             dataFlag = 0
         #handle ptype accurate
         elif ptypeFlag == 1:
@@ -92,16 +93,16 @@ def ruleParse(filehandle):
                 content = line2[2].split(',')
             else:
                 content = line2[2]
-            copyRules.add(CopyRule(hist,srcID,srcField,dstID,dstField,typ,ptype,content))
+            copyRules.add(CopyRule(hist, ruleHist,srcID,srcField,dstID,dstField,typ,ptype,content))
             ptypeFlag = 0
         elif seqFlag == 1:
             typ = line[5].split(':')[1]
             ptype = None
             content = line2.strip().split(':')[1]
-            copyRules.add(CopyRule(hist,srcID,srcField,dstID,dstField,typ,ptype,content))
+            copyRules.add(CopyRule(hist, ruleHist,srcID,srcField,dstID,dstField,typ,ptype,content))
             seqFlag = 0
         else: #assuming: dataFlag == 0 and ptypeFlag == 0:
-            rules.add(Rule(hist,srcID,srcField,dstID,dstField))
+            rules.add(Rule(hist, ruleHist,srcID,srcField,dstID,dstField))
         line1 = filehandle.readline()
     return rules, copyRules, dataRules, theHistLength
 

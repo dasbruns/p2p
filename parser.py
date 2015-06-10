@@ -100,6 +100,8 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--role', help='set if you are server', action='store_false')
     parser.add_argument('-n', '--name', help='specify name of parsed family')
     parser.add_argument('-v', '--verbose', action='count', help="tells what's currently going on")
+    parser.add_argument('-d', '--debug', action='store_true',
+                        help='enables debug mode; does not produce valid pit files!')
     args = parser.parse_args()
     #print(args)
 
@@ -266,11 +268,11 @@ if __name__ == '__main__':
     pit = peach.dataModel(templates.IDtoTemp)
     if args.verbose: print('Done')
     if args.verbose: print('Processing StateModel ... ', end='', flush=True)
-    pit = peach.stateModel(pit, container.done)
+    pit = peach.stateModel(pit, container.done, args.debug)
     if args.verbose: print('Done')
     if args.verbose: print('Processing Agent/Test area ... ', end='', flush=True)
-    pit = peach.Agent(pit)
-    pit = peach.Test(pit, args.role)
+    pit = peach.agent(pit)
+    pit = peach.test(pit, args.role)
     if args.verbose: print('Done')
     if args.role:
         if args.verbose: print('Write to {0}/pitClient.xml'.format(args.folder))

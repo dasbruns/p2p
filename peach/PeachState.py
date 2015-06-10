@@ -9,7 +9,7 @@ class PeachState(object):
         self.nextHist = None
         #this is TEMPLATE object
         self.templates =  []
-        self.fields = None
+        self.fields = {}
         #these are DIFFERENT RULE objects
         self.rules = []
         self.copyRules = []
@@ -41,6 +41,12 @@ class PeachState(object):
     def isMulti(self):
         return len(self.templates) > 1
 
+    def getRules(self, type):
+       if type == 'rules':
+           return self.rules
+       if type == 'copy':
+           return self.copyRules
+
     # [-11] indicates the start state
     def isInit(self):
         return self.hist.theHist[0] == [-11]
@@ -49,4 +55,10 @@ class PeachState(object):
         return hash(self.hist)
 
     def __eq__(self, obj):
-        return isinstance(obj, PeachState) and self.__dict__ == obj.__dict__
+        if isinstance(obj, PeachState):
+            for key in self.__dict__.keys():
+                if key != 'preHist':
+                    if self.__dict__[key] != obj.__dict__[key]:
+                        return False
+            return True
+        return False  # isinstance(obj, PeachState) and self.__dict__ == obj.__dict__
