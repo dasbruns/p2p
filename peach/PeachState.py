@@ -8,7 +8,7 @@ class PeachState(object):
         self.hist = hist
         self.nextHist = None
         #this is TEMPLATE object
-        self.templates =  []
+        self.templates = []
         self.fields = {}
         #these are DIFFERENT RULE objects
         self.rules = []
@@ -25,7 +25,7 @@ class PeachState(object):
     #    return a
 
     def __str__(self):
-       # if self.hist != None:
+        # if self.hist != None:
         #    return str(self.hist) + ' ' + str( self.curState)
         return str(self.hist) + ' ' + str(self.curState) + ' ' + str(self.templates) + ' ' + str(self.rules) + ' ' + str(self.copyRules) + ' ' + str(self.dataRules) + ' ' + str(self.ioAction)#str(self.preHist) + ' --> ' + str(self.curState)
 
@@ -39,7 +39,7 @@ class PeachState(object):
         return self.curState.getCurState()
 
     def isMulti(self):
-        return len(self.templates) > 1
+        return (len(self.templates) > 1) or (self.ioAction == 'input')
 
     def getRules(self, type):
        if type == 'rules':
