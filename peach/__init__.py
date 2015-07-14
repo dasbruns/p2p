@@ -163,22 +163,23 @@ def dataModel(templates, horizon):
 
 
 def createSpecific(dataModel):
-    # print()
-    # print(dir(dataModel))
-    # print('name= ', dataModel.attrib['name'])
-    dataModel.attrib['name'] = dataModel.attrib['name'] + 'spec'
+    dataModel.set('name', '{}{}'.format(dataModel.attrib['name'], 'spec'))
+    flag = 0
     for child in dataModel.getchildren():
-        # print(child.attrib['token'])
+        if flag == 1:
+            flag = 0
+            continue
         if child.attrib['token'] == 'true':
             child.attrib['token'] = 'false'
         else:
             child.attrib['token'] = 'true'
 
-        if child.getprevious() != None:
-            pass
-            # print(child.getprevious().values())
-    # print(dir(child))
+        if child.attrib['value'] == 'dsmp':
+            child.attrib['token'] = 'false'
+            child.getprevious().attrib['token'] = 'true'
+            flag = 1
     return
+
 
 def createHistModel(horizon):
     dataModel = ET.Element('DataModel', name='hist')
