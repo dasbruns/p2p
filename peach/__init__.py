@@ -183,10 +183,9 @@ def createSpecific(dataModel):
 def createHistModel(horizon):
     dataModel = ET.Element('DataModel', name='hist')
     for i in range(horizon):
-        dataModel.append(ET.Element('String', name='c{}'.format(horizon), attrib={'mutable': 'false', 'value': '-11'}))  # the prePreState's name, a Hist-Obj
+        dataModel.append(ET.Element('String', name='c{}'.format(horizon), attrib={'mutable': 'false', 'value': '-11'}))
         dataModel.append(ET.Element('String', attrib={'mutable': 'false', 'value': '\n'}))
         horizon -= 1
-    #dataModel.append(ET.Element('String', attrib={'mutable': 'false', 'value': '\n'}))
     dataModel.getchildren()[-1].set('value', '\n\n')
     return dataModel
 
@@ -227,12 +226,12 @@ def modelName(modelIDs):
     return modelName[:-3]
 
 
-
 def stateModel(dataPit, done, horizon, DEBUG=False):
     pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
     multiModels = {}
+    dataRuleModels = {}
     for listOstates in done.values():
         for state in listOstates:
             actionCounter = 0
@@ -279,6 +278,24 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                     hasOpts = True
                     actionCounter += 1
 
+                # deal with DataRules
+                if state.dataRules != []:
+                    dataModels, slurps = data(state, dataRuleModels, done, DEBUG)
+
+                    # install dataRule output models
+                    for model in dataModels:
+                        peachState.append(ET.Comment('dataRuleModel {}'.format(model.attrib['name'])))
+                        dataAction = ET.Element('Action', attrib={'type': 'output', 'name': '{}'.format(
+                            model.attrib['name']), 'onStart': 'additionalCode.dataRule(self)', 'publisher': 'null'})
+                        dataAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(model.attrib['name'])}))
+                        peachState.append(dataAction)
+                        actionCounter += 1
+
+                    # slurp from those
+                    for slurp in slurps:
+                        peachState.append(slurp)
+                        actionCounter += 1
+
                 # apply rules
                 for rule in state.rules:
                     rule = rule[0]
@@ -300,11 +317,11 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                     peachState.append(ET.Comment('recursive {}'.format(rule)))
                     slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG, ruleType='copy')
                     cpy = slurp.__copy__()
-                    pimped = pimpMySlurp(cpy, rule.srcID)
                     if rule.srcID == -1:
                         peachState.append(slurp)
                         actionCounter += 1
                     else:
+                        pimped = pimpMySlurp(cpy, rule.srcID)
                         for slurps in pimped:
                             peachState.append(slurps)
                             actionCounter += 1
@@ -335,7 +352,7 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                     actionCounter += 1
 
             # handle history update
-            histAction = updateHist(state, stateName, horizon)
+            histAction = updateHist(stateName, horizon)
             for i in histAction:
                 actionCounter += 1
                 peachState.append(i)
@@ -365,36 +382,62 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
             stateModel.append(peachState)
         #stateModel.append(peachState)
     dataPitRoot = dataPit.tree.getroot()
+    # append multi models
     for ID in multiModels.values():
         dataPitRoot.append(ID)
+    # append dataRule models
+    for model in dataRuleModels.values():
+        dataPitRoot.append(model)
     dataPitRoot.append(pit.tree.getroot().find('StateModel'))
     return dataPit
+
+
+def data(state, dataRuleModels, done, DEBUG=False):
+    models = []
+    slurps = []
+    for ruleList in state.dataRules:
+        curHist = ruleList[0].ruleHist
+        models.append(createDataRuleModel(state, ruleList[0].ruleHist, DEBUG))
+        for rule in ruleList:
+            if rule.ruleHist != curHist:
+                models.append(createDataRuleModel(state, rule.ruleHist, DEBUG))
+            curHist = rule.ruleHist
+            # print(rule.ruleHist, rule.dstField, computeAbsoluteFields(state, rule.ruleHist.getID()[0], rule.dstField), rule.data)
+            models[-1].append(ET.Element('String', name='c{}'.format(computeAbsoluteFields(
+                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(';;;'.join(list(set(rule.data))))))
+            slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
+
+    for model in models:
+        if model.attrib['name'] not in dataRuleModels.keys():
+            dataRuleModels.update({model.attrib['name']: model})
+
+    return models, slurps
+
+
+def createDataRuleModel(state, hist, DEBUG=False):
+    modelName = '{} {}'.format(hist, state.curState)
+    if not DEBUG:
+        modelName = str(base64.b64encode('{} {}'.format(hist, state.curState).encode('ascii')))[2:-1].replace('=', '')
+    drModel = ET.Element('DataModel', name=str(modelName))
+    # choice.append(ET.Element('Block', name='unknown', attrib={'ref': 'MissingNo'}))
+    return drModel
 
 
 def pimpMySlurp(slurp, srcID):
     if srcID == -1:
         return []
-    # print()
-    # print(srcID)
-    # print(slurp.attrib['when'].split('and'))
     # cut it in pieces
     s = slurp.attrib['when'].split(' and ')
     c = "c{}".format(-(srcID+1))
     # identify piece to be pimped
-    for i in s:  # slurp.attrib['when'].split('and'):
+    for i in s:
         if c in i:
             ind = s.index(i)+1
             break
     repl = s[ind].split('or')
-    # print(s[:ind])
-    # print(s[ind + 1:])
     # re-glue the pieces
     pimped = []
     for r in repl:
-        # if r[0] == '(':
-        #     r = r[1:]
-        # if r[-2:] == '))':
-        #     r = r[:-1]
         r = r[1:-1]
         when = s[:ind]+[r]+s[ind + 1:]
         when = ' and '.join(when)
@@ -409,7 +452,7 @@ def pimpMySlurp(slurp, srcID):
     return pimped
 
 
-def updateHist(state, stateName, horizon):
+def updateHist(stateName, horizon):
     update = []
     histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null',
                                               'onStart': 'additionalCode.updateHist(self)'})
@@ -425,31 +468,6 @@ def updateHist(state, stateName, horizon):
         stateName, stateName), 'setXpath': '//StateModel//hist//c1'})
     update.append(slurpAction)
     return update
-    # else:
-    #     # slurpAction = ET.Element('Action',
-    #     #                          attrib={'type': 'slurp', 'valueXpath': '//{}//theHist//c1'.format(stateName),
-    #     #                                  'setXpath': '//StateModel//hist//c2'})
-    #     # peachState.append(slurpAction)
-    #     # actionCounter += 1
-    #     while horizon != 1:
-    #         slurpAction = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//{0}//theHist//c{1}'.format(stateName, horizon - 1),
-    #                                                    'setXpath': '//StateModel//hist//c{}'.format(horizon)})
-    #         update.append(slurpAction)
-    #         horizon -= 1
-    #     histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null',
-    #                                               'onStart': 'additionalCode.updateHist(self)'})
-    #     histAction.append(ET.Element('DataModel', attrib={'ref': 'hist', 'name': '{}Hist'.format(stateName)}))
-    #     update.append(histAction)
-    #     #peachState.append(histAction)
-    #     #actionCounter += 1
-    #     slurpAction = ET.Element('Action', attrib={'type': 'slurp',
-    #                                                'valueXpath': '//{}//{}Hist//c1'.format(stateName,
-    #                                                                                        stateName),
-    #                                                'setXpath': '//StateModel//hist//c1'})
-    #     update.append(slurpAction)
-    #     #  peachState.append(slurpAction)
-    #     #  actionCounter += 1
-    #     return update
 
 
 def assembleCopyRules(state, rule):
@@ -479,83 +497,34 @@ def assembleCopyRules(state, rule):
     return call
 
 
-#manually implement choice elements
-#for data fields in template
-#   compute crossproduct of data fields
-#   and create data set for each tuple
-def data(dataModelID, state):
-    #for i in state.dataRules:
-    #print(i,'DST: ',i.dstField, state.dataFields, state.dataFields[i.dstField])
-    return ''
-    index = 0
-    data = []
-    for dataRule in state.dataRules:
-        data.append([])
-        for d in dataRule.data:
-            if d not in data[index]:
-                data[index].append(d)
-        index += 1
-    #print(data)
-    #upper-bound number of tuples
-    #limit to 4 per position; experimental
-    for i in range(len(data)):
-        if len(data[i]) > 4:
-            data[i] = bound(data[i], 4)
-    #print(data)
-    dat = cross(data)
-    #print(dat)
-    retDat = []
-    for d in dat:
-        data = ET.Element('Data')
-        for i in range(len(d)):
-            #print(state.dataFields[state.dataRules[i].dstField])
-            #unquote field content
-            cont = d[i]
-            if '%' in cont:
-                cont = parse.unquote(cont)
-                #check if there are non-printable characters
-                escCont = ''.join(c for c in cont if c in string.printable)
-                if not escCont == cont:
-                    #deal with 'em
-                    print('WARNING: CONTROLL CHARACTERS IN DATARULE')
-                    print('\tunhandled so far...')
-                    #cont = handleControl(cont,True)
-                    cont = escCont
-            data.append(
-                ET.Element('Field', name='c' + str(state.fields[state.dataRules[i].dstField]), attrib={'value': cont}))
-        retDat.append(data)
-    #print()
-    return dataModel, retDat
+# def bound(data, points):
+#     ret_data = []
+#     for i in range(points):
+#         j = random.randint(0, len(data) - 1)
+#         ret_data.append(data[j])
+#     return ret_data
 
 
-def bound(data, points):
-    ret_data = []
-    for i in range(points):
-        j = random.randint(0, len(data) - 1)
-        ret_data.append(data[j])
-    return ret_data
-
-
-def cross(data, depth=0):
-    #print('\nInto cross lvl{}'.format(depth,),'\n',data)
-    tup = []
-    if len(data) == 1:
-        #print('internal: ',data)
-        for r in data[0]:
-            tup.append([r])
-        return tup
-    dat = data[0]
-    ret = cross(data[1:], depth + 1)
-    #print(ret)
-    #ret = ret[0]#cross(data[1:],depth+1)[0]
-    #print('dat: ',dat)
-    #print('Receiving ret on lvl{}: '.format(depth),ret)
-    for d in dat:
-        for r in ret:
-            #print('internal: ',d,r)
-            tup.append([d] + r)
-    return tup
-    #return data
+# def cross(data, depth=0):
+#     #print('\nInto cross lvl{}'.format(depth,),'\n',data)
+#     tup = []
+#     if len(data) == 1:
+#         #print('internal: ',data)
+#         for r in data[0]:
+#             tup.append([r])
+#         return tup
+#     dat = data[0]
+#     ret = cross(data[1:], depth + 1)
+#     #print(ret)
+#     #ret = ret[0]#cross(data[1:],depth+1)[0]
+#     #print('dat: ',dat)
+#     #print('Receiving ret on lvl{}: '.format(depth),ret)
+#     for d in dat:
+#         for r in ret:
+#             #print('internal: ',d,r)
+#             tup.append([d] + r)
+#     return tup
+#     #return data
 
 def encodeState(state, DEBUG=False):
     if DEBUG:
@@ -578,7 +547,7 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
                 myValueXpath = '//StateModel//{0}//in//c{1}'.format(encState, absoluteSrcField)
             else:
                 myValueXpath = '//StateModel//{0}//in//o{1}//c{2}'.format(encState, ID, absoluteSrcField)
-                myValueXpathSpec = '//StateModel//{0}//in//o{1}spec//c{2}'.format(encState, ID, absoluteSrcField)
+                # myValueXpathSpec = '//StateModel//{0}//in//o{1}spec//c{2}'.format(encState, ID, absoluteSrcField)
         else:
             myValueXpath = '//StateModel//{0}//out{1}//c{2}'.format(encState, ID, absoluteSrcField)
     # compute correct when string here
@@ -609,60 +578,39 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
         return slurp
     return '{} and {}'.format(when, myWhen), '{}{}'.format(valueXpath, myValueXpath)
 
-# def recursiveSlurp(histList, srcID, state, rule, done, DEBUG, count=-1, ruleType = 'rules'):
-#     if histList == []:
-#         return '', ''
-#     encState = encodeState(state, DEBUG)
-#     myValueXpath = ''
-#     if srcID == -1:
-#         ID = rule.ruleHist.getID(rule.srcID)[0]
-#         absoluteSrcField = computeAbsoluteFields(state, ID, rule.srcField)
-#         if state.ioAction == 'input':
-#             if not state.isMulti():
-#                 # actually does not appear
-#                 # now really can't happen
-#                 myValueXpath = '//StateModel//{0}//in//c{1}'.format(encState, absoluteSrcField)
-#             else:
-#                 myValueXpath = '//StateModel//{0}//in//o{1}//c{2}'.format(encState, ID, absoluteSrcField)
-#         else:
-#             myValueXpath = '//StateModel//{0}//out{1}//c{2}'.format(encState, ID, absoluteSrcField)
-#     # compute correct when string here
-#     whenCorrectModel = computeWhenOut(state, histList[-1][0], DEBUG)
-#     if count != 0:
-#         whenCorrectPreState = computeWhenHist(state, count, DEBUG)
-#         myWhen = '{} and {}'.format(whenCorrectModel, whenCorrectPreState)
-#     else:
-#         myWhen = whenCorrectModel
-#     # recall recursive
-#     preState = whosURdaddy(state, done)
-#     if len(preState) == 1:
-#         preState = preState[0]
-#     else:
-#         print('warning you')
-#     when, valueXpath = recursiveSlurp(histList[:-1], srcID + 1, preState, rule, done, DEBUG, count + 1, ruleType)
-#     if count == 0:
-#         valueXpath = '{}{}'.format(valueXpath, myValueXpath)
-#         setXpath = '//StateModel//{}//out{}//c{}'.format(encState, rule.dstID[0], computeAbsoluteFields(
-#             state, rule.ruleHist.getID()[0], rule.dstField))
-#         slurp = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': valueXpath, 'setXpath': setXpath})
-#         when = '{} and {}'.format(when, myWhen)
-#         when = when[5:]
-#         slurp.set('when', when)
-#         if ruleType == 'copy':
-#             call = assembleCopyRules(state, rule)
-#             slurp.set('onComplete', call)
-#         return slurp
-#     return '{} and {}'.format(when, myWhen), '{}{}'.format(valueXpath, myValueXpath)
 
-# def computeWhen(state, preState, prePreState, rule, DEBUG = False):
-#     correctModel = computeWhenOut(state, rule.ruleHist.getID()[0], DEBUG)
-#     correctPre = computeWhenHist(preState, 1, DEBUG)
-#     correctPrePre = computeWhenHist(prePreState, 2, DEBUG)
-#     correctPreModel = computeWhenOut(preState, rule.ruleHist.getID(-2)[0], DEBUG)
-#     correctPrePreModel = computeWhenOut(prePreState, rule.ruleHist.getID(-3)[0], DEBUG)
-#
-#     return '{} and {} and {} and {} and {}'.format(correctModel, correctPre, correctPrePre,
-#                                                    correctPreModel, correctPrePreModel)
+def dataSlurp(state, rule, modelName, done, DEBUG):
+    encState = encodeState(state, DEBUG)
+    ID = rule.ruleHist.getID()[0]
+    absoluteDstField = computeAbsoluteFields(state, ID, rule.dstField)
+    setXpath = '//StateModel//{}//out{}//c{}'.format(encState, ID, absoluteDstField)
+    valueXpath = '//StateModel//{0}//{1}//c{2}'.format(encState, modelName, absoluteDstField)
+    slurp = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': valueXpath, 'setXpath': setXpath})
+
+    # check if correct model is output in this state
+    correctModel = computeWhenOut(state, ID, DEBUG)
+
+    # check if we were in correct preStates
+    daddys = []
+    c = len(state.hist.theHist)
+    s = state
+    while c:
+        # this should be unambiguous
+        # if not ... flee in terror
+        s = whosURdaddy(s, done)[0]
+        daddys.append(s)
+        c -= 1
+    whenHist = ''
+    for i in range(len(daddys)):
+        whenHist = '{} and {}'.format(whenHist, computeWhenHist(daddys[i], i+1, DEBUG))
+
+    # check if correct models have been output in preStates
+    whenPreOut = ''
+    for i in (range(len(daddys))):
+        whenPreOut = '{} and {}'.format(whenPreOut, computeWhenOut(daddys[len(daddys)-i-1],
+                                                                   rule.ruleHist.theHist[i][0], DEBUG))
+    slurp.set('when', '{}{}{}'.format(correctModel, whenHist, whenPreOut))
+    return slurp
 
 
 def computeAbsoluteFields(state, templateID, relativeField):
@@ -697,16 +645,6 @@ def whosURdaddy(state, done):
     preState = done[state.preHist]
     preState = [ps for ps in preState if ps.nextHist == state.hist]
     return preState
-
-def findPreState(state, done):
-    preState = done[state.preHist]
-    preState = [ps for ps in preState if ps.nextHist == state.hist]
-    prePreState = []
-    for pre in preState:
-        prePreState += done[pre.preHist]
-    prePreState = [[pps for pps in prePreState if pps.nextHist == ps.hist] for ps in preState]
-    prePreState = prePreState[0]
-    return preState, prePreState
 
 
 def match(state, ruleList):

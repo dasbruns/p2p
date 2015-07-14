@@ -32,10 +32,10 @@ if __name__ == '__main__':
         print('specified directory not found')
         exit()
 
-    if args.verbose: print('Reading Files...', end='', flush=True)
+    if args.verbose: print('Reading Files ...', end='', flush=True)
     try:
         f = open('{0}/{1}.templates'.format(args.folder, args.name), 'r')
-        if args.verbose > 1: print('\n  \\__Processing Templates...', end='', flush=True)
+        if args.verbose > 1: print('\n  \\__Processing Templates ...', end='', flush=True)
         templates = prisma.templateParse(f)
         f.close()
         if args.verbose > 1: print(' Done\n', end='', flush=True)
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     try:
         f = open('{0}/{1}.rules'.format(args.folder, args.name), 'r')
-        if args.verbose > 1: print('  \\__Processing Rules...', end='', flush=True)
+        if args.verbose > 1: print('  \\__Processing Rules ...', end='', flush=True)
         rules, copyRules, dataRules, theHistLength = prisma.ruleParse(f)
         f.close()
         if args.verbose > 1: print(' Done\n', end='', flush=True)
@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     try:
         f = open('{0}/{1}.markovModel'.format(args.folder, args.name), 'r')
-        if args.verbose > 1: print('  \\__Processing MarkovModel...', end='', flush=True)
+        if args.verbose > 1: print('  \\__processing MarkovModel ...', end='', flush=True)
         model = prisma.markovParse(f)
         f.close()
         if args.verbose: print(' Done\n', end='', flush=True)

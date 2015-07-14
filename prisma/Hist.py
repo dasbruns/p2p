@@ -38,7 +38,6 @@ class Hist(object):
             rep += str(i) + ';'
         return 'Hist(' + rep[:-1] + ')'
 
-
     def __hash__(self):
         #return hash(str(self.prePreTempID)) ^ hash(str(self.preTempID)) ^ hash(str(self.curTempID))
         h = hash(self.theHist[0][0])
@@ -46,18 +45,14 @@ class Hist(object):
             h ^= hash(i[0])
         return h
 
-
     def __eq__(self, obj):
         #return isinstance(obj,Hist) and obj.prePreTempID == self.prePreTempID and obj.preTempID == self.preTempID and obj.curTempID == self.curTempID
         return isinstance(obj, Hist) and obj.theHist == self.theHist
 
-
-        # TODO
-
     def assembleHist(self, lenHist, flag=False):
         allHist = [Hist(lenHist * [-3])]
         remain = self.theHist
-        while (len(remain) != 0):
+        while len(remain) != 0:
             allHist = crossProd(remain[0], allHist)
             remain = remain[1:]
         return allHist
