@@ -176,8 +176,9 @@ def createSpecific(dataModel):
 
         if child.attrib['value'] == 'dsmp':
             child.attrib['token'] = 'false'
-            child.getprevious().attrib['token'] = 'true'
-            flag = 1
+            if child.getprevious() != None:
+                child.getprevious().attrib['token'] = 'true'
+                flag = 1
     return
 
 
@@ -405,7 +406,8 @@ def data(state, dataRuleModels, done, DEBUG=False):
             curHist = rule.ruleHist
             # print(rule.ruleHist, rule.dstField, computeAbsoluteFields(state, rule.ruleHist.getID()[0], rule.dstField), rule.data)
             models[-1].append(ET.Element('String', name='c{}'.format(computeAbsoluteFields(
-                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(';;;'.join(list(set(rule.data))))))
+                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format('AAAAAAAAAAAAAAAAAAAAAAAAAAA;;;BBBBBBBBBBBBBBBBBBBBBBBBBBBBB;;;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC')))
+            # ';;;'.join(list(set(rule.data)))
             slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
 
     for model in models:
@@ -439,7 +441,7 @@ def pimpMySlurp(slurp, srcID):
     # re-glue the pieces
     pimped = []
     for r in repl:
-        r = r[1:-1]
+        # r = r[1:-1]
         when = s[:ind]+[r]+s[ind + 1:]
         when = ' and '.join(when)
         cpy = slurp.__copy__()
@@ -471,31 +473,19 @@ def updateHist(stateName, horizon):
     return update
 
 
-def assembleCopyRules(state, rule):
-    call = ''
-    absoluteDstfield = computeAbsoluteFields(state, rule.dstID[0], rule.dstField)
+def assembleCopyRules(rule):
+    call = 'additionalCode.'
     if 'Complete' in rule.typ:
         s = ''
         for cont in rule.content:
-            s += (cont + ':::')
+            s += (cont + ';;;')
         s = s[:-3]
-        s = "'comp','{0}','c{1}','{2}'".format(rule.ptype, absoluteDstfield, s)
-        s += ';;;'
-        call += s
+        return "{}copyComp(self,'{}','{}')".format(call, rule.ptype, s)
     if 'Partial' in rule.typ:
         # rule.cont here is seperator
-        s = "'part','{0}','c{1}','{2}'".format(rule.ptype, absoluteDstfield, rule.content)
-        s += ';;;'
-        # additionalCode.partialCopy(state,s)
-        call += s
+        return "{}copyPart(self,'{}','{}')".format(call, rule.ptype, rule.content)
     if 'Seq' in rule.typ:
-        s = "'seq','c{0}','{1}'".format(absoluteDstfield, rule.content)
-        s += ';;;'
-        call += s
-    call = call[:-3]
-    call = "additionalCode.manipulate(self,{})".format(call)
-    # additionalCode.manipulate(state,call.split('self,')[1][:-1])
-    return call
+        return "{}copySeq(self,'{}')".format(call, rule.content)
 
 
 # def bound(data, points):
@@ -574,7 +564,7 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
         when = when[5:]
         slurp.set('when', when)
         if ruleType == 'copy':
-            call = assembleCopyRules(state, rule)
+            call = assembleCopyRules(rule)
             slurp.set('onComplete', call)
         return slurp
     return '{} and {}'.format(when, myWhen), '{}{}'.format(valueXpath, myValueXpath)
