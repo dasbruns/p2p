@@ -26,12 +26,6 @@ RULE transition:20;5;14 srcId:0 srcField:-1 dstField:8 type:pulsar.core.rule.Dat
 data:Windows
 RULE transition:20;5;14 srcId:0 srcField:-1 dstField:9 type:pulsar.core.rule.DataRule
 data:7
-RULE transition:14;5;20 srcId:-3 srcField:0 dstField:0 type:rule.CopyPartialRule
-ptype:COPY_THE_PREFIX sep:%3C/title%3E
-RULE transition:5;16;4 srcId:-3 srcField:0 dstField:0 type:rule.CopyPartialRule
-ptype:COPY_THE_SUFFIX sep:%3Cp%3E
-RULE transition:14;5;20 srcId:-3 srcField:2 dstField:0 type:rule.CopyCompleteRule
-ptype:COPY_AS_SUFFIX rest:%3CH1%3E
 RULE transition:20;5;14 srcId:0 srcField:-1 dstField:10 type:pulsar.core.rule.DataRule
 data:Enterprise
 RULE transition:20;5;14 srcId:0 srcField:-1 dstField:11 type:pulsar.core.rule.DataRule
