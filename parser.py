@@ -18,6 +18,8 @@ if __name__ == '__main__':
                         help='enables debug mode; does not produce valid pit files!')
     parser.add_argument('-a', '--address', help='specify which IP Peach uses', default='127.0.0.1')
     parser.add_argument('-p', '--port', help='specify which PORT Peach uses', default='36666')
+    parser.add_argument('-c', '--crazyIvan', help='specify the fraction of mutable fields per model \
+            (should be between 0 and 1)', default='0')
     parser.add_argument('-o', '--outFile', help='specify output file name', default='pit')
     args = parser.parse_args()
 
@@ -239,7 +241,7 @@ if __name__ == '__main__':
 
     if args.verbose > 1: print('Done\n')
     if args.verbose > 1: print('Processing DataModels ... ', end='', flush=True)
-    pit = peach.dataModel(templates.IDtoTemp, theHistLength)
+    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing StateModel ... ', end='', flush=True)
     pit = peach.stateModel(pit, container.done, theHistLength, args.debug)
