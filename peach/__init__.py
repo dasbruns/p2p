@@ -49,7 +49,7 @@ def agent(pit):
     return pit
 
 
-def createContent(ID, dataModel, templates, fuzzyness):
+def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
     count = 0
     for cont in templates[ID].content:
         if random.random() <= float(fuzzyness):
@@ -87,6 +87,12 @@ def createContent(ID, dataModel, templates, fuzzyness):
                     data = ET.Element('Blob', name='c' + str(count),
                                       attrib={'value': cont, 'token': token, 'mutable': mutable, 'valueType': 'hex'})  #,'size':size})
             # maybe it's a number? -> yields the need of knowing the exact size of the number, e.g. 32 bits, 8 bits, etc
+            if data == '':
+                try:
+                    int(cont)
+                    data = ET.Element('Number', name='c' + str(count), attrib={'size': str(bitSize), 'value': cont, 'token': token, 'mutable': mutable})
+                except ValueError:
+                    pass
             # else: put it in a string
             if data == '':
                 # if cont.find('port=') != -1:
@@ -136,7 +142,7 @@ def handleControl(cont, data=False):
     return rmCont
 
 
-def dataModel(templates, horizon, fuzzyness):
+def dataModel(templates, horizon, fuzzyness, bitSize):
     pit = PIT()
     root = pit.tree.getroot()
     # create random dataModel
@@ -155,7 +161,7 @@ def dataModel(templates, horizon, fuzzyness):
 
     for ID in templates.keys():
         dataModel = ET.Element('DataModel', name='{}'.format(str(ID)))
-        isServer = createContent(ID, dataModel, templates, fuzzyness)
+        isServer = createContent(ID, dataModel, templates, fuzzyness, bitSize)
         root.append(dataModel)
         # create specific derivatives of dataModel
         if isServer:

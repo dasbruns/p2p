@@ -23,6 +23,7 @@ if __name__ == '__main__':
             (should be between 0 and 1)', default='0')
     parser.add_argument('-e', '--enhance', action='store_true',
                         help='remove useless states')
+    parser.add_argument('-b', '--bitSize', default=32, help='bitSize of Numbers (should be one of 8, 16 or 32)')
 
     parser.add_argument('-o', '--outFile', help='specify output file name', default='pit')
     args = parser.parse_args()
@@ -250,7 +251,7 @@ if __name__ == '__main__':
 
     if args.verbose > 1: print('Done\n')
     if args.verbose > 1: print('Processing DataModels ... ', end='', flush=True)
-    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan)
+    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.bitSize)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing StateModel ... ', end='', flush=True)
     pit = peach.stateModel(pit, container.done, theHistLength, args.debug)
