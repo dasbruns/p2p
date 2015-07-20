@@ -18,6 +18,13 @@ if __name__ == '__main__':
                         help='enables debug mode; does not produce valid pit files!')
     parser.add_argument('-a', '--address', help='specify which IP Peach uses', default='127.0.0.1')
     parser.add_argument('-p', '--port', help='specify which PORT Peach uses', default='36666')
+
+    parser.add_argument('-c', '--crazyIvan', help='specify the fraction of mutable fields per model \
+            (should be between 0 and 1)', default='0')
+    parser.add_argument('-e', '--enhance', action='store_true',
+                        help='remove useless states')
+    parser.add_argument('-b', '--bitSize', default=32, help='bitSize of Numbers (should be one of 8, 16 or 32)')
+
     parser.add_argument('-o', '--outFile', help='specify output file name', default='pit')
     args = parser.parse_args()
 
@@ -136,6 +143,11 @@ if __name__ == '__main__':
         if args.verbose > 1: print('  \\__processing MarkovModel ...', end='', flush=True)
         model = prisma.markovParse(f)
         f.close()
+        if args.enhance:
+            if args.verbose > 1: print('\n    \\__pruning StateModel ...', end='', flush=True)
+            model.modelEnhancer()
+            # for k,v in model.model.items():
+            #     print(k,v)
         if args.verbose: print(' Done\n', end='', flush=True)
     except FileNotFoundError:
         print('file {0}/{1}.markovModel not found'.format(args.folder, args.name))
@@ -239,7 +251,7 @@ if __name__ == '__main__':
 
     if args.verbose > 1: print('Done\n')
     if args.verbose > 1: print('Processing DataModels ... ', end='', flush=True)
-    pit = peach.dataModel(templates.IDtoTemp, theHistLength)
+    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.bitSize)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing StateModel ... ', end='', flush=True)
     pit = peach.stateModel(pit, container.done, theHistLength, args.debug)
