@@ -38,13 +38,14 @@ def test(pit, role=False, IP='127.0.0.1', port=80):
     return pit
 
 
-def agent(pit):
+def agent(pit, application, fuzzedBin):
     pit.tree.getroot().append(ET.Element('Agent', name='Local'))
     agent = pit.tree.find('Agent')
+    agent.append(ET.Element('Monitor', attrib={'class': 'LinuxCrashMonitor'}))
     monitor = ET.Element('Monitor', attrib={'class': 'Process'})
-    monitor.append(ET.Element('Param', name='Executable', attrib={'value': './server'}))
+    monitor.append(ET.Element('Param', name='Executable', attrib={'value': './{}'.format(application)}))
     monitor.append(ET.Element('Param', name='StartOnCall', attrib={'value': 'Start'}))
-    monitor.append(ET.Element('Param', name='Arguments', attrib={'value': 'fuzzed.bin'}))
+    monitor.append(ET.Element('Param', name='Arguments', attrib={'value': '{}'.format(fuzzedBin)}))
     agent.append(monitor)
     return pit
 

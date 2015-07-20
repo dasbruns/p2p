@@ -24,6 +24,8 @@ if __name__ == '__main__':
     parser.add_argument('-e', '--enhance', action='store_true',
                         help='remove useless states')
     parser.add_argument('-b', '--bitSize', default=32, help='bitSize of Numbers (should be one of 8, 16 or 32)')
+    parser.add_argument('-bin', '--fuzzedBinary', default='pathToKodi', help='location of binary to be fuzzed')
+    parser.add_argument('-app', '--application', default='kodi', help='application to be fuzzed')
 
     parser.add_argument('-o', '--outFile', help='specify output file name', default='pit')
     args = parser.parse_args()
@@ -257,7 +259,7 @@ if __name__ == '__main__':
     pit = peach.stateModel(pit, container.done, theHistLength, args.debug)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing Agent/Test area ... ', end='', flush=True)
-    pit = peach.agent(pit)
+    pit = peach.agent(pit, args.application, args.fuzzedBinary)
     pit = peach.test(pit, args.role, args.address, args.port)
     if args.verbose: print('Done\n')
     if args.role:
