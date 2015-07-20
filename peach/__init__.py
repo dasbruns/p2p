@@ -87,8 +87,8 @@ def createContent(ID, dataModel, templates):
                 # if cont.find('port=') != -1:
                 #     token = 'false'
                 #just a normal string, no non-printables detected
-                data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token, 'mutable':
-                                                                            'false'})
+                data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token,
+                                                                           'mutable': 'false'})
         else:
             #rule field (empty)
             data = ET.Element('String', name='c' + str(count), attrib={'value': 'dsmp', 'token': 'false',
@@ -143,9 +143,13 @@ def dataModel(templates, horizon):
     histModel = createHistModel(horizon)
     root.append(histModel)
 
-    # empty dataModel
+    # unknown dataModel
     dataModel = ET.Element('DataModel', name='MissingNo')
     dataModel.append(ET.Element('String', name='no', attrib={'mutable': 'false', 'value': '', 'token': 'false'}))
+    root.append(dataModel)
+
+    # empty dataModel
+    dataModel = ET.Element('DataModel', name='MissingMo')
     root.append(dataModel)
 
     for ID in templates.keys():
@@ -206,6 +210,7 @@ def createMultiModel(dataModelID):
         multiModel.append(choice)
     # provide 'unknown' template to let communication go on
     choice.append(ET.Element('Block', name='unknown', attrib={'ref': 'MissingNo'}))
+    choice.append(ET.Element('Block', name='None', attrib={'ref': 'MissingMo'}))
     return multiModel
 
 
