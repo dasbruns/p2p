@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 #from PrismaState import PrismaState as P
-import copy
 
 class MarkovModel(object):
 
@@ -30,6 +29,7 @@ class MarkovModel(object):
         self.model[mtrans.curState].append(mtrans.nextState)
 
     def modelEnhancer(self, depth=0):
+        import copy
         goOn = False
         # for k,v in self.model.items():
         #     print(k, '--> ', v)

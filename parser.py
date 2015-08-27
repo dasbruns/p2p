@@ -145,7 +145,8 @@ if __name__ == '__main__':
         if args.verbose > 1: print('  \\__processing MarkovModel ...', end='', flush=True)
         model = prisma.markovParse(f)
         f.close()
-        if args.enhance:
+        # do not enhance
+        if args.enhance and False:
             if args.verbose > 1: print('\n    \\__pruning StateModel ...', end='', flush=True)
             model.modelEnhancer()
             # for k,v in model.model.items():

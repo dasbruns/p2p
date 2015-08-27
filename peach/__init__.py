@@ -14,6 +14,7 @@ from urllib import parse
 # dataModelID to dataModelLength dictionary
 length = {}
 
+
 def test(pit, role=False, IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
@@ -69,31 +70,24 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
             #no-rule field
             if '%' in cont:
                 #unquote encoding...
-                #use blob in peach
-                #data = ET.Element('String', name='c'+str(count), attrib={'value':cont,'token':'true'})
-                #cont = parse.unquote(cont)
                 cont = parse.unquote(cont)
                 #check if there are non-printable characters
                 escCont = ''.join(c for c in cont if c in string.printable)
                 if not escCont == cont:
                     #handle 'em
                     #strip content to pure hex
-                    #model field as hex number; NOT possible.. use BLOB instead
-                    #for sake of ease
                     #cont = handleControl(cont)
                     cont = ' '.join(list(map(lambda x: (x[2:].zfill(2)), list(map(hex, parse.unquote_to_bytes(cont))))))
-                    #size = str(int(len(''.join(cont.split()))/2)*8)
-                    # if cont.find('port=') != -1:
-                    #     token = 'false'
                     data = ET.Element('Blob', name='c' + str(count),
                                       attrib={'value': cont, 'token': token, 'mutable': mutable, 'valueType': 'hex'})  #,'size':size})
             # maybe it's a number? -> yields the need of knowing the exact size of the number, e.g. 32 bits, 8 bits, etc
-            if data == '':
-                try:
-                    int(cont)
-                    data = ET.Element('Number', name='c' + str(count), attrib={'size': str(bitSize), 'value': cont, 'token': token, 'mutable': mutable})
-                except ValueError:
-                    pass
+            # so long a stupid idea
+            # if data == '':
+            #     try:
+            #         int(cont)
+            #         data = ET.Element('Number', name='c' + str(count), attrib={'size': str(bitSize), 'value': cont, 'token': token, 'mutable': mutable})
+            #     except ValueError:
+            #         pass
             # else: put it in a string
             if data == '':
                 # if cont.find('port=') != -1:
@@ -103,7 +97,7 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
                                                                             mutable})
         else:
             #rule field (empty)
-            data = ET.Element('String', name='c' + str(count), attrib={'value': 'dsmp', 'token': 'false',
+            data = ET.Element('String', name='c' + str(count), attrib={'value': '1', 'token': 'false',
                                                                        'mutable': 'true'})
         dataModel.append(data)
         count += 1
@@ -148,7 +142,9 @@ def dataModel(templates, horizon, fuzzyness, bitSize):
     root = pit.tree.getroot()
     # create random dataModel
     dataModel = ET.Element('DataModel', name='rand')
+    dataModel.append(ET.Element('String', name='a', attrib={'value': 'randomNumber: ', 'mutable': 'false'}))
     dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
+    dataModel.append(ET.Element('String', name='c', attrib={'value': '\n', 'mutable': 'false'}))
     root.append(dataModel)
 
     # create history dataModel
@@ -290,7 +286,7 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                 if len(dataModelIDs) > 1:
                     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut',
                                                                 'onStart': 'additionalCode.rand(self,{})'.format(
-                                                                    len(dataModelIDs) - 1), 'publisher': 'null'})
+                                                                    len(dataModelIDs) - 1), 'publisher': 'nullOUT'})
                     outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                     peachState.append(outputAction)
                     count = len(dataModelIDs) - 1
@@ -369,7 +365,8 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                             whenExpression = 'int(self.parent.actions[1].dataModel["a1"].InternalValue) == int({})'.format(
                                 count)
                             outputAction.set('when', whenExpression)
-                            outputAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(ID)}))
+                            outputAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(ID),
+                                                                                'name': 'out{}'.format(ID)}))
                     # apply dataRules
                     if state.dataRules != []:
                         pass
@@ -390,7 +387,7 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                 count = len(state.nextStates) - 1
                 outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randChange',
                                                             'onStart': 'additionalCode.rand(self,{})'.format(
-                                                                len(state.nextStates) - 1), 'publisher': 'null'})
+                                                                len(state.nextStates) - 1), 'publisher': 'nullOUT'})
                 outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                 peachState.append(outputAction)
             for nxt in state.nextStates:
@@ -430,7 +427,7 @@ def data(state, dataRuleModels, done, DEBUG=False):
                 models.append(createDataRuleModel(state, rule.ruleHist, DEBUG))
             curHist = rule.ruleHist
             # print(rule.ruleHist, rule.dstField, computeAbsoluteFields(state, rule.ruleHist.getID()[0], rule.dstField), rule.data)
-            models[-1].append(ET.Element('String', name='c{}'.format(computeAbsoluteFields(
+            models[-1].append(ET.Element('String', attrib={'mutable': 'false'}, name='c{}'.format(computeAbsoluteFields(
                 state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(';;;'.join(list(set(rule.data))))))
             # 'AAAAAAAAAAAAAAAAAAAAAAAAAAA;;;BBBBBBBBBBBBBBBBBBBBBBBBBBBBB;;;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
             slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
@@ -462,12 +459,16 @@ def pimpMySlurp(slurp, srcID, hardcore=False):
         if c in i:
             ind = s.index(i)+1
             break
-    repl = s[ind].split('or')
+    repl = s[ind].split(' or ')
+    if len(repl) <= 1:
+        return [slurp]
+    repl[0] = repl[0][1:]
+    repl[-1] = repl[-1][:-1]
     # re-glue the pieces
     pimped = []
     for r in repl:
-        if hardcore:
-            r = r[1:-1]
+        # if hardcore:
+        #     r = r[1:-1]
         when = s[:ind]+[r]+s[ind + 1:]
         when = ' and '.join(when)
         cpy = slurp.__copy__()
@@ -580,7 +581,10 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
         preState = preState[0]
     else:
         print('warning you')
-    when, valueXpath = recursiveSlurp(histList[:-1], srcID + 1, preState, rule, done, DEBUG, count + 1, ruleType)
+    if preState:
+        when, valueXpath = recursiveSlurp(histList[:-1], srcID + 1, preState, rule, done, DEBUG, count + 1, ruleType)
+    else:
+        return '{}'.format(myWhen), '{}'.format(myValueXpath)
     if count == 0:
         valueXpath = '{}{}'.format(valueXpath, myValueXpath)
         setXpath = '//StateModel//{}//out{}//out{}//c{}'.format(encState, rule.dstID[0], rule.dstID[0],
@@ -588,7 +592,8 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
                                                                                       rule.dstField))
         slurp = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': valueXpath, 'setXpath': setXpath})
         when = '{} and {}'.format(when, myWhen)
-        when = when[5:]
+        if when.startswith(' and '):
+            when = when[5:]
         slurp.set('when', when)
         if ruleType == 'copy':
             call = assembleCopyRules(rule)
@@ -618,6 +623,8 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
         # this should be unambiguous
         # if not ... flee in terror
         s = whosURdaddy(s, done)[0]
+        if not s:
+            break
         daddys.append(s)
         c -= 1
     whenHist = ''
@@ -662,6 +669,8 @@ def computeWhenOut(state, tempID, DEBUG=False):
 
 
 def whosURdaddy(state, done):
+    if state.getCurState() == 'START':
+        return [None]
     preState = done[state.preHist]
     preState = [ps for ps in preState if ps.nextHist == state.hist]
     return preState
