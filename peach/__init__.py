@@ -685,7 +685,7 @@ def match(state, ruleList):
 
 def stateAssembler(state, container, model, templates, rules, copyRules, dataRules, UAC=True):
     #fetch ioAction
-    if (UAC == True and 'UAC' in state.getCurState()) or (UAC == False and 'UAC' not in state.getCurState()):
+    if (UAC and 'UAC' in state.getCurState()) or (not UAC and 'UAC' not in state.getCurState()):
         state.ioAction = 'output'
     else:
         state.ioAction = 'input'
@@ -693,11 +693,11 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     if 'END' == state.getCurState():
         state.ioAction = 'END'
 
-    #fetch emittable Template IDs
-    #compute hist of nextStates
+    # fetch emittable Template IDs
+    # compute hist of nextStates
     if state.curState in templates.stateToID.keys():
         state.templates = templates.stateToID[state.curState]
-        state.nextHist = state.hist.update(state.templates)
+        # state.nextHist = state.hist.update(state.templates)
         #print(state.nextHist)
 
     #fetch fields of the templates
@@ -717,24 +717,46 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     #fetch rules
     lenHist = len(state.hist.theHist)
     possibleHists = state.hist.assembleHist(lenHist)
+    ruleIDs = []
     #normal rules
     for hist in possibleHists:
         if hist in rules.keys():
             rule = match(state, rules[hist])
             if rule:
+                for r in rule:
+                    ruleIDs.append(r.ruleHist.getID())
                 state.rules.append(rule)
     #data rules
     for hist in possibleHists:
         if hist in dataRules.keys():
             rule = match(state, dataRules[hist])
             if rule:
+                for r in rule:
+                    ruleIDs.append(r.ruleHist.getID())
                 state.dataRules.append(rule)
     #copy rules
     for hist in possibleHists:
         if hist in copyRules.keys():
             rule = match(state, copyRules[hist])
             if rule:
+                for r in rule:
+                    ruleIDs.append(r.ruleHist.getID())
                 state.copyRules.append(rule)
+
+    # remove templates with fields which cannot be filled in this context
+    for temp in state.templates[:]:
+        if state.ioAction == 'output' and state.fields[temp]:
+            if temp not in ruleIDs:
+                state.templates.remove(temp)
+                if not state.templates:
+                    # ToDo
+                    # having to remove this state completely
+                    # need to remove the transition to this state in parent state
+                    # if parent then has no more transitions: remove it, too
+                    state.templates = ['XXX']
+
+    # update nextStates hist
+    state.nextHist = state.hist.update(state.templates)
 
     #if state.hist in dataRules.keys():
     #    state.dataRules = dataRules[state.hist]
