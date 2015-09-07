@@ -1,5 +1,9 @@
 class PeachState(object):
-    def __init__(self, curState, preHist, hist):
+    def __init__(self, curState, preHist, hist, parent=None):
+        # ref to parent in graph; each state has exactly one parent
+        # one state may be parent of arbitrary many states (including 0)
+        # parent of initial/start state is None
+        self.parent = parent
         #these are PRISMA states
         self.curState = curState
         self.nextStates = []
@@ -15,14 +19,6 @@ class PeachState(object):
         self.copyRules = []
         self.dataRules = []
         self.ioAction = []
-        #self.isinitial = False
-        #self.isMultiModel = None
-
-    #def copy(self, ID):
-    #    a = PeachState(self.curState, self.preHist)
-    #    a.hist = self.preHist.update([ID])
-    #    a.templates = [ID]
-    #    return a
 
     def __str__(self):
         # if self.hist != None:
@@ -31,9 +27,6 @@ class PeachState(object):
 
     def __repr__(self):
         return 'PeachState {!r} {!r}'.format(self.hist, self.curState)
-
-    #def __eq__(self,obj):
-    #    return isinstance(obj,PeachState) and self.curState == obj.curState and self.hist == obj.hist and self.preHist == obj.preHist
 
     def getCurState(self):
         return self.curState.getCurState()
@@ -57,7 +50,7 @@ class PeachState(object):
     def __eq__(self, obj):
         if isinstance(obj, PeachState):
             for key in self.__dict__.keys():
-                if key != 'preHist':
+                if key != 'preHist' and key != 'parent':
                     if self.__dict__[key] != obj.__dict__[key]:
                         return False
             return True

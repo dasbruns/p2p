@@ -185,7 +185,7 @@ if __name__ == '__main__':
     #print(start, start.isInit())
     container.doneadd(start)
     for nextState in start.nextStates:
-        container.todoadd(peach.PeachState(nextState, start.hist, start.nextHist))
+        container.todoadd(peach.PeachState(nextState, start.hist, start.nextHist, parent=start))
     #print('====================TODO===================')
     #print(container.todo)
     #print('====================DONE===================')

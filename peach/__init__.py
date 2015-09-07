@@ -683,6 +683,7 @@ def match(state, ruleList):
             retList.append(rule)
     return retList
 
+
 def stateAssembler(state, container, model, templates, rules, copyRules, dataRules, UAC=True):
     #fetch ioAction
     if (UAC and 'UAC' in state.getCurState()) or (not UAC and 'UAC' not in state.getCurState()):
@@ -696,7 +697,7 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     # fetch emittable Template IDs
     # compute hist of nextStates
     if state.curState in templates.stateToID.keys():
-        state.templates = templates.stateToID[state.curState]
+        state.templates = templates.stateToID[state.curState][:]
         # state.nextHist = state.hist.update(state.templates)
         #print(state.nextHist)
 
@@ -743,17 +744,28 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
                     ruleIDs.append(r.ruleHist.getID())
                 state.copyRules.append(rule)
 
+    x = []
+    for sublist in ruleIDs:
+        for ID in sublist:
+            x.append(ID)
+    ruleIDs = set(x)
+
+    tmp = state.templates[:]
+
     # remove templates with fields which cannot be filled in this context
     for temp in state.templates[:]:
         if state.ioAction == 'output' and state.fields[temp]:
             if temp not in ruleIDs:
                 state.templates.remove(temp)
                 if not state.templates:
-                    # ToDo
                     # having to remove this state completely
                     # need to remove the transition to this state in parent state
                     # if parent then has no more transitions: remove it, too
-                    state.templates = ['XXX']
+                    checkParent(state, container)
+                    return
+    if not state.templates:
+        checkParent(state, container)
+        return
 
     # update nextStates hist
     state.nextHist = state.hist.update(state.templates)
@@ -768,6 +780,18 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     return
 
 
+def checkParent(state, container):
+    parent = state.parent
+    # state to be checked may be initial state
+    if not parent:
+        return
+    parent.nextStates.remove(state.curState)
+    if not parent.nextStates:
+        container.donerem(parent)
+        checkParent(parent)
+    return
+
+
 def appendTodo(container, state):
     if state.hist in container.done.keys():
         for stateDash in container.done[state.hist]:
@@ -776,6 +800,6 @@ def appendTodo(container, state):
     container.doneadd(state)
     if state.nextStates != []:
         for nextState in state.nextStates:
-            nxt = PeachState(nextState, state.hist, state.nextHist)
+            nxt = PeachState(nextState, state.hist, state.nextHist, parent=state)
             container.todoadd(nxt)
     return
