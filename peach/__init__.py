@@ -54,7 +54,7 @@ def agent(pit, application, fuzzedBin):
 def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
     count = 0
     for cont in templates[ID].content:
-        if random.random() <= float(fuzzyness):
+        if random.random() <= float(fuzzyness) and cont != ' ':
             mutable = 'true'
         else:
             mutable = 'false'
@@ -97,7 +97,7 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
                                                                             mutable})
         else:
             #rule field (empty)
-            data = ET.Element('String', name='c' + str(count), attrib={'value': '1', 'token': 'false',
+            data = ET.Element('String', name='c' + str(count), attrib={'value': '', 'token': 'false',
                                                                        'mutable': 'true'})
         dataModel.append(data)
         count += 1
@@ -140,11 +140,26 @@ def handleControl(cont, data=False):
 def dataModel(templates, horizon, fuzzyness, bitSize):
     pit = PIT()
     root = pit.tree.getroot()
+
     # create random dataModel
     dataModel = ET.Element('DataModel', name='rand')
     dataModel.append(ET.Element('String', name='a', attrib={'value': 'randomNumber: ', 'mutable': 'false'}))
     dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
     dataModel.append(ET.Element('String', name='c', attrib={'value': '\n', 'mutable': 'false'}))
+    root.append(dataModel)
+
+    # create randomChange dataModel
+    dataModel = ET.Element('DataModel', name='randChange')
+    dataModel.append(ET.Element('String', name='a', attrib={'value': 'randomChange: ', 'mutable': 'false'}))
+    dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
+    dataModel.append(ET.Element('String', name='c', attrib={'value': '\n\n', 'mutable': 'false'}))
+    root.append(dataModel)
+
+    # create model for outputting state name
+    dataModel = ET.Element('DataModel', name='enterState')
+    dataModel.append(ET.Element('String', name='a', attrib={'value': '===== entering: ', 'mutable': 'false'}))
+    dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
+    dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
     root.append(dataModel)
 
     # create history dataModel
@@ -186,9 +201,9 @@ def createSpecific(dataModel):
         else:
             child.attrib['token'] = 'true'
 
-        if child.attrib['value'] == 'dsmp':
+        if child.attrib['value'] == '':
             child.attrib['token'] = 'false'
-            if child.getprevious() != None:
+            if child.getprevious() is not None:
                 child.getprevious().attrib['token'] = 'true'
                 flag = 1
     return
@@ -254,6 +269,14 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
             if state.isInit() == True:
                 stateModel.attrib.update({'initialState': stateName})
             peachState = ET.Element('State', name=stateName)
+
+            # tell us where we are
+            # ToDo: DEBUG only
+            current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
+                'additionalCode.name(self)'})
+            current.append(ET.Element('DataModel', attrib={'ref': 'enterState'}))
+            peachState.append(current)
+            actionCounter += 1
 
             # install hist dataModel
             histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'theHist'})
@@ -351,7 +374,7 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                 for ID in dataModelIDs:
                     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'out{}'.format(ID)})
                     if count > 0:
-                        whenExpression = 'int(self.parent.actions[1].dataModel["a1"].InternalValue) == int({})'.format(
+                        whenExpression = 'int(self.parent.actions["randOut"].dataModel["a1"].InternalValue) == int({})'.format(
                             count)
                         outputAction.set('when', whenExpression)
                         outputAction.append(
@@ -362,8 +385,8 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                             outputAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(ID),
                                                                                 'name': 'out{}'.format(ID)}))
                         else:
-                            whenExpression = 'int(self.parent.actions[1].dataModel["a1"].InternalValue) == int({})'.format(
-                                count)
+                            whenExpression = 'int(self.parent.actions["randOut"].dataModel["a1"].InternalValue) == ' \
+                                             'int({})'.format(count)
                             outputAction.set('when', whenExpression)
                             outputAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(ID),
                                                                                 'name': 'out{}'.format(ID)}))
@@ -388,15 +411,17 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                 outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randChange',
                                                             'onStart': 'additionalCode.rand(self,{})'.format(
                                                                 len(state.nextStates) - 1), 'publisher': 'nullOUT'})
-                outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
+                outputAction.append(ET.Element('DataModel', attrib={'ref': 'randChange'}))
                 peachState.append(outputAction)
             for nxt in state.nextStates:
                 stateRef = '{} {}'.format(state.nextHist, nxt)
                 if not DEBUG:
                     stateRef = str(base64.b64encode(stateRef.encode('ascii')))[2:-1].replace('=', '')
                 if count > 0:
-                    whenExpression = 'int(self.parent.actions[{0}].dataModel["a1"].InternalValue) == int({1})'.format(
-                        actionCounter, count)
+                    whenExpression = 'int(self.parent.actions["randChange"].dataModel["a1"].InternalValue) ==' \
+                                                                         ' int({})'.format(count)
+                    # whenExpression = 'int(self.parent.actions[{0}].dataModel["a1"].InternalValue) == int({1})'.format(
+                    #     actionCounter, count)
                     changeAction = ET.Element('Action',
                                               attrib={'type': 'changeState', 'ref': stateRef, 'when': whenExpression})
                     count -= 1
@@ -427,8 +452,14 @@ def data(state, dataRuleModels, done, DEBUG=False):
                 models.append(createDataRuleModel(state, rule.ruleHist, DEBUG))
             curHist = rule.ruleHist
             # print(rule.ruleHist, rule.dstField, computeAbsoluteFields(state, rule.ruleHist.getID()[0], rule.dstField), rule.data)
+            # there seem to be problems with to large strings in PEACH
+            # going to pick subset of possible data
+            # trying to order it and pick first 5 elements
+            dataElements = list(set(rule.data))
+            dataElements.sort()
             models[-1].append(ET.Element('String', attrib={'mutable': 'false'}, name='c{}'.format(computeAbsoluteFields(
-                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(';;;'.join(list(set(rule.data))))))
+                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(';;;'.join(
+                dataElements[:min(5, len(dataElements))]))))
             # 'AAAAAAAAAAAAAAAAAAAAAAAAAAA;;;BBBBBBBBBBBBBBBBBBBBBBBBBBBBB;;;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
             slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
 
@@ -645,23 +676,23 @@ def computeAbsoluteFields(state, templateID, relativeField):
 
 
 def computeWhenHist(state, age, DEBUG=False):
-    return 'str(self.parent.actions[0].dataModel["c{}"].InternalValue) == str("{}")'\
+    return 'str(self.parent.actions["theHist"].dataModel["c{}"].InternalValue) == str("{}")'\
         .format(age, encodeState(state, DEBUG))
 
 
 def computeWhenOut(state, tempID, DEBUG=False):
     if state.ioAction == 'output':
         if state.isMulti():
-            return 'int(StateModel.states["{}"].actions[1].dataModel["a1"].InternalValue) == int({})'\
+            return 'int(StateModel.states["{}"].actions["randOut"].dataModel["a1"].InternalValue) == int({})'\
                 .format(encodeState(state, DEBUG), len(state.templates) - 1 - state.templates.index(tempID))
         else:
             # the state then has only one model that could have been sent
             return '1 == 1'
     else:  # state is input
         if state.isMulti():
-            spec = 'str(StateModel.states["{}"].actions[1].dataModel[0][0][0].referenceName) == str("{}spec")' \
+            spec = 'str(StateModel.states["{}"].actions["in"].dataModel[0][0][0].referenceName) == str("{}spec")' \
                 .format(encodeState(state, DEBUG), tempID)
-            unspec = 'str(StateModel.states["{}"].actions[1].dataModel[0][0][0].referenceName) == str("{}")'\
+            unspec = 'str(StateModel.states["{}"].actions["in"].dataModel[0][0][0].referenceName) == str("{}")'\
                 .format(encodeState(state, DEBUG), tempID)
             return '({} or {})'.format(spec, unspec)
         else:  # the state then has only one model that could have been received

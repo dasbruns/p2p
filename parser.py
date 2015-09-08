@@ -69,6 +69,7 @@ if __name__ == '__main__':
     except FileNotFoundError:
         print('file {0}/{1}.rules not found'.format(args.folder, args.name))
         exit()
+
     # Some stats on learned rules
     # count = 6*[0]
     # print('===========RULES============')
@@ -173,7 +174,7 @@ if __name__ == '__main__':
                              prisma.Hist([[-11]] + (theHistLength - 1) * [[-1]]))
                              # prisma.Hist(hist=[[-11]] + (theHistLength - 1) * [[-1]]))
     start.nextStates = model.model[start.curState]
-    start.isinitial = True
+    # start.isinitial = True
     #fetch possible Templates for this State
     if start.curState in templates.stateToID.keys():
         start.templates = templates.stateToID[start.curState]
@@ -186,10 +187,6 @@ if __name__ == '__main__':
     container.doneadd(start)
     for nextState in start.nextStates:
         container.todoadd(peach.PeachState(nextState, start.hist, start.nextHist, parent=start))
-    #print('====================TODO===================')
-    #print(container.todo)
-    #print('====================DONE===================')
-    #print(container.done)
     #create other states
     while (container.todo != []):
         state = container.todo[0]
@@ -215,37 +212,6 @@ if __name__ == '__main__':
     #        for x in j:
     #            print('\t',x.__dict__)
     #print(len(container.done),len(model.model))
-
-    #unnecessary, done in peach/__init__
-    ##assign rules to state
-    #for state in container.done.values():
-    #    possibleHist = state.hist.assembleHist()
-    #    for hist in possibleHist:
-    #        if state.templates != None:
-    #            if len(state.hist.theHist[-1])>1:
-    #                #state.isMultiModel = True
-    #                if state.fields == None:
-    #                    state.fields = []
-    #                state.fields.append(templates.IDtoTemp[hist.theHist[-1][0]].fields)
-    #            else:
-    #                #state.isMultiModel = False
-    #                state.fields = templates.IDtoTemp[hist.theHist[-1][0]].fields
-    #        if hist in dataRules.keys():
-    #            if state.dataRules == None:
-    #                state.dataRules = []
-    #            state.dataRules += dataRules[hist]
-    #        if hist in rules.keys():
-    #            if state.rules == None:
-    #                state.rules = []
-    #            state.rules += rules[hist]
-    #        if hist in copyRules.keys():
-    #            if state.copyRules == None:
-    #                state.copyRules = []
-    #            if state.rules == None:
-    #                state.rules = []
-    #            state.rules += copyRules[hist]
-    #            state.copyRules += copyRules[hist]
-    #        print(state, state.isMulti())
 
     #for i in container.done.keys():
     #    print(container.done[i])
