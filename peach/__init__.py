@@ -98,7 +98,7 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
         else:
             #rule field (empty)
             data = ET.Element('String', name='c' + str(count), attrib={'value': '', 'token': 'false',
-                                                                       'mutable': 'true'})
+                                                                       'mutable': 'true', 'valueType': 'hex'})
         dataModel.append(data)
         count += 1
     # make sure last field contents twice /r/n
@@ -374,7 +374,8 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                 for ID in dataModelIDs:
                     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'out{}'.format(ID)})
                     if count > 0:
-                        whenExpression = 'int(self.parent.actions["randOut"].dataModel["a1"].InternalValue) == int({})'.format(
+                        # whenExpression = 'int(self.parent.actions["randOut"].dataModel["a1"].InternalValue) == int({})'.format(
+                        whenExpression = 'int(State["randOut"].dataModel["a1"].InternalValue) == int({})'.format(
                             count)
                         outputAction.set('when', whenExpression)
                         outputAction.append(
@@ -385,7 +386,7 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                             outputAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(ID),
                                                                                 'name': 'out{}'.format(ID)}))
                         else:
-                            whenExpression = 'int(self.parent.actions["randOut"].dataModel["a1"].InternalValue) == ' \
+                            whenExpression = 'int(State["randOut"].dataModel["a1"].InternalValue) == ' \
                                              'int({})'.format(count)
                             outputAction.set('when', whenExpression)
                             outputAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(ID),
@@ -418,8 +419,9 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                 if not DEBUG:
                     stateRef = str(base64.b64encode(stateRef.encode('ascii')))[2:-1].replace('=', '')
                 if count > 0:
-                    whenExpression = 'int(self.parent.actions["randChange"].dataModel["a1"].InternalValue) ==' \
-                                                                         ' int({})'.format(count)
+                    # whenExpression = 'int(self.parent.actions["randChange"].dataModel["a1"].InternalValue) ==' \
+                    whenExpression = 'int(State["randChange"].dataModel["a1"].InternalValue) ==' \
+                                             ' int({})'.format(count)
                     # whenExpression = 'int(self.parent.actions[{0}].dataModel["a1"].InternalValue) == int({1})'.format(
                     #     actionCounter, count)
                     changeAction = ET.Element('Action',
@@ -676,23 +678,24 @@ def computeAbsoluteFields(state, templateID, relativeField):
 
 
 def computeWhenHist(state, age, DEBUG=False):
-    return 'str(self.parent.actions["theHist"].dataModel["c{}"].InternalValue) == str("{}")'\
+    # return 'str(self.parent.actions["theHist"].dataModel["c{}"].InternalValue) == str("{}")' \
+    return 'str(State["theHist"].dataModel["c{}"].InternalValue) == str("{}")'\
         .format(age, encodeState(state, DEBUG))
 
 
 def computeWhenOut(state, tempID, DEBUG=False):
     if state.ioAction == 'output':
         if state.isMulti():
-            return 'int(StateModel.states["{}"].actions["randOut"].dataModel["a1"].InternalValue) == int({})'\
+            return 'int(StateModel.states["{}"]["randOut"].dataModel["a1"].InternalValue) == int({})'\
                 .format(encodeState(state, DEBUG), len(state.templates) - 1 - state.templates.index(tempID))
         else:
             # the state then has only one model that could have been sent
             return '1 == 1'
     else:  # state is input
         if state.isMulti():
-            spec = 'str(StateModel.states["{}"].actions["in"].dataModel[0][0][0].referenceName) == str("{}spec")' \
+            spec = 'str(StateModel.states["{}"]["in"].dataModel[0][0][0].referenceName) == str("{}spec")' \
                 .format(encodeState(state, DEBUG), tempID)
-            unspec = 'str(StateModel.states["{}"].actions["in"].dataModel[0][0][0].referenceName) == str("{}")'\
+            unspec = 'str(StateModel.states["{}"]["in"].dataModel[0][0][0].referenceName) == str("{}")'\
                 .format(encodeState(state, DEBUG), tempID)
             return '({} or {})'.format(spec, unspec)
         else:  # the state then has only one model that could have been received

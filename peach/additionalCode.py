@@ -7,7 +7,7 @@ import random
 
 def dataRule(Action):
     sXp = Action.setXpath.split('//')
-    field = Action.parent.actions['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
+    field = Action.parent['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
     val = str(field.InternalValue)
     val = val.split(';;;')
     i = random.randint(0, len(val) - 1)
@@ -17,7 +17,7 @@ def dataRule(Action):
 
 def copySeq(Action, change):
     sXp = Action.setXpath.split('//')
-    field = Action.parent.actions['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
+    field = Action.parent['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
     try:
         val = int(field.InternalValue)
     except TypeError:
@@ -29,7 +29,7 @@ def copySeq(Action, change):
 
 def copyPart(Action, where, seperator):
     sXp = Action.setXpath.split('//')
-    field = Action.parent.actions['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
+    field = Action.parent['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
     val = str(field.InternalValue)
     val = val.split(seperator)
     if 'PREFIX' in where:
@@ -42,7 +42,7 @@ def copyPart(Action, where, seperator):
 
 def copyComp(Action, where, what):
     sXp = Action.setXpath.split('//')
-    field = Action.parent.actions['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
+    field = Action.parent['{}'.format(sXp[3])].dataModel['{}'.format(sXp[5])]
     val = str(field.InternalValue)
     what = what.split(';;;')
     i = random.randint(0, len(what) - 1)
