@@ -98,7 +98,7 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
         else:
             #rule field (empty)
             data = ET.Element('String', name='c' + str(count), attrib={'value': '', 'token': 'false',
-                                                                       'mutable': 'true', 'valueType': 'hex'})
+                                                                       'mutable': 'false'})
         dataModel.append(data)
         count += 1
     # make sure last field contents twice /r/n
@@ -278,11 +278,11 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
             peachState.append(current)
             actionCounter += 1
 
-            # install hist dataModel
-            histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'theHist'})
-            histAction.append(ET.Element('DataModel', attrib={'ref': 'hist'}))
-            peachState.append(histAction)
-            actionCounter += 1
+            # # install hist dataModel
+            # histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'theHist'})
+            # histAction.append(ET.Element('DataModel', attrib={'ref': 'hist'}))
+            # peachState.append(histAction)
+            # actionCounter += 1
 
             # handle ioActions
             if state.ioAction != 'END':
@@ -399,11 +399,11 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
                     peachState.append(outputAction)
                     actionCounter += 1
 
-            # handle history update
-            histAction = updateHist(stateName, horizon)
-            for i in histAction:
-                actionCounter += 1
-                peachState.append(i)
+            # # handle history update
+            # histAction = updateHist(stateName, horizon)
+            # for i in histAction:
+            #     actionCounter += 1
+            #     peachState.append(i)
 
             # handle changeStateActions
             count = 0
@@ -488,10 +488,14 @@ def pimpMySlurp(slurp, srcID, hardcore=False):
     s = slurp.attrib['when'].split(' and ')
     c = "c{}".format(-(srcID+1))
     # identify piece to be pimped
+    # ToDo: messed it up, need to rethink; works for Horizon of length 3
     for i in s:
-        if c in i:
-            ind = s.index(i)+1
+        if ' or ' in i:
+            ind = s.index(i)
             break
+        # if c in i:
+        #     ind = s.index(i)+1
+        #     break
     repl = s[ind].split(' or ')
     if len(repl) <= 1:
         return [slurp]
@@ -603,11 +607,12 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
             myValueXpath = '//StateModel//{0}//out{1}//out{2}//c{3}'.format(encState, ID, ID, absoluteSrcField)
     # compute correct when string here
     whenCorrectModel = computeWhenOut(state, histList[-1][0], DEBUG)
-    if count != 0:
-        whenCorrectPreState = computeWhenHist(state, count, DEBUG)
-        myWhen = '{1} and {0}'.format(whenCorrectModel, whenCorrectPreState)
-    else:
-        myWhen = whenCorrectModel
+    # if count != 0:
+    #     whenCorrectPreState = computeWhenHist(state, count, DEBUG)
+    #     myWhen = '{1} and {0}'.format(whenCorrectModel, whenCorrectPreState)
+    # else:
+    #     myWhen = whenCorrectModel
+    myWhen = whenCorrectModel
     # recall recursive
     preState = whosURdaddy(state, done)
     if len(preState) == 1:
@@ -661,8 +666,8 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
         daddys.append(s)
         c -= 1
     whenHist = ''
-    for i in range(len(daddys)):
-        whenHist = '{} and {}'.format(whenHist, computeWhenHist(daddys[i], i+1, DEBUG))
+    # for i in range(len(daddys)):
+    #     whenHist = '{} and {}'.format(whenHist, computeWhenHist(daddys[i], i+1, DEBUG))
 
     # check if correct models have been output in preStates
     whenPreOut = ''
