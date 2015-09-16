@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
     try:
         f = open('{0}/{1}.markovModel'.format(args.folder, args.name), 'r')
-        if args.verbose > 1: print('  \\__processing MarkovModel ...', end='', flush=True)
+        if args.verbose > 1: print('  \\__Processing MarkovModel ...', end='', flush=True)
         model = prisma.markovParse(f)
         f.close()
         # do not enhance

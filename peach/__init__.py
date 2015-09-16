@@ -94,13 +94,15 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
                 #     token = 'false'
                 #just a normal string, no non-printables detected
                 data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token, 'mutable':
-                                                                            mutable})
+                                                                           mutable})
         else:
             #rule field (empty)
-            data = ET.Element('String', name='c' + str(count), attrib={'value': '', 'token': 'false',
-                                                                       'mutable': 'false'})
+            data = ET.Element('Blob', name='c' + str(count), attrib={'value': '', 'token': 'false',
+                                                                     'mutable': 'false', 'valueType': 'hex'})
         dataModel.append(data)
         count += 1
+    # if not templates[ID].content:
+    #     dataModel.append(ET.Element('String'))
     # make sure last field contents twice /r/n
     if count != 0:
         if cont == '':
