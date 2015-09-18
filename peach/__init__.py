@@ -460,10 +460,10 @@ def data(state, dataRuleModels, done, DEBUG=False):
             # going to pick subset of possible data
             # trying to order it and pick first 5 elements
             dataElements = list(set(rule.data))
-            dataElements.sort()
+            # dataElements.sort() [:min(5, len(dataElements))]
             models[-1].append(ET.Element('String', attrib={'mutable': 'false'}, name='c{}'.format(computeAbsoluteFields(
                 state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(';;;'.join(
-                dataElements[:min(5, len(dataElements))]))))
+                dataElements))))
             # 'AAAAAAAAAAAAAAAAAAAAAAAAAAA;;;BBBBBBBBBBBBBBBBBBBBBBBBBBBBB;;;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
             slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
 
