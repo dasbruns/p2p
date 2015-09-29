@@ -51,9 +51,11 @@ def agent(pit, application, fuzzedBin):
     return pit
 
 
-def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
+def createContent(ID, dataModel, templates, fuzzyness, blob, advanced):
     count = 0
+    mutCount = -1
     for cont in templates[ID].content:
+        mutCount -= 1
         if random.random() <= float(fuzzyness) and cont != ' ':
             mutable = 'true'
         else:
@@ -80,29 +82,29 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
                     cont = ' '.join(list(map(lambda x: (x[2:].zfill(2)), list(map(hex, parse.unquote_to_bytes(cont))))))
                     data = ET.Element('Blob', name='c' + str(count),
                                       attrib={'value': cont, 'token': token, 'mutable': mutable, 'valueType': 'hex'})  #,'size':size})
-            # maybe it's a number? -> yields the need of knowing the exact size of the number, e.g. 32 bits, 8 bits, etc
-            # so long a stupid idea
-            # if data == '':
-            #     try:
-            #         int(cont)
-            #         data = ET.Element('Number', name='c' + str(count), attrib={'size': str(bitSize), 'value': cont, 'token': token, 'mutable': mutable})
-            #     except ValueError:
-            #         pass
             # else: put it in a string
             if data == '':
                 # if cont.find('port=') != -1:
                 #     token = 'false'
                 #just a normal string, no non-printables detected
-                data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token, 'mutable':
-                                                                           mutable})
+                if mutCount == 0 and advanced:
+                    mutable = 'true'
+                    mutCount = -1
+                data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token, 'mutable': mutable})
+                if ':' in cont:
+                    mutCount = 2
         else:
-            #rule field (empty)
-            data = ET.Element('Blob', name='c' + str(count), attrib={'value': '', 'token': 'false',
-                                                                     'mutable': 'false', 'valueType': 'hex'})
+            # rule field (empty)
+            # ToDo: make it mutable again
+            if blob:
+                data = ET.Element('Blob', name='c' + str(count), attrib={'value': '', 'token': 'false',
+                                                                         'mutable': 'true', 'valueType': 'hex'})
+            else:
+                data = ET.Element('String', name='c' + str(count), attrib={'value': '', 'token': 'false',
+                                                                           'mutable': 'true'})
         dataModel.append(data)
         count += 1
-    # if not templates[ID].content:
-    #     dataModel.append(ET.Element('String'))
+    # ToDo: check that
     # make sure last field contents twice /r/n
     if count != 0:
         if cont == '':
@@ -111,17 +113,6 @@ def createContent(ID, dataModel, templates, fuzzyness, bitSize=32):
                     dataModel = dataModel[:-1]
                 dataModel[-1].set('value', '\r\n\r\n')
                 dataModel[-1].set('token', 'true')
-                #elif 'valueType' in dataModel[-1].keys():
-                #    if dataModel[-1].attrib['valueType'] == 'hex':
-                #        if dataModel[-1].attrib['value'][-5:] != '0D 0A':
-                #            if dataModel[-1].attrib['value'][-11:-5] != '0D 0A':
-                #                print(dataModel[-1].attrib['value'])
-                #                print(dataModel[-1].attrib['value'][-11:-5])
-                #                data = ET.Element('String', name='c' + str(count+1), attrib={'value': '\r\n\r\n'})
-                #            else:
-                #                data = ET.Element('String', name='c' + str(count+1), attrib={'value': '\r\n'})
-                #            dataModel.append(data)
-                # #   pass
     return templates[ID].isServer()
 
 
@@ -139,7 +130,7 @@ def handleControl(cont, data=False):
     return rmCont
 
 
-def dataModel(templates, horizon, fuzzyness, bitSize):
+def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False):
     pit = PIT()
     root = pit.tree.getroot()
 
@@ -179,7 +170,7 @@ def dataModel(templates, horizon, fuzzyness, bitSize):
 
     for ID in templates.keys():
         dataModel = ET.Element('DataModel', name='{}'.format(str(ID)))
-        isServer = createContent(ID, dataModel, templates, fuzzyness, bitSize)
+        isServer = createContent(ID, dataModel, templates, fuzzyness, blob, advanced)
         root.append(dataModel)
         # create specific derivatives of dataModel
         if isServer:
@@ -258,7 +249,7 @@ def modelName(modelIDs):
     return modelName[:-3]
 
 
-def stateModel(dataPit, done, horizon, DEBUG=False):
+def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
     pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
@@ -320,7 +311,7 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
 
                 # deal with DataRules
                 if state.dataRules != []:
-                    dataModels, slurps = data(state, dataRuleModels, done, DEBUG)
+                    dataModels, slurps = data(state, dataRuleModels, done, DEBUG, blob)
 
                     # install dataRule output models
                     for model in dataModels:
@@ -445,7 +436,7 @@ def stateModel(dataPit, done, horizon, DEBUG=False):
     return dataPit
 
 
-def data(state, dataRuleModels, done, DEBUG=False):
+def data(state, dataRuleModels, done, DEBUG=False, blob=False):
     models = []
     slurps = []
     for ruleList in state.dataRules:
@@ -461,9 +452,14 @@ def data(state, dataRuleModels, done, DEBUG=False):
             # trying to order it and pick first 5 elements
             dataElements = list(set(rule.data))
             # dataElements.sort() [:min(5, len(dataElements))]
-            models[-1].append(ET.Element('String', attrib={'mutable': 'false'}, name='c{}'.format(computeAbsoluteFields(
-                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(';;;'.join(
-                dataElements))))
+            cont = ';;;'.join(dataElements)
+            if blob:
+                cont = ' '.join(list(map(lambda x: (x[2:].zfill(2)), list(map(hex, parse.unquote_to_bytes(cont))))))
+                models[-1].append(ET.Element('Blob', attrib={'mutable': 'false', 'valueType': 'hex'}, name='c{}'.format(computeAbsoluteFields(
+                    state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(cont)))
+            else:
+                models[-1].append(ET.Element('String', attrib={'mutable': 'false'}, name='c{}'.format(computeAbsoluteFields(
+                    state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(cont)))
             # 'AAAAAAAAAAAAAAAAAAAAAAAAAAA;;;BBBBBBBBBBBBBBBBBBBBBBBBBBBBB;;;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
             slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
 
@@ -515,6 +511,8 @@ def pimpMySlurp(slurp, srcID, hardcore=False):
         if 'spec' in r:
             # print(dir(cpy))
             unspec = cpy.attrib['valueXpath'].split('//')
+            if 'out' in unspec[-2]:
+                continue
             spec = unspec[-2]+'spec'
             cpy.set('valueXpath', '//'.join(unspec[:-2]+[spec]+[unspec[-1]]))
         pimped.append(cpy)
@@ -543,12 +541,12 @@ def assembleCopyRules(rule):
     call = 'additionalCode.'
     if 'Complete' in rule.typ:
         s = ''
-        for cont in rule.content:
+        for cont in set(rule.content):
             s += (cont + ';;;')
         s = s[:-3]
         return "{}copyComp(self,'{}','{}')".format(call, rule.ptype, s)
     if 'Partial' in rule.typ:
-        # rule.cont here is seperator
+        # rule.cont here is separator
         return "{}copyPart(self,'{}','{}')".format(call, rule.ptype, rule.content)
     if 'Seq' in rule.typ:
         return "{}copySeq(self,{})".format(call, rule.content)

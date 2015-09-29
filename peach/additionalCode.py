@@ -49,6 +49,7 @@ def copyComp(Action, where, what):
     val = str(field.InternalValue)
     what = what.split(';;;')
     i = random.randint(0, len(what) - 1)
+    # ToDO: unquote what
     if where == 'PREFIX':
         val += what[i]
     else:

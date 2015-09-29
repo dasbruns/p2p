@@ -23,7 +23,8 @@ if __name__ == '__main__':
             (should be between 0 and 1)', default='0')
     parser.add_argument('-e', '--enhance', action='store_true',
                         help='remove useless states')
-    parser.add_argument('-b', '--bitSize', default=32, help='bitSize of Numbers (should be one of 8, 16 or 32)')
+    parser.add_argument('-b', '--blob', action='store_true', help='decide to encode rule-fields as hex-blobs')
+    parser.add_argument('-adv', '--advanced', action='store_true', help='make certain fields mutable')
     parser.add_argument('-bin', '--fuzzedBinary', default='pathToKodi', help='location of binary to be fuzzed')
     parser.add_argument('-app', '--application', default='kodi', help='application to be fuzzed')
 
@@ -220,10 +221,10 @@ if __name__ == '__main__':
 
     if args.verbose > 1: print('Done\n')
     if args.verbose > 1: print('Processing DataModels ... ', end='', flush=True)
-    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.bitSize)
+    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.blob, args.advanced)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing StateModel ... ', end='', flush=True)
-    pit = peach.stateModel(pit, container.done, theHistLength, args.debug)
+    pit = peach.stateModel(pit, container.done, theHistLength, args.debug, args.blob)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing Agent/Test area ... ', end='', flush=True)
     pit = peach.agent(pit, args.application, args.fuzzedBinary)
