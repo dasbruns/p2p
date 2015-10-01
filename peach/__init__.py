@@ -3,7 +3,7 @@ from .PeachState import PeachState
 from .PeachStateContainer import PeachStateContainer
 from .PIT import PIT
 from lxml import etree as ET
-import random
+import copy
 import string
 import base64
 import random
@@ -537,19 +537,19 @@ def updateHist(stateName, horizon):
     return update
 
 
-def assembleCopyRules(rule):
+def assembleCopyRules(rule, num):
     call = 'additionalCode.'
     if 'Complete' in rule.typ:
         s = ''
         for cont in set(rule.content):
             s += (cont + ';;;')
         s = s[:-3]
-        return "{}copyComp(self,'{}','{}')".format(call, rule.ptype, s)
+        return "{}copyComp(self,'{}','{}','{}')".format(call, rule.ptype, s, num)
     if 'Partial' in rule.typ:
         # rule.cont here is separator
-        return "{}copyPart(self,'{}','{}')".format(call, rule.ptype, rule.content)
+        return "{}copyPart(self,'{}','{}','{}')".format(call, rule.ptype, rule.content, num)
     if 'Seq' in rule.typ:
-        return "{}copySeq(self,{})".format(call, rule.content)
+        return "{}copySeq(self,{},'{}')".format(call, rule.content, num)
 
 
 # def bound(data, points):
@@ -629,13 +629,19 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
                                                                 computeAbsoluteFields(state, rule.ruleHist.getID()[0],
                                                                                       rule.dstField))
         slurp = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': valueXpath, 'setXpath': setXpath})
-        when = '{} and {}'.format(when, myWhen)
+        # when = '{} and {}'.format(when, myWhen)
+        if '1 == 1' in myWhen:
+            i = -1
+        else:
+            i = myWhen.split('int(')[-1][:-1]
         if when.startswith(' and '):
             when = when[5:]
         slurp.set('when', when)
         if ruleType == 'copy':
-            call = assembleCopyRules(rule)
+            call = assembleCopyRules(rule, i)
             slurp.set('onComplete', call)
+        else:
+            slurp.set('onComplete', 'additionalCode.randMan(self,"{}")'.format(i))
         return slurp
     return '{} and {}'.format(when, myWhen), '{}{}'.format(valueXpath, myValueXpath)
 
@@ -652,6 +658,10 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
 
     # check if correct model is output in this state
     correctModel = computeWhenOut(state, ID, DEBUG)
+    if '1 == 1' in correctModel:
+        j = -1
+    else:
+        j = correctModel.split('int(')[-1][:-1]
 
     # check if we were in correct preStates
     daddys = []
@@ -674,7 +684,12 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
     for i in (range(len(daddys))):
         whenPreOut = '{} and {}'.format(whenPreOut, computeWhenOut(daddys[len(daddys)-i-1],
                                                                    rule.ruleHist.theHist[i][0], DEBUG))
-    slurp.set('when', '{}{}{}'.format(correctModel, whenHist, whenPreOut))
+    # slurp.set('when', '{}{}{}'.format(correctModel, whenHist, whenPreOut))
+    when = '{}{}'.format(whenHist, whenPreOut)
+    if when.startswith(' and '):
+        when = when[5:]
+    slurp.set('when', when)
+    slurp.set('onComplete', 'additionalCode.dataRule(self,"{}")'.format(j))
     return slurp
 
 
@@ -736,8 +751,22 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     # fetch emittable Template IDs
     # compute hist of nextStates
     if state.curState in templates.stateToID.keys():
-        state.templates = templates.stateToID[state.curState][:]
-        # state.nextHist = state.hist.update(state.templates)
+        # state.templates = templates.stateToID[state.curState][:]
+        temps = []
+        temps = copy.deepcopy(templates.stateToID[state.curState])
+        for tempID in temps[:]:
+            # if template has no content: remove it
+            if not templates.IDtoTemp[tempID].content:
+                temps.remove(tempID)
+        state.templates = temps
+        # if no templates left, there is no nextState to reach
+        if not temps:
+            checkParent(state, container)
+            # state.nextStates = []
+            # state.ioAction = 'END'
+            # appendTodo(container, state)
+            return
+        state.nextHist = state.hist.update(state.templates)
         #print(state.nextHist)
 
     #fetch fields of the templates
