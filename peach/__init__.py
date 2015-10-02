@@ -259,6 +259,8 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
         for state in listOstates:
             actionCounter = 0
             stateName = encodeState(state, DEBUG)
+            if stateName == 'WzAsIDFdIDsgWzM2LCAzN10gTm9uZS5VQVN8Tm9uZS5VQUM':
+                pass
             if state.isInit() == True:
                 stateModel.attrib.update({'initialState': stateName})
             peachState = ET.Element('State', name=stateName)
@@ -330,24 +332,25 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
                         actionCounter += 1
 
                 # apply rules
-                for rule in state.rules:
-                    rule = rule[0]
-                    peachState.append(ET.Comment('recursive {}'.format(rule)))
-                    slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
-                    cpy = slurp.__copy__()
-                    pimped = pimpMySlurp(cpy, rule.srcID, True)
-                    if rule.srcID == -1:
-                        peachState.append(slurp)
-                        actionCounter += 1
-                    else:
-                        for slurps in pimped:
-                            peachState.append(slurps)
+                for ruleList in state.rules:
+                    # rule = rule[0]
+                    for rule in ruleList:
+                        peachState.append(ET.Comment('exact rule: {}'.format(rule)))
+                        slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
+                        cpy = slurp.__copy__()
+                        pimped = pimpMySlurp(cpy, rule.srcID, True)
+                        if rule.srcID == -1:
+                            peachState.append(slurp)
                             actionCounter += 1
+                        else:
+                            for slurps in pimped:
+                                peachState.append(slurps)
+                                actionCounter += 1
 
                 # then apply advance copyRules
                 for ruleList in state.copyRules:
                     for rule in ruleList:
-                        peachState.append(ET.Comment('recursive {}'.format(rule)))
+                        peachState.append(ET.Comment('advanced rule: {}'.format(rule)))
                         slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID,
                                                state, rule, done, DEBUG, ruleType='copy')
                         cpy = slurp.__copy__()
@@ -469,7 +472,6 @@ def data(state, dataRuleModels, done, DEBUG=False, blob=False):
 
     return models, slurps
 
-
 def createDataRuleModel(state, hist, DEBUG=False):
     modelName = '{} {}'.format(hist, state.curState)
     if not DEBUG:
@@ -478,8 +480,35 @@ def createDataRuleModel(state, hist, DEBUG=False):
     # choice.append(ET.Element('Block', name='unknown', attrib={'ref': 'MissingNo'}))
     return drModel
 
-
 def pimpMySlurp(slurp, srcID, hardcore=False):
+    whens = slurp.attrib['when'].split(' and ')
+    sourceState = slurp.attrib['valueXpath'].split('//')[2]
+
+    for part in whens:
+        if sourceState in part:
+            if '"in"' in part:
+                parts = part.split(' or ')
+                parts[0] = parts[0][1:]
+                parts[1] = parts[1][:-1]
+                ind = whens.index(part)
+                whens[ind] = parts[0]
+                # whenSpec = whens[0] + ' and ' + parts[0]
+                whenSpec = ' and '.join(whens)
+                whens[ind] = parts[1]
+                # when = whens[0] + ' and ' + parts[1]
+                when = ' and '.join(whens)
+                specSlurp = slurp.__copy__()
+                specVXP = specSlurp.attrib['valueXpath'].split('//')
+                specVXP[5] = specVXP[5]+'spec'
+                specVXP = '//'.join(specVXP)
+                specSlurp.set('valueXpath', specVXP)
+                specSlurp.set('when', whenSpec)
+                slurp.set('when', when)
+                return [slurp, specSlurp]
+
+    return [slurp]
+
+def pimpMySlurpOLD(slurp, srcID, hardcore=False):
     if srcID == -1:
         return []
     # cut it in pieces
