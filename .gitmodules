@@ -1,0 +1,3 @@
+[submodule "PrismaIO"]
+	path = PrismaIO
+	url = https://github.com/dasbruns/PrismaIO.git

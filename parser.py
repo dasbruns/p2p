@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import prisma
+import PrismaIO
 import peach
 import argparse
 import os
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     try:
         f = open('{0}/{1}.templates'.format(args.folder, args.name), 'r')
         if args.verbose > 1: print('\n  \\__Processing Templates ...', end='', flush=True)
-        templates = prisma.templateParse(f)
+        templates = PrismaIO.templateParse(f)
         f.close()
         if args.verbose > 1: print(' Done\n', end='', flush=True)
     except FileNotFoundError:
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     try:
         f = open('{0}/{1}.rules'.format(args.folder, args.name), 'r')
         if args.verbose > 1: print('  \\__Processing Rules ...', end='', flush=True)
-        rules, copyRules, dataRules, theHistLength = prisma.ruleParse(f)
+        rules, copyRules, dataRules, theHistLength = PrismaIO.ruleParse(f)
         f.close()
         if args.verbose > 1: print(' Done\n', end='', flush=True)
     except FileNotFoundError:
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     #     for rule in dr[i]:
     #         # print([rule.ruleHist.getID(-2), rule.ruleHist.getID(-1)])
     #         # print(rule, rule.ruleHist, rule.ruleHist.getID(-2), rule.ruleHist.getID(-1))
-    #         x = prisma.Hist(hist=[rule.ruleHist.getID(-2), rule.ruleHist.getID(-1)])
+    #         x = PrismaIO.Hist(hist=[rule.ruleHist.getID(-2), rule.ruleHist.getID(-1)])
     #         if x not in histDict.keys():
     #             histDict.update({x: [rule]})
     #         else:
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     try:
         f = open('{0}/{1}.markovModel'.format(args.folder, args.name), 'r')
         if args.verbose > 1: print('  \\__Processing MarkovModel ...', end='', flush=True)
-        model = prisma.markovParse(f)
+        model = PrismaIO.markovParse(f)
         f.close()
         # do not enhance
         if args.enhance and False:
@@ -159,9 +159,9 @@ if __name__ == '__main__':
         exit()
     #print('=============MARKOVMODEL================')
     #for i,j in model.model.items():
-    #l.append(peach.InterStates(i,prisma.Hist(1,2,3)))
+    #l.append(peach.InterStates(i,PrismaIO.Hist(1,2,3)))
     #print(i,j)
-    #print(model.model[prisma.PrismaState('START','START')])
+    #print(model.model[PrismaIO.PrismaState('START','START')])
 
     if args.verbose: print('\nInternal Dataprocessing ... ', end='', flush=True)
     #gap to peach
@@ -171,9 +171,9 @@ if __name__ == '__main__':
     #create first state
     # [-11] indicates true start xD
     # in case start does not emit symbol on transition
-    start = peach.PeachState(prisma.PrismaState(theHistLength * ['START']), None,
-                             prisma.Hist([[-11]] + (theHistLength - 1) * [[-1]]))
-                             # prisma.Hist(hist=[[-11]] + (theHistLength - 1) * [[-1]]))
+    start = peach.PeachState(PrismaIO.PrismaState(theHistLength * ['START']), None,
+                             PrismaIO.Hist([[-11]] + (theHistLength - 1) * [[-1]]))
+                             # PrismaIO.Hist(hist=[[-11]] + (theHistLength - 1) * [[-1]]))
     start.nextStates = model.model[start.curState]
     # start.isinitial = True
     #fetch possible Templates for this State
