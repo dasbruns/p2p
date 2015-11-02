@@ -94,13 +94,15 @@ def createContent(ID, dataModel, templates, fuzzyness, blob, advanced):
                 if ':' in cont:
                     mutCount = 2
         else:
-            # rule field (empty)
-            # ToDo: make it mutable again
+            # rule field (defaultValue: good question)
+            # ToDo consider thinking of better defaultValue
+            value = '1337133811'
             if blob:
-                data = ET.Element('Blob', name='c' + str(count), attrib={'value': '', 'token': 'false',
+                value = ' '.join(list(map(lambda x: (x[2:].zfill(2)), list(map(hex, parse.unquote_to_bytes(value))))))
+                data = ET.Element('Blob', name='c' + str(count), attrib={'value': value, 'token': 'false',
                                                                          'mutable': 'true', 'valueType': 'hex'})
             else:
-                data = ET.Element('String', name='c' + str(count), attrib={'value': '', 'token': 'false',
+                data = ET.Element('String', name='c' + str(count), attrib={'value': value, 'token': 'false',
                                                                            'mutable': 'true'})
         dataModel.append(data)
         count += 1
@@ -258,8 +260,12 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
     for listOstates in done.values():
         for state in listOstates:
             actionCounter = 0
+            state.name = encodeState(state, DEBUG)
             stateName = encodeState(state, DEBUG)
-            if stateName == 'WzAsIDFdIDsgWzM2LCAzN10gTm9uZS5VQVN8Tm9uZS5VQUM':
+            # if stateName == 'WzAsIDFdIDsgWzM2LCAzN10gTm9uZS5VQVN8Tm9uZS5VQUM':
+            if stateName == 'WzI3XTtbMzYsIDM3XSBOb25lLlVBU3xOb25lLlVBQw':
+                pass
+            if stateName == 'WzAsIDFdO1szNiwgMzddIE5vbmUuVUFTfE5vbmUuVUFD':
                 pass
             if state.isInit() == True:
                 stateModel.attrib.update({'initialState': stateName})

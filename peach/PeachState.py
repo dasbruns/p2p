@@ -4,6 +4,7 @@ class PeachState(object):
         # one state may be parent of arbitrary many states (including 0)
         # parent of initial/start state is None
         self.parent = parent
+        self.name = None
         #these are PRISMA states
         self.curState = curState
         self.nextStates = []
