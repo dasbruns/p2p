@@ -221,7 +221,7 @@ if __name__ == '__main__':
 
     if args.verbose > 1: print('Done\n')
     if args.verbose > 1: print('Processing DataModels ... ', end='', flush=True)
-    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.blob, args.advanced)
+    pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.blob, args.advanced, args.role)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing StateModel ... ', end='', flush=True)
     pit = peach.stateModel(pit, container.done, theHistLength, args.debug, args.blob)

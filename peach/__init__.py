@@ -132,7 +132,7 @@ def handleControl(cont, data=False):
     return rmCont
 
 
-def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False):
+def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=True):
     pit = PIT()
     root = pit.tree.getroot()
 
@@ -173,6 +173,8 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False):
     for ID in templates.keys():
         dataModel = ET.Element('DataModel', name='{}'.format(str(ID)))
         isServer = createContent(ID, dataModel, templates, fuzzyness, blob, advanced)
+        if not role:
+            isServer = not isServer
         root.append(dataModel)
         # create specific derivatives of dataModel
         if isServer:
@@ -891,7 +893,7 @@ def checkParent(state, container):
     parent.nextStates.remove(state.curState)
     if not parent.nextStates:
         container.donerem(parent)
-        checkParent(parent)
+        checkParent(parent, container)
     return
 
 
