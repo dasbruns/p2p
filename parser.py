@@ -56,10 +56,16 @@ if __name__ == '__main__':
     #for i,j in templates.IDtoTemp.items():
     #    print(i,j)
     ##    pass
-    #print('=============STATE2ID===============')
-    #for i,j in templates.stateToID.items():
-    ##    pass
-    #    print(i,j)
+    # print('=============STATE2ID===============')
+    # for i,j in templates.stateToID.items():
+    # #    pass
+    #     print(i,j)
+
+    tmp = sorted([i for i in zip(templates.stateToID.values(), templates.stateToID.keys())])
+    templateID2stateName = []
+    for tup in tmp:
+        for ID in tup[0]:
+            templateID2stateName.append(tup[1])
 
     try:
         f = open('{0}/{1}.rules'.format(args.folder, args.name), 'r')
@@ -70,6 +76,29 @@ if __name__ == '__main__':
     except FileNotFoundError:
         print('file {0}/{1}.rules not found'.format(args.folder, args.name))
         exit()
+
+    #gosh
+    rulesReloaded = {}
+    for i in rules.keys():
+        for j in rules[i]:
+            ID = j.ruleHist.getID()[0]
+            if ID not in rulesReloaded.keys():
+                rulesReloaded[ID] = []
+            rulesReloaded[ID].append(j)
+    dataRulesReloaded = {}
+    for i in dataRules.keys():
+        for j in dataRules[i]:
+            ID = j.ruleHist.getID()[0]
+            if ID not in dataRulesReloaded.keys():
+                dataRulesReloaded[ID] = []
+            dataRulesReloaded[ID].append(j)
+    copyRulesReloaded = {}
+    for i in copyRules.keys():
+        for j in copyRules[i]:
+            ID = j.ruleHist.getID()[0]
+            if ID not in copyRulesReloaded.keys():
+                copyRulesReloaded[ID] = []
+            copyRulesReloaded[ID].append(j)
 
     # Some stats on learned rules
     # count = 6*[0]
@@ -171,23 +200,25 @@ if __name__ == '__main__':
     #create first state
     # [-11] indicates true start xD
     # in case start does not emit symbol on transition
-    start = peach.PeachState(PrismaIO.PrismaState(theHistLength * ['START']), None,
-                             PrismaIO.Hist([[-11]] + (theHistLength - 1) * [[-1]]))
+    #start = peach.PeachState(PrismaIO.PrismaState(theHistLength * ['START']), None,
+    #                         PrismaIO.Hist([[-11]] + (theHistLength - 1) * [[-1]]))
                              # PrismaIO.Hist(hist=[[-11]] + (theHistLength - 1) * [[-1]]))
+    start = peach.PeachStateReloaded(PrismaIO.PrismaState(theHistLength * ['START']), parent=None, init=True)
     start.nextStates = model.model[start.curState]
     # start.isinitial = True
     #fetch possible Templates for this State
     if start.curState in templates.stateToID.keys():
         start.templates = templates.stateToID[start.curState]
-        start.nextHist = start.hist.update(start.templates)
-    else:
-        start.nextHist = start.hist.update([-1])
+        # start.nextHist = start.hist.update(start.templates)
+    # else:
+        # start.nextHist = start.hist.update([-1])
     #print(start.nextHist)
     #print('\n===START===')
     #print(start, start.isInit())
     container.doneadd(start)
     for nextState in start.nextStates:
-        container.todoadd(peach.PeachState(nextState, start.hist, start.nextHist, parent=start))
+        # container.todoadd(peach.PeachState(nextState, start.hist, start.nextHist, parent=start))
+        container.todoadd(peach.PeachStateReloaded(nextState, parent=start))
     #create other states
     while (container.todo != []):
         state = container.todo[0]
@@ -199,7 +230,7 @@ if __name__ == '__main__':
         #        #multiAssembler(state, hist, container, model, templates)
         #       stateAssembler(peach.createInterState(state.curState,state.preHist), container, model, templates)
         #    continue
-        peach.stateAssembler(state, container, model, templates, rules, copyRules, dataRules, args.role)
+        peach.stateAssembler(state, container, model, templates, rulesReloaded, copyRulesReloaded, dataRulesReloaded, args.role)
         #print(model.model)
         #print(len(container.done) ==len(model.model))
         #for i in container.done.values():
@@ -219,12 +250,26 @@ if __name__ == '__main__':
     #    print()
     #print(len(container.done),len(model.model))
 
+    for stateList in container.done.values():
+        for state in stateList:
+            if state.previous:
+                for prev in state.previous:
+                    prev.next.append(state)
+    for stateList in container.done.values():
+        for state in stateList:
+            for s in state.previous:
+                print(s, end=' ')
+            print('-->', state, '-->', end='')
+            for s in state.next:
+                print(s, end=' ')
+            print()
+            print()
     if args.verbose > 1: print('Done\n')
     if args.verbose > 1: print('Processing DataModels ... ', end='', flush=True)
     pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.blob, args.advanced, args.role)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing StateModel ... ', end='', flush=True)
-    pit = peach.stateModel(pit, container.done, theHistLength, args.debug, args.blob)
+    pit = peach.stateModel(pit, container.done, theHistLength, templateID2stateName, args.debug, args.blob)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing Agent/Test area ... ', end='', flush=True)
     pit = peach.agent(pit, args.application, args.fuzzedBinary)

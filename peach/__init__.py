@@ -1,5 +1,6 @@
 # import prisma.Hist
 from .PeachState import PeachState
+from .PeachStateReloaded import PeachStateReloaded
 from .PeachStateContainer import PeachStateContainer
 from .PIT import PIT
 from lxml import etree as ET
@@ -11,8 +12,11 @@ from urllib import parse
 
 # testing purpose import
 # from .additionalCode import manipulate
+
 # dataModelID to dataModelLength dictionary
-length = {}
+# insert empty template with length 0 manually
+length = {"''": 0}
+tempID2StateMap = []
 
 
 def test(pit, role=False, IP='127.0.0.1', port=80):
@@ -238,7 +242,8 @@ def order4Length(list):
     l = []
     ordered = []
     for item in list:
-        l.append(length[int(item)])
+        if item != "''":
+            l.append(length[int(item)])
     while list != []:
         ind = l.index(min(l))
         ordered.append(list.pop(ind))
@@ -253,12 +258,14 @@ def modelName(modelIDs):
     return modelName[:-3]
 
 
-def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
+def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=False):
     pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
     multiModels = {}
     dataRuleModels = {}
+    global tempID2StateMap
+    tempID2StateMap = templatesID2stateName
     for listOstates in done.values():
         for state in listOstates:
             actionCounter = 0
@@ -289,7 +296,8 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
 
             # handle ioActions
             if state.ioAction != 'END':
-                dataModelIDs = state.nextHist.getID()
+                # dataModelIDs = state.nextHist.getID()
+                dataModelIDs = state.templates
                 # dataModelIDs = state.nextHist.theHist[-1]
             if state.ioAction == 'input':
                 histActionNumber = actionCounter
@@ -340,40 +348,40 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
                         actionCounter += 1
 
                 # apply rules
-                for ruleList in state.rules:
-                    # rule = rule[0]
-                    for rule in ruleList:
-                        peachState.append(ET.Comment('exact rule: {}'.format(rule)))
-                        slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
-                        cpy = slurp.__copy__()
-                        pimped = pimpMySlurp(cpy, rule.srcID, True)
-                        if rule.srcID == -1:
-                            peachState.append(slurp)
+                # for ruleList in state.rules:
+                #     # rule = rule[0]
+                for rule in state.rules:
+                    peachState.append(ET.Comment('exact rule: {}'.format(rule)))
+                    slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
+                    cpy = slurp.__copy__()
+                    pimped = pimpMySlurp(cpy, rule.srcID, True)
+                    if rule.srcID == -1:
+                        peachState.append(slurp)
+                        actionCounter += 1
+                    else:
+                        for slurps in pimped:
+                            peachState.append(slurps)
                             actionCounter += 1
-                        else:
-                            for slurps in pimped:
-                                peachState.append(slurps)
-                                actionCounter += 1
 
                 # then apply advance copyRules
-                for ruleList in state.copyRules:
-                    for rule in ruleList:
-                        peachState.append(ET.Comment('advanced rule: {}'.format(rule)))
-                        slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID,
-                                               state, rule, done, DEBUG, ruleType='copy')
-                        cpy = slurp.__copy__()
-                        if rule.srcID % 2 == 1:
-                            peachState.append(slurp)
+                # for ruleList in state.copyRules:
+                for rule in state.copyRules:
+                    peachState.append(ET.Comment('advanced rule: {}'.format(rule)))
+                    slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID,
+                                           state, rule, done, DEBUG, ruleType='copy')
+                    cpy = slurp.__copy__()
+                    if rule.srcID % 2 == 1:
+                        peachState.append(slurp)
+                        actionCounter += 1
+                    else:
+                        pimped = pimpMySlurp(cpy, rule.srcID, True)
+                        # if dunno:
+                        #     pimped = pimpMySlurp(cpy, rule.srcID, True)
+                        # else:
+                        #     pimped = pimpMySlurp(cpy, rule.srcID)
+                        for slurps in pimped:
+                            peachState.append(slurps)
                             actionCounter += 1
-                        else:
-                            pimped = pimpMySlurp(cpy, rule.srcID, True)
-                            # if dunno:
-                            #     pimped = pimpMySlurp(cpy, rule.srcID, True)
-                            # else:
-                            #     pimped = pimpMySlurp(cpy, rule.srcID)
-                            for slurps in pimped:
-                                peachState.append(slurps)
-                                actionCounter += 1
 
                 for ID in dataModelIDs:
                     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'out{}'.format(ID)})
@@ -419,7 +427,8 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
                 outputAction.append(ET.Element('DataModel', attrib={'ref': 'randChange'}))
                 peachState.append(outputAction)
             for nxt in state.nextStates:
-                stateRef = '{} {}'.format(state.nextHist, nxt)
+                # stateRef = '{} {}'.format(state.nextHist, nxt)
+                stateRef = '{}'.format(nxt)
                 if not DEBUG:
                     stateRef = str(base64.b64encode(stateRef.encode('ascii')))[2:-1].replace('=', '')
                 if count > 0:
@@ -620,8 +629,8 @@ def assembleCopyRules(rule, num):
 
 def encodeState(state, DEBUG=False):
     if DEBUG:
-        return '{} {}'.format(state.hist, state.curState)
-    return str(base64.b64encode('{} {}'.format(state.hist, state.curState).encode('ascii')))[2:-1].replace('=', '')
+        return '{}'.format(state.curState)
+    return str(base64.b64encode('{}'.format(state.curState).encode('ascii')))[2:-1].replace('=', '')
 
 
 def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, ruleType = 'rules'):
@@ -789,7 +798,6 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     # compute hist of nextStates
     if state.curState in templates.stateToID.keys():
         # state.templates = templates.stateToID[state.curState][:]
-        temps = []
         temps = copy.deepcopy(templates.stateToID[state.curState])
         for tempID in temps[:]:
             # if template has no content: remove it
@@ -797,13 +805,13 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
                 temps.remove(tempID)
         state.templates = temps
         # if no templates left, there is no nextState to reach
-        if not temps:
-            checkParent(state, container)
-            # state.nextStates = []
-            # state.ioAction = 'END'
-            # appendTodo(container, state)
-            return
-        state.nextHist = state.hist.update(state.templates)
+        # if not temps:
+        #     checkParent(state, container)
+        #     # state.nextStates = []
+        #     # state.ioAction = 'END'
+        #     # appendTodo(container, state)
+        #     return
+        # state.nextHist = state.hist.update(state.templates)
         #print(state.nextHist)
 
     #fetch fields of the templates
@@ -820,60 +828,69 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
         appendTodo(container, state)
         return
 
-    #fetch rules
-    lenHist = len(state.hist.theHist)
-    possibleHists = state.hist.assembleHist(lenHist)
-    ruleIDs = []
+    #ToDO: fetch rules
+    # lenHist = len(state.hist.theHist)
+    # possibleHists = state.hist.assembleHist(lenHist)
+    # ruleIDs = []
     #normal rules
-    for hist in possibleHists:
-        if hist in rules.keys():
-            rule = match(state, rules[hist])
-            if rule:
-                for r in rule:
-                    ruleIDs.append(r.ruleHist.getID())
-                state.rules.append(rule)
-    #data rules
-    for hist in possibleHists:
-        if hist in dataRules.keys():
-            rule = match(state, dataRules[hist])
-            if rule:
-                for r in rule:
-                    ruleIDs.append(r.ruleHist.getID())
-                state.dataRules.append(rule)
-    #copy rules
-    for hist in possibleHists:
-        if hist in copyRules.keys():
-            rule = match(state, copyRules[hist])
-            if rule:
-                for r in rule:
-                    ruleIDs.append(r.ruleHist.getID())
-                state.copyRules.append(rule)
+    for tempID in state.templates:
+        if tempID in rules.keys():
+            for r in rules[tempID]:
+                state.rules.append(r)
+    # for hist in possibleHists:
+    #     if hist in rules.keys():
+    #         rule = match(state, rules[hist])
+    #         if rule:
+    #             for r in rule:
+    #                 ruleIDs.append(r.ruleHist.getID())
+    #             state.rules.append(rule)
+    # #data rules
+    for tempID in state.templates:
+        if tempID in dataRules.keys():
+            for r in dataRules[tempID]:
+                state.rules.append(r)
+    # for hist in possibleHists:
+    #     if hist in dataRules.keys():
+    #         rule = match(state, dataRules[hist])
+    #         if rule:
+    #             for r in rule:
+    #                 ruleIDs.append(r.ruleHist.getID())
+    #             state.dataRules.append(rule)
+    # #copy rules
+    for tempID in state.templates:
+        if tempID in copyRules.keys():
+            for r in copyRules[tempID]:
+                state.copyRules.append(r)
+    # for hist in possibleHists:
+    #     if hist in copyRules.keys():
+    #         rule = match(state, copyRules[hist])
+    #         if rule:
+    #             for r in rule:
+    #                 ruleIDs.append(r.ruleHist.getID())
+    #             state.copyRules.append(rule)
 
-    x = []
-    for sublist in ruleIDs:
-        for ID in sublist:
-            x.append(ID)
-    ruleIDs = set(x)
+    # x = []
+    # for sublist in ruleIDs:
+    #     for ID in sublist:
+    #         x.append(ID)
+    # ruleIDs = set(x)
 
-    tmp = state.templates[:]
+    # tmp = state.templates[:]
 
-    # remove templates with fields which cannot be filled in this context
-    for temp in state.templates[:]:
-        if state.ioAction == 'output' and state.fields[temp]:
-            if temp not in ruleIDs:
-                state.templates.remove(temp)
-                if not state.templates:
-                    # having to remove this state completely
-                    # need to remove the transition to this state in parent state
-                    # if parent then has no more transitions: remove it, too
-                    checkParent(state, container)
-                    return
-    if not state.templates:
-        checkParent(state, container)
-        return
+    # # remove templates with fields which cannot be filled in this context
+    # for temp in state.templates[:]:
+    #     if state.ioAction == 'output' and state.fields[temp]:
+    #         if temp not in ruleIDs:
+    #             state.templates.remove(temp)
+    #             if not state.templates:
+    #                 # having to remove this state completely
+    #                 # need to remove the transition to this state in parent state
+    #                 # if parent then has no more transitions: remove it, too
+    #                 checkParent(state, container)
+    #                 return
 
     # update nextStates hist
-    state.nextHist = state.hist.update(state.templates)
+    # state.nextHist = state.hist.update(state.templates)
 
     #if state.hist in dataRules.keys():
     #    state.dataRules = dataRules[state.hist]
@@ -898,13 +915,21 @@ def checkParent(state, container):
 
 
 def appendTodo(container, state):
-    if state.hist in container.done.keys():
-        for stateDash in container.done[state.hist]:
-            if state == stateDash:
-                return
+    if state.name in container.done.keys():
+        # having state already -> do nothing
+        PeachState = container.done[state.name][0]
+        #    if ns not in PeachState.previous:
+        #        PeachState.previous.append(ns)
+        for prev in state.previous:
+            PeachState.previous.append(prev)
+        return
+        # for stateDash in container.done[state.hist]:
+        #     if state == stateDash:
+        #         return
     container.doneadd(state)
     if state.nextStates != []:
         for nextState in state.nextStates:
-            nxt = PeachState(nextState, state.hist, state.nextHist, parent=state)
+            # nxt = PeachState(nextState, state.hist, state.nextHist, parent=state)
+            nxt = PeachStateReloaded(nextState, parent=state)
             container.todoadd(nxt)
     return
