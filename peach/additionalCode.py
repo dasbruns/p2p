@@ -74,8 +74,9 @@ def typeFix(val):
     return Array[Byte](ar)
 
 
-def updateHist(self):
-    hist = self.parent.name
-    val = self.dataModel.find('c1')
-    val.DefaultValue = Variant(hist)
+def updateHist(Action, ID):
+    if ID == 'in':
+        ID = Action.dataModel.referenceName
+    field = Action.parent['theHist'].dataModel['hist']
+    field.DefaultValue = Variant(ID)
     return

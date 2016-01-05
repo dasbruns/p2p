@@ -214,9 +214,9 @@ def createHistModel(horizon):
     dataModel = ET.Element('DataModel', name='hist')
     for i in range(horizon):
         # dataModel.append(ET.Element('String', name='message{}'.format(horizon-i), attrib={'mutable': 'false', 'value': '-11'}))
-        dataModel.append(ET.Element('String', name='ID-{}'.format(horizon-i), attrib={'mutable': 'false', 'value': '\n'}))
+        dataModel.append(ET.Element('String', name='ID-{}'.format(horizon-i+1), attrib={'mutable': 'false', 'value': '-1'}))
         # horizon -= 1
-    dataModel.getchildren()[-1].set('value', '\n\n')
+    dataModel.append(ET.Element('String', name='theEnd', attrib={'mutable': 'false', 'value': '\n\n'}))
     return dataModel
 
 
@@ -242,7 +242,7 @@ def order4Length(list):
     l = []
     ordered = []
     for item in list:
-        if item != "''":
+        if item != '"':
             l.append(length[int(item)])
     while list != []:
         ind = l.index(min(l))
@@ -271,11 +271,6 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             actionCounter = 0
             state.name = encodeState(state, DEBUG)
             stateName = encodeState(state, DEBUG)
-            # if stateName == 'WzAsIDFdIDsgWzM2LCAzN10gTm9uZS5VQVN8Tm9uZS5VQUM':
-            if stateName == 'WzI3XTtbMzYsIDM3XSBOb25lLlVBU3xOb25lLlVBQw':
-                pass
-            if stateName == 'WzAsIDFdO1szNiwgMzddIE5vbmUuVUFTfE5vbmUuVUFD':
-                pass
             if state.isInit == True:
                 stateModel.attrib.update({'initialState': stateName})
             peachState = ET.Element('State', name=stateName)
@@ -299,7 +294,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                 # dataModelIDs = state.nextHist.getID()
                 dataModelIDs = state.templates
                 # dataModelIDs = state.nextHist.theHist[-1]
-            if state.ioAction == 'input':
+            if state.ioAction == 'input' and state.templates:
                 histActionNumber = actionCounter
                 name = modelName(dataModelIDs)
                 # if len(dataModelIDs) > 1 and tuple(dataModelIDs) not in multiModels.keys():
@@ -310,6 +305,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                     inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': '{}mult'.format(name)}))
                 else:
                     inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': name}))
+                inputAction.set('onComplete', 'additionalCode.updateHist(self,{})'.format('in'))
                 peachState.append(inputAction)
                 actionCounter += 1
             elif state.ioAction == 'output':
@@ -329,9 +325,11 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
 
                 # deal with DataRules
                 if state.dataRules != []:
+                    # dataModels, slurps = data(state, dataRuleModels, done, DEBUG, blob)
                     dataModels, slurps = data(state, dataRuleModels, done, DEBUG, blob)
 
                     # install dataRule output models
+                    # for model in dataModelsNslurps.keys():
                     for model in dataModels:
                         # modID = int(model.attrib['name'].split()[0].split(';')[-1][1:-1])
                         modID = getHist(model, horizon)
@@ -347,15 +345,18 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
 
                     # slurp from those
                     for slurp in slurps:
+                        # peachState.append(ET.Comment('dataSlurp {}'.format(ruleHist)))
                         peachState.append(slurp)
                         actionCounter += 1
 
                 # # apply rules
                 # # for ruleList in state.rules:
                 # #     # rule = rule[0]
-                # for rule in state.rules:
-                #     peachState.append(ET.Comment('exact rule: {}'.format(rule)))
-                #     slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
+                for rule in state.rules:
+                    peachState.append(ET.Comment('exact rule: {}'.format(rule)))
+                    # slurp = craftSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
+                    slurp = craftSlurp(state, rule, done, DEBUG)
+                    peachState.append(slurp)
                 #     cpy = slurp.__copy__()
                 #     pimped = pimpMySlurp(cpy, rule.srcID, True)
                 #     if rule.srcID == -1:
@@ -368,10 +369,10 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
 
                 # # then apply advance copyRules
                 # # for ruleList in state.copyRules:
-                # for rule in state.copyRules:
-                #     peachState.append(ET.Comment('advanced rule: {}'.format(rule)))
-                #     slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID,
-                #                            state, rule, done, DEBUG, ruleType='copy')
+                for rule in state.copyRules:
+                    peachState.append(ET.Comment('{} rule: {}'.format(rule.typ.split('.')[-1], rule)))
+                    slurp = craftSlurp(state, rule, done, DEBUG, ruleType='copy')
+                    peachState.append(slurp)
                 #     cpy = slurp.__copy__()
                 #     if rule.srcID % 2 == 1:
                 #         peachState.append(slurp)
@@ -411,6 +412,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                         pass
                         # dataElements = data(ID, state)
                         # outputAction.append(ET.Element('Data'))
+                    outputAction.set('onComplete', 'additionalCode.updateHist(self,{})'.format(ID))
                     peachState.append(outputAction)
                     actionCounter += 1
 
@@ -445,6 +447,17 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                     count -= 1
                 else:
                     changeAction = ET.Element('Action', attrib={'type': 'changeState', 'ref': stateRef})
+                # toDo: make function of this mess
+                #       for more than 2-horizon
+                peachState.append(ET.Comment('manipulate hist here for nextState {}'.format(nxt)))
+                peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-2'.format(state),
+                                                               'setXpath': '//StateModel//{}//theHist//hist//ID-3'.format(nxt)}))
+                # crazy idea here: oldest message ID not needed any more. so eventually put in the emitted message ID
+                # of this very state and slurp it to the most recent message ID of the nextState's history model!
+                peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-3'.format(state),
+                                                               'setXpath': '//StateModel//{}//theHist//hist//ID-2'.format(nxt)}))
+                if 'when' in changeAction.attrib.keys():
+                    peachState.append(ET.Comment('{}'.format(changeAction.attrib['when'])))
                 peachState.append(changeAction)
             stateModel.append(peachState)
         #stateModel.append(peachState)
@@ -457,6 +470,37 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
         dataPitRoot.append(model)
     dataPitRoot.append(pit.tree.getroot().find('StateModel'))
     return dataPit
+
+
+def craftSlurp(state, rule, done, DEBUG, ruleType=None):
+    encState = encodeState(state, DEBUG)
+    ID = rule.ruleHist.getID()[0]
+    srcID = rule.ruleHist.getID(rule.srcID)[0]
+    srcState = done['|'.join(tempID2StateMap[srcID].hist)][0]
+    absoluteDstField = computeAbsoluteFields(state, ID, rule.dstField)
+    absoluteSrcField = computeAbsoluteFields(srcState, srcID, rule.srcField)
+    setXpath = '//StateModel//{}//out{}//out{}//c{}'.format(encState, ID, ID, absoluteDstField)
+    valueXpath = '//StateModel//{0}//{1}//c{2}'.format(encodeState(srcState,DEBUG), srcID, absoluteSrcField)
+    slurp = ET.Element('Action', attrib={'type': 'slurp', 'onComplete': 'additionalCode.dataRule(self)',
+                                         'valueXpath': valueXpath, 'setXpath': setXpath})
+
+    # check if correct model is output in this state
+    correctModel = computeWhenOut(state, ID, DEBUG)
+    # if '1 == 1' in correctModel:
+    #     j = -1
+    # else:
+    #     j = correctModel.split('int(')[-1][:-1]
+
+    correctHist = whenHist(rule.ruleHist, state)
+
+    # check if correct models have been output in preStates
+    # do so by just looking it up in the states own hist model
+    when = correctModel + ' and ' + correctHist
+    slurp.set('when', when)
+    if ruleType:
+        onComp = assembleCopyRules(rule)
+        slurp.set('onComplete', onComp)
+    return slurp
 
 
 def getHist(PeachModel, depth):
@@ -594,19 +638,19 @@ def updateHist(stateName, horizon):
     return update
 
 
-def assembleCopyRules(rule, num):
+def assembleCopyRules(rule):
     call = 'additionalCode.'
     if 'Complete' in rule.typ:
         s = ''
         for cont in set(rule.content):
             s += (cont + ';;;')
         s = s[:-3]
-        return "{}copyComp(self,'{}','{}','{}')".format(call, rule.ptype, s, num)
+        return "{}copyComp(self,'{}','{}')".format(call, rule.ptype, s)
     if 'Partial' in rule.typ:
         # rule.cont here is separator
-        return "{}copyPart(self,'{}','{}','{}')".format(call, rule.ptype, rule.content, num)
+        return "{}copyPart(self,'{}','{}')".format(call, rule.ptype, rule.content)
     if 'Seq' in rule.typ:
-        return "{}copySeq(self,{},'{}')".format(call, rule.content, num)
+        return "{}copySeq(self,{})".format(call, rule.content)
 
 
 # def bound(data, points):
@@ -736,10 +780,12 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
     # whenHist = ''
     # # for i in range(len(daddys)):
     # #     whenHist = '{} and {}'.format(whenHist, computeWhenHist(daddys[i], i+1, DEBUG))
+    correctHist = ''
+    correctHist = whenHist(rule.ruleHist, state)
 
     # check if correct models have been output in preStates
     # do so by just looking it up in the states own hist model
-    when = correctModel
+    when = correctModel + ' and ' + correctHist
     # for i in (range(len(daddys))):
     #     whenPreOut = '{} and {}'.format(whenPreOut, computeWhenOut(daddys[len(daddys)-i-1],
     #                                                                rule.ruleHist.theHist[i][0], DEBUG))
@@ -750,6 +796,16 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
     slurp.set('when', when)
     slurp.set('onComplete', 'additionalCode.dataRule(self,"{}")'.format(j))
     return slurp
+
+
+def whenHist(hist, state):
+    h = hist.length()
+    s = ''
+    while h > 1:
+        s += 'int(StateModel.states["{}"]["theHist"].dataModel["ID-{}"].InternalValue) == int({})'.format(state, h, hist.getID(-h)[0])
+        h -= 1
+        s += ' and '
+    return s[:-5]
 
 
 def computeAbsoluteFields(state, templateID, relativeField):
