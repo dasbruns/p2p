@@ -250,20 +250,20 @@ if __name__ == '__main__':
     #    print()
     #print(len(container.done),len(model.model))
 
-    for stateList in container.done.values():
-        for state in stateList:
-            if state.previous:
-                for prev in state.previous:
-                    prev.next.append(state)
-    for stateList in container.done.values():
-        for state in stateList:
-            for s in state.previous:
-                print(s, end=' ')
-            print('-->', state, '-->', end='')
-            for s in state.next:
-                print(s, end=' ')
-            print()
-            print()
+    # for stateList in container.done.values():
+    #     for state in stateList:
+    #         if state.previous:
+    #             for prev in state.previous:
+    #                 prev.next.append(state)
+    # for stateList in container.done.values():
+    #     for state in stateList:
+    #         for s in state.previous:
+    #             print(s, end=' ')
+    #         print('-->', state, '-->', end='')
+    #         for s in state.next:
+    #             print(s, end=' ')
+    #         print()
+    #         print()
     if args.verbose > 1: print('Done\n')
     if args.verbose > 1: print('Processing DataModels ... ', end='', flush=True)
     pit = peach.dataModel(templates.IDtoTemp, theHistLength, args.crazyIvan, args.blob, args.advanced, args.role)
