@@ -1,5 +1,6 @@
 # import prisma.Hist
 from .PeachState import PeachState
+from .PeachStateReloaded import PeachStateReloaded
 from .PeachStateContainer import PeachStateContainer
 from .PIT import PIT
 from lxml import etree as ET
@@ -11,14 +12,19 @@ from urllib import parse
 
 # testing purpose import
 # from .additionalCode import manipulate
+
 # dataModelID to dataModelLength dictionary
-length = {}
+# insert empty template with length 0 manually
+length = {"''": 0}
+tempID2StateMap = []
+blackList = {}
+fieldsINblock = {}
 
 
 def test(pit, role=False, IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
-    test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
+    # test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
     test.append(ET.Element('StateModel', attrib={'ref': 'StateModel'}))
     # append default publisher
     if role == True:
@@ -88,7 +94,9 @@ def createContent(ID, dataModel, templates, fuzzyness, blob, advanced):
                 #     token = 'false'
                 #just a normal string, no non-printables detected
                 if mutCount == 0 and advanced:
-                    mutable = 'true'
+                    # use this to fuzz structs like key : value
+                    # assumed that key, :, and value are each their own field in datamodel
+                    # mutable = 'true'
                     mutCount = -1
                 data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token, 'mutable': mutable})
                 if ':' in cont:
@@ -132,14 +140,14 @@ def handleControl(cont, data=False):
     return rmCont
 
 
-def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False):
+def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=True):
     pit = PIT()
     root = pit.tree.getroot()
 
     # create random dataModel
     dataModel = ET.Element('DataModel', name='rand')
     dataModel.append(ET.Element('String', name='a', attrib={'value': 'randomNumber: ', 'mutable': 'false'}))
-    dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
+    dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false', 'value': '-1'}))
     dataModel.append(ET.Element('String', name='c', attrib={'value': '\n', 'mutable': 'false'}))
     root.append(dataModel)
 
@@ -161,27 +169,67 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False):
     histModel = createHistModel(horizon)
     root.append(histModel)
 
-    # unknown dataModel
-    dataModel = ET.Element('DataModel', name='MissingNo')
-    dataModel.append(ET.Element('String', name='no', attrib={'mutable': 'false', 'value': '', 'token': 'false'}))
-    root.append(dataModel)
+    # # unknown dataModel
+    # dataModel = ET.Element('DataModel', name='MissingNo')
+    # dataModel.append(ET.Element('String', name='no', attrib={'mutable': 'false', 'value': '', 'token': 'false'}))
+    # root.append(dataModel)
 
-    # empty dataModel
-    dataModel = ET.Element('DataModel', name='MissingMo')
-    root.append(dataModel)
+    # # empty dataModel
+    # dataModel = ET.Element('DataModel', name='MissingMo')
+    # root.append(dataModel)
 
     for ID in templates.keys():
         dataModel = ET.Element('DataModel', name='{}'.format(str(ID)))
         isServer = createContent(ID, dataModel, templates, fuzzyness, blob, advanced)
+        if not role:
+            isServer = not isServer
+        getLengthRelation(dataModel)
         root.append(dataModel)
-        # create specific derivatives of dataModel
+        # # create specific derivatives of dataModel
         if isServer:
-            # print('dmlen{}= '.format(ID), len(dataModel.getchildren()))
+        #     # print('dmlen{}= '.format(ID), len(dataModel.getchildren()))
             length[ID] = len(dataModel.getchildren())
-            dataModelSpec = dataModel.__copy__()
-            createSpecific(dataModelSpec)
-            root.append(dataModelSpec)
+        #     dataModelSpec = dataModel.__copy__()
+        #     createSpecific(dataModelSpec)
+        #     root.append(dataModelSpec)
     return pit
+
+
+def getLengthRelation(dataModel):
+    global blackList
+    global fieldsINblock
+    flag = False
+    for child in dataModel.getchildren():
+        if child.attrib['value'] == 'Content-Length:':
+            flag = True
+            break
+    if flag:
+        target = child.getnext().getnext()
+        name = target.attrib['name']
+        ID = int(dataModel.attrib['name'])
+        if target.tag == 'Blob':
+            target.tag = 'String'
+            if ID not in blackList.keys():
+                blackList[ID] = []
+            blackList[ID].append(int(name[1:]))
+        for key in target.attrib.keys():
+            target.attrib.pop(key)
+        target.set('name', name)
+        rel = ET.Element('Relation', attrib={'type': 'size', 'of': 'blockB', 'expressionGet': 'size'})
+        target.append(rel)
+
+        flag = False
+        blockB = ET.Element('Block', name='blockB')
+        for child in dataModel.getchildren():
+            if 'value' in child.attrib.keys() and child.attrib['value'] == '\r\n\r\n':
+                # use this to know if field is in blockB or not
+                theCut = child.attrib['name']
+                fieldsINblock[ID] = theCut
+                flag = True
+                continue
+            if flag:
+                blockB.append(child)
+        dataModel.append(blockB)
 
 
 def createSpecific(dataModel):
@@ -207,10 +255,11 @@ def createSpecific(dataModel):
 def createHistModel(horizon):
     dataModel = ET.Element('DataModel', name='hist')
     for i in range(horizon):
-        dataModel.append(ET.Element('String', name='c{}'.format(horizon), attrib={'mutable': 'false', 'value': '-11'}))
-        dataModel.append(ET.Element('String', attrib={'mutable': 'false', 'value': '\n'}))
-        horizon -= 1
-    dataModel.getchildren()[-1].set('value', '\n\n')
+        # dataModel.append(ET.Element('String', name='message{}'.format(horizon-i), attrib={'mutable': 'false', 'value': '-11'}))
+        dataModel.append(ET.Element('String', name='ID-{}'.format(horizon-i+1), attrib={'mutable': 'false', 'value': '-1'}))
+        dataModel.append(ET.Element('String', name='lb{}'.format(horizon-i+1), attrib={'mutable': 'false', 'value': '\n'}))
+        # horizon -= 1
+    dataModel.append(ET.Element('String', name='theEnd', attrib={'mutable': 'false', 'value': '\n'}))
     return dataModel
 
 
@@ -221,14 +270,14 @@ def createMultiModel(dataModelID):
     if len(IDs) < 2:
         multiModel.set('name', '{}mult'.format(dataModelID))
     for dataModel in IDs:
-        choice.append(
-            ET.Element('Block', name='o{}spec'.format(str(dataModel)), attrib={'ref': '{}spec'.format(str(dataModel))}))
+        # choice.append(
+        #     ET.Element('Block', name='o{}spec'.format(str(dataModel)), attrib={'ref': '{}spec'.format(str(dataModel))}))
         choice.append(
             ET.Element('Block', name='o{}'.format(str(dataModel)), attrib={'ref': '{}'.format(str(dataModel))}))
         multiModel.append(choice)
-    # provide 'unknown' template to let communication go on
-    choice.append(ET.Element('Block', name='unknown', attrib={'ref': 'MissingNo'}))
-    choice.append(ET.Element('Block', name='None', attrib={'ref': 'MissingMo'}))
+    # # provide 'unknown' template to let communication go on
+    # choice.append(ET.Element('Block', name='unknown', attrib={'ref': 'MissingNo'}))
+    # choice.append(ET.Element('Block', name='None', attrib={'ref': 'MissingMo'}))
     return multiModel
 
 
@@ -236,7 +285,8 @@ def order4Length(list):
     l = []
     ordered = []
     for item in list:
-        l.append(length[int(item)])
+        if item != '"':
+            l.append(length[int(item)])
     while list != []:
         ind = l.index(min(l))
         ordered.append(list.pop(ind))
@@ -251,23 +301,41 @@ def modelName(modelIDs):
     return modelName[:-3]
 
 
-def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
+def blackListed(state):
+    # remove invalid Rules from state's rules
+    global blackList
+    for ID in state.templates:
+        if ID in blackList.keys():
+            for dr in state.dataRules:
+                if dr.dstID[0] == ID:
+                    if computeAbsoluteFields(state, ID, dr.dstField) == blackList[ID][0]:
+                        state.dataRules.remove(dr)
+            for cr in state.copyRules:
+                if cr.dstID[0] == ID:
+                    if computeAbsoluteFields(state, ID, cr.dstField) == blackList[ID][0]:
+                        state.copyRules.remove(cr)
+            for er in state.rules:
+                if er.dstID[0] == ID:
+                    if computeAbsoluteFields(state, ID, er.dstField) == blackList[ID][0]:
+                        state.rules.remove(er)
+
+
+def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=False):
     pit = PIT()
     pit.tree.getroot().append(ET.Element('StateModel', name='StateModel'))
     stateModel = pit.tree.getroot().find('StateModel')
     multiModels = {}
     dataRuleModels = {}
+    x = fieldsINblock
+    global tempID2StateMap
+    tempID2StateMap = templatesID2stateName
     for listOstates in done.values():
         for state in listOstates:
+            blackListed(state)
             actionCounter = 0
             state.name = encodeState(state, DEBUG)
             stateName = encodeState(state, DEBUG)
-            # if stateName == 'WzAsIDFdIDsgWzM2LCAzN10gTm9uZS5VQVN8Tm9uZS5VQUM':
-            if stateName == 'WzI3XTtbMzYsIDM3XSBOb25lLlVBU3xOb25lLlVBQw':
-                pass
-            if stateName == 'WzAsIDFdO1szNiwgMzddIE5vbmUuVUFTfE5vbmUuVUFD':
-                pass
-            if state.isInit() == True:
+            if state.isInit():
                 stateModel.attrib.update({'initialState': stateName})
             peachState = ET.Element('State', name=stateName)
 
@@ -279,53 +347,72 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
             peachState.append(current)
             actionCounter += 1
 
-            # # install hist dataModel
-            # histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'theHist'})
-            # histAction.append(ET.Element('DataModel', attrib={'ref': 'hist'}))
-            # peachState.append(histAction)
-            # actionCounter += 1
+            # install hist dataModel
+            histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'theHist'})
+            histAction.append(ET.Element('DataModel', attrib={'ref': 'hist', 'name': 'hist'}))
+            peachState.append(histAction)
+            actionCounter += 1
+
+            noHist = False
 
             # handle ioActions
             if state.ioAction != 'END':
-                dataModelIDs = state.nextHist.getID()
+                # dataModelIDs = state.nextHist.getID()
+                dataModelIDs = state.templates
                 # dataModelIDs = state.nextHist.theHist[-1]
-            if state.ioAction == 'input':
-                histActionNumber = actionCounter
-                name = modelName(dataModelIDs)
-                # if len(dataModelIDs) > 1 and tuple(dataModelIDs) not in multiModels.keys():
-                if tuple(dataModelIDs) not in multiModels.keys():
-                    multiModels.update({tuple(dataModelIDs): createMultiModel(name)})
-                inputAction = ET.Element('Action', name='in', attrib={'type': 'input'})
-                if len(dataModelIDs) <= 1:
-                    inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': '{}mult'.format(name)}))
+            if state.ioAction == 'input' and state.templates:
+                for ID in dataModelIDs:
+                    if length[ID] == 0:
+                        dataModelIDs.remove(ID)
+                if not dataModelIDs:
+                    #clever flag
+                    noHist = True
                 else:
-                    inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': name}))
-                peachState.append(inputAction)
-                actionCounter += 1
+                    histActionNumber = actionCounter
+                    name = modelName(dataModelIDs)
+                    # if len(dataModelIDs) > 1 and tuple(dataModelIDs) not in multiModels.keys():
+                    if tuple(dataModelIDs) not in multiModels.keys():
+                        multiModels.update({tuple(dataModelIDs): createMultiModel(name)})
+                    inputAction = ET.Element('Action', name='in', attrib={'type': 'input'})
+                    if len(dataModelIDs) <= 1:
+                        inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': '{}mult'.format(name)}))
+                    else:
+                        inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': name}))
+                    inputAction.set('onComplete', 'additionalCode.updateHist(self)')
+                    peachState.append(inputAction)
+                    actionCounter += 1
             elif state.ioAction == 'output':
                 # have multiple output options
-                count = 0
                 hasOpts = False
+                count = 0
+                seenHists = []
                 # install random generator for multi-output
-                if len(dataModelIDs) > 1:
-                    outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut',
-                                                                'onStart': 'additionalCode.rand(self,{})'.format(
-                                                                    len(dataModelIDs) - 1), 'publisher': 'nullOUT'})
-                    outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
-                    peachState.append(outputAction)
-                    count = len(dataModelIDs) - 1
-                    hasOpts = True
-                    actionCounter += 1
+                # if len(dataModelIDs) > 1:
+                #     # outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut',
+                #     #                                             'onStart': 'additionalCode.rand(self,{})'.format(
+                #     #                                                 len(dataModelIDs) - 1), 'publisher': 'nullOUT'})
+                #     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut'})
+                #     outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
+                #     peachState.append(outputAction)
+                #     count = len(dataModelIDs) - 1
+                #     hasOpts = True
+                #     actionCounter += 1
 
                 # deal with DataRules
                 if state.dataRules != []:
+                    # dataModels, slurps = data(state, dataRuleModels, done, DEBUG, blob)
                     dataModels, slurps = data(state, dataRuleModels, done, DEBUG, blob)
 
                     # install dataRule output models
                     for model in dataModels:
+                        # modID = int(model.attrib['name'].split()[0].split(';')[-1][1:-1])
+                        modID = getHist(model, horizon)
+                        if not DEBUG:
+                            model.attrib['name'] = str(base64.b64encode((model.attrib['name']).encode('ascii')))[2:-1].replace('=', '')
+                        # when = computeWhenOut(state, modID[0])
                         peachState.append(ET.Comment('dataRuleModel {}'.format(model.attrib['name'])))
                         dataAction = ET.Element('Action', attrib={'type': 'output', 'name': '{}'.format(
-                            model.attrib['name']), 'publisher': 'null'})
+                            model.attrib['name']), 'publisher': 'null'})  # , 'when': when})
                         dataAction.append(ET.Element('DataModel',
                                                      attrib={'ref': '{}'.format(model.attrib['name']),
                                                              'name': '{}model'.format(model.attrib['name'])}))
@@ -334,44 +421,59 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
 
                     # slurp from those
                     for slurp in slurps:
+                        # peachState.append(ET.Comment('dataSlurp {}'.format(ruleHist)))
+                        slurp.attrib['name'] = 'DataRule'
                         peachState.append(slurp)
                         actionCounter += 1
 
-                # apply rules
-                for ruleList in state.rules:
-                    # rule = rule[0]
-                    for rule in ruleList:
-                        peachState.append(ET.Comment('exact rule: {}'.format(rule)))
-                        slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
-                        cpy = slurp.__copy__()
-                        pimped = pimpMySlurp(cpy, rule.srcID, True)
-                        if rule.srcID == -1:
-                            peachState.append(slurp)
-                            actionCounter += 1
-                        else:
-                            for slurps in pimped:
-                                peachState.append(slurps)
-                                actionCounter += 1
+                # # apply rules
+                # # for ruleList in state.rules:
+                # #     # rule = rule[0]
+                for rule in state.rules:
+                    peachState.append(ET.Comment('exact rule: {}'.format(rule)))
+                    # slurp = craftSlurp(rule.ruleHist.theHist, rule.srcID, state, rule, done, DEBUG)
+                    slurp = craftSlurp(state, rule, done, DEBUG)
+                    slurp.attrib['name'] = 'ExactRule'
+                    peachState.append(slurp)
+                #     cpy = slurp.__copy__()
+                #     pimped = pimpMySlurp(cpy, rule.srcID, True)
+                #     if rule.srcID == -1:
+                #         peachState.append(slurp)
+                #         actionCounter += 1
+                #     else:
+                #         for slurps in pimped:
+                #             peachState.append(slurps)
+                #             actionCounter += 1
 
-                # then apply advance copyRules
-                for ruleList in state.copyRules:
-                    for rule in ruleList:
-                        peachState.append(ET.Comment('advanced rule: {}'.format(rule)))
-                        slurp = recursiveSlurp(rule.ruleHist.theHist, rule.srcID,
-                                               state, rule, done, DEBUG, ruleType='copy')
-                        cpy = slurp.__copy__()
-                        if rule.srcID % 2 == 1:
-                            peachState.append(slurp)
-                            actionCounter += 1
-                        else:
-                            pimped = pimpMySlurp(cpy, rule.srcID, True)
-                            # if dunno:
-                            #     pimped = pimpMySlurp(cpy, rule.srcID, True)
-                            # else:
-                            #     pimped = pimpMySlurp(cpy, rule.srcID)
-                            for slurps in pimped:
-                                peachState.append(slurps)
-                                actionCounter += 1
+                # # then apply advance copyRules
+                # # for ruleList in state.copyRules:
+                for rule in state.copyRules:
+                    peachState.append(ET.Comment('{} rule: {}'.format(rule.typ.split('.')[-1], rule)))
+                    slurp = craftSlurp(state, rule, done, DEBUG, ruleType='copy')
+                    slurp.attrib['name'] = rule.typ.split('.')[-1]
+                    peachState.append(slurp)
+                #     cpy = slurp.__copy__()
+                #     if rule.srcID % 2 == 1:
+                #         peachState.append(slurp)
+                #         actionCounter += 1
+                #     else:
+                #         pimped = pimpMySlurp(cpy, rule.srcID, True)
+                #         # if dunno:
+                #         #     pimped = pimpMySlurp(cpy, rule.srcID, True)
+                #         # else:
+                #         #     pimped = pimpMySlurp(cpy, rule.srcID)
+                #         for slurps in pimped:
+                #             peachState.append(slurps)
+                #             actionCounter += 1
+
+                # install random generator for multi-output
+                if len(dataModelIDs) > 1:
+                    outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut', 'publisher': 'nullOUT', 'onStart': 'additionalCode.choose(self, {})'.format(len(dataModelIDs)-1)})
+                    outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
+                    peachState.append(outputAction)
+                    count = len(dataModelIDs) - 1
+                    hasOpts = True
+                    actionCounter += 1
 
                 for ID in dataModelIDs:
                     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'out{}'.format(ID)})
@@ -398,9 +500,14 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
                         pass
                         # dataElements = data(ID, state)
                         # outputAction.append(ET.Element('Data'))
+                    outputAction.set('onComplete', 'additionalCode.updateHist(self,{})'.format(ID))
                     peachState.append(outputAction)
                     actionCounter += 1
 
+                if hasOpts:
+                    outputAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null', 'name': 'randOutReset', 'onComplete': 'additionalCode.randMan(self)'})
+                    outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
+                    peachState.append(outputAction)
             # # handle history update
             # histAction = updateHist(stateName, horizon)
             # for i in histAction:
@@ -416,8 +523,10 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
                                                                 len(state.nextStates) - 1), 'publisher': 'nullOUT'})
                 outputAction.append(ET.Element('DataModel', attrib={'ref': 'randChange'}))
                 peachState.append(outputAction)
+            nxtwhen = ''
             for nxt in state.nextStates:
-                stateRef = '{} {}'.format(state.nextHist, nxt)
+                # stateRef = '{} {}'.format(state.nextHist, nxt)
+                stateRef = '{}'.format(nxt)
                 if not DEBUG:
                     stateRef = str(base64.b64encode(stateRef.encode('ascii')))[2:-1].replace('=', '')
                 if count > 0:
@@ -429,8 +538,32 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
                     changeAction = ET.Element('Action',
                                               attrib={'type': 'changeState', 'ref': stateRef, 'when': whenExpression})
                     count -= 1
+                    nxtwhen = whenExpression
                 else:
                     changeAction = ET.Element('Action', attrib={'type': 'changeState', 'ref': stateRef})
+                    nxtwhen = ''
+                # toDo: make function of this mess
+                #       for more than 2-horizon
+                if not noHist:
+                    peachState.append(ET.Comment('manipulate hist here for nextState {}'.format(nxt)))
+                    if not DEBUG:
+                        nxtName = str(base64.b64encode(str(nxt).encode('ascii')))[2:-1].replace('=', '')
+                    if not nxtwhen:
+                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-2'.format(encodeState(state, DEBUG)),
+                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-3'.format(nxtName)}))
+                        # crazy idea here: oldest message ID not needed any more. so eventually put in the emitted message ID
+                        # of this very state and slurp it to the most recent message ID of the nextState's history model!
+                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-3'.format(encodeState(state, DEBUG)),
+                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-2'.format(nxtName)}))
+                    else:
+                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-2'.format(encodeState(state, DEBUG)),
+                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-3'.format(nxtName), 'when': whenExpression}))
+                        # crazy idea here: oldest message ID not needed any more. so eventually put in the emitted message ID
+                        # of this very state and slurp it to the most recent message ID of the nextState's history model!
+                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-3'.format(encodeState(state, DEBUG)),
+                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-2'.format(nxtName), 'when': whenExpression}))
+                if 'when' in changeAction.attrib.keys():
+                    peachState.append(ET.Comment('{}'.format(changeAction.attrib['when'])))
                 peachState.append(changeAction)
             stateModel.append(peachState)
         #stateModel.append(peachState)
@@ -445,32 +578,80 @@ def stateModel(dataPit, done, horizon, DEBUG=False, blob=False):
     return dataPit
 
 
+def craftSlurp(state, rule, done, DEBUG, ruleType=None):
+    encState = encodeState(state, DEBUG)
+    ID = rule.ruleHist.getID()[0]
+    srcID = rule.ruleHist.getID(rule.srcID)[0]
+    srcState = done['|'.join(tempID2StateMap[srcID].hist)][0]
+    absoluteDstField = computeAbsoluteFields(state, ID, rule.dstField)
+    absoluteSrcField = computeAbsoluteFields(srcState, srcID, rule.srcField)
+    setXpath = '//StateModel//{}//out{}//out{}//c{}'.format(encState, ID, ID, absoluteDstField)
+    if srcState.ioAction == 'output':
+        valueXpath = '//StateModel//{0}//out{1}//out{1}//c{2}'.format(encodeState(srcState, DEBUG), srcID, absoluteSrcField)
+    elif srcState.ioAction == 'input':
+        valueXpath = '//StateModel//{0}//in//read//c{2}'.format(encodeState(srcState, DEBUG), srcID, absoluteSrcField)
+    else:
+        print('something terribly wrong in peach/__init__.py/craftSlurp')
+        exit()
+    slurp = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': valueXpath, 'setXpath': setXpath})
+
+    # check if correct model is output in this state
+    if len(state.templates) > 1:
+        correctModel = computeWhenOut(state, ID, DEBUG)
+        onStart = int(correctModel.split('==')[1].split('int(')[1][:-1])
+        slurp.set('onStart', 'additionalCode.randMan(self,"{}")'.format(onStart))
+    # if '1 == 1' in correctModel:
+    #     j = -1
+    # else:
+    #     j = correctModel.split('int(')[-1][:-1]
+
+    correctHist = whenHist(rule.ruleHist, state)
+
+    # check if correct models have been output in preStates
+    # do so by just looking it up in the states own hist model
+    # when = correctModel + ' and ' + correctHist
+    when = correctHist
+    slurp.set('when', when)
+    if ruleType:
+        onComp = assembleCopyRules(rule)
+        slurp.set('onComplete', onComp)
+    return slurp
+
+
+def getHist(PeachModel, depth):
+    modID = []
+    while depth >= 0:
+        modID.append(int(PeachModel.attrib['name'].split()[0].split(';')[depth][1:-1]))
+        depth -= 1
+    return modID
+
+
 def data(state, dataRuleModels, done, DEBUG=False, blob=False):
     models = []
     slurps = []
-    for ruleList in state.dataRules:
-        curHist = ruleList[0].ruleHist
-        models.append(createDataRuleModel(state, ruleList[0].ruleHist, DEBUG))
-        for rule in ruleList:
-            if rule.ruleHist != curHist:
-                models.append(createDataRuleModel(state, rule.ruleHist, DEBUG))
-            curHist = rule.ruleHist
-            # print(rule.ruleHist, rule.dstField, computeAbsoluteFields(state, rule.ruleHist.getID()[0], rule.dstField), rule.data)
-            # there seem to be problems with to large strings in PEACH
-            # going to pick subset of possible data
-            # trying to order it and pick first 5 elements
-            dataElements = list(set(rule.data))
-            # dataElements.sort() [:min(5, len(dataElements))]
-            cont = ';;;'.join(dataElements)
-            if blob:
-                cont = ' '.join(list(map(lambda x: (x[2:].zfill(2)), list(map(hex, parse.unquote_to_bytes(cont))))))
-                models[-1].append(ET.Element('Blob', attrib={'mutable': 'false', 'valueType': 'hex'}, name='c{}'.format(computeAbsoluteFields(
-                    state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(cont)))
-            else:
-                models[-1].append(ET.Element('String', attrib={'mutable': 'false'}, name='c{}'.format(computeAbsoluteFields(
-                    state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(cont)))
-            # 'AAAAAAAAAAAAAAAAAAAAAAAAAAA;;;BBBBBBBBBBBBBBBBBBBBBBBBBBBBB;;;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
-            slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
+    # for ruleList in state.dataRules:
+    curHist = state.dataRules[0].ruleHist
+    models.append(createDataRuleModel(state, state.dataRules[0].ruleHist, DEBUG))
+    for rule in state.dataRules:
+        if rule.ruleHist != curHist:
+            models.append(createDataRuleModel(state, rule.ruleHist, DEBUG))
+        curHist = rule.ruleHist
+        # print(rule.ruleHist, rule.dstField, computeAbsoluteFields(state, rule.ruleHist.getID()[0], rule.dstField), rule.data)
+        # there seem to be problems with to large strings in PEACH
+        # going to pick subset of possible data
+        # trying to order it and pick first 5 elements
+        dataElements = list(set(rule.data))
+        # dataElements.sort() [:min(5, len(dataElements))]
+        cont = ';;;'.join(dataElements)
+        if blob:
+            cont = ' '.join(list(map(lambda x: (x[2:].zfill(2)), list(map(hex, parse.unquote_to_bytes(cont))))))
+            models[-1].append(ET.Element('Blob', attrib={'mutable': 'false', 'valueType': 'hex'}, name='c{}'.format(computeAbsoluteFields(
+                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(cont)))
+        else:
+            models[-1].append(ET.Element('String', attrib={'mutable': 'false'}, name='c{}'.format(computeAbsoluteFields(
+                state, rule.ruleHist.getID()[0], rule.dstField)), value='{}'.format(cont)))
+        # 'AAAAAAAAAAAAAAAAAAAAAAAAAAA;;;BBBBBBBBBBBBBBBBBBBBBBBBBBBBB;;;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
+        slurps.append(dataSlurp(state, rule, models[-1].attrib['name'], done, DEBUG))
 
     for model in models:
         if model.attrib['name'] not in dataRuleModels.keys():
@@ -480,8 +661,8 @@ def data(state, dataRuleModels, done, DEBUG=False, blob=False):
 
 def createDataRuleModel(state, hist, DEBUG=False):
     modelName = '{} {}'.format(hist, state.curState)
-    if not DEBUG:
-        modelName = str(base64.b64encode('{} {}'.format(hist, state.curState).encode('ascii')))[2:-1].replace('=', '')
+    # if not DEBUG:
+    #     modelName = str(base64.b64encode('{} {}'.format(hist, state.curState).encode('ascii')))[2:-1].replace('=', '')
     drModel = ET.Element('DataModel', name=str(modelName))
     # choice.append(ET.Element('Block', name='unknown', attrib={'ref': 'MissingNo'}))
     return drModel
@@ -572,19 +753,19 @@ def updateHist(stateName, horizon):
     return update
 
 
-def assembleCopyRules(rule, num):
+def assembleCopyRules(rule):
     call = 'additionalCode.'
     if 'Complete' in rule.typ:
         s = ''
         for cont in set(rule.content):
             s += (cont + ';;;')
         s = s[:-3]
-        return "{}copyComp(self,'{}','{}','{}')".format(call, rule.ptype, s, num)
+        return "{}copyComp(self,'{}','{}')".format(call, rule.ptype, s)
     if 'Partial' in rule.typ:
         # rule.cont here is separator
-        return "{}copyPart(self,'{}','{}','{}')".format(call, rule.ptype, rule.content, num)
+        return "{}copyPart(self,'{}','{}')".format(call, rule.ptype, rule.content)
     if 'Seq' in rule.typ:
-        return "{}copySeq(self,{},'{}')".format(call, rule.content, num)
+        return "{}copySeq(self,{})".format(call, rule.content)
 
 
 # def bound(data, points):
@@ -618,8 +799,8 @@ def assembleCopyRules(rule, num):
 
 def encodeState(state, DEBUG=False):
     if DEBUG:
-        return '{} {}'.format(state.hist, state.curState)
-    return str(base64.b64encode('{} {}'.format(state.hist, state.curState).encode('ascii')))[2:-1].replace('=', '')
+        return '{}'.format(state.curState)
+    return str(base64.b64encode('{}'.format(state.curState).encode('ascii')))[2:-1].replace('=', '')
 
 
 def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, ruleType = 'rules'):
@@ -684,48 +865,70 @@ def recursiveSlurp(histList, srcID, state, rule, done, DEBUG=False, count=0, rul
 def dataSlurp(state, rule, modelName, done, DEBUG):
     # '{}model'.format(model.attrib['name'])
     encState = encodeState(state, DEBUG)
+    if not DEBUG:
+        modelName = str(base64.b64encode((modelName).encode('ascii')))[2:-1].replace('=', '')
     ID = rule.ruleHist.getID()[0]
     absoluteDstField = computeAbsoluteFields(state, ID, rule.dstField)
+    adiC = 'additionalCode.dataRule(self)'
+    if ID in fieldsINblock.keys() and absoluteDstField > int(fieldsINblock[ID][1:]):
+        adiC = 'additionalCode.dataRule(self,1)'
     setXpath = '//StateModel//{}//out{}//out{}//c{}'.format(encState, ID, ID, absoluteDstField)
     valueXpath = '//StateModel//{0}//{1}//c{2}'.format(encState, modelName, absoluteDstField)
-    slurp = ET.Element('Action', attrib={'type': 'slurp', 'onComplete': 'additionalCode.dataRule(self)',
+    slurp = ET.Element('Action', attrib={'type': 'slurp', 'onComplete': adiC,
                                          'valueXpath': valueXpath, 'setXpath': setXpath})
 
     # check if correct model is output in this state
     correctModel = computeWhenOut(state, ID, DEBUG)
-    if '1 == 1' in correctModel:
-        j = -1
-    else:
-        j = correctModel.split('int(')[-1][:-1]
+    # if '1 == 1' in correctModel:
+    #     j = -1
+    # else:
+    #     j = correctModel.split('int(')[-1][:-1]
 
-    # check if we were in correct preStates
-    daddys = []
-    c = len(state.hist.theHist)
-    s = state
-    while c:
-        # this should be unambiguous
-        # if not ... flee in terror
-        s = whosURdaddy(s, done)[0]
-        if not s:
-            break
-        daddys.append(s)
-        c -= 1
-    whenHist = ''
-    # for i in range(len(daddys)):
-    #     whenHist = '{} and {}'.format(whenHist, computeWhenHist(daddys[i], i+1, DEBUG))
+    # obsolete since re-thinking
+    # # check if we were in correct preStates
+    # daddys = []
+    # c = len(state.hist.theHist)
+    # s = state
+    # while c:
+    #     # this should be unambiguous
+    #     # if not ... flee in terror
+    #     s = whosURdaddy(s, done)[0]
+    #     if not s:
+    #         break
+    #     daddys.append(s)
+    #     c -= 1
+    # whenHist = ''
+    # # for i in range(len(daddys)):
+    # #     whenHist = '{} and {}'.format(whenHist, computeWhenHist(daddys[i], i+1, DEBUG))
+    correctHist = whenHist(rule.ruleHist, state)
 
     # check if correct models have been output in preStates
-    whenPreOut = ''
-    for i in (range(len(daddys))):
-        whenPreOut = '{} and {}'.format(whenPreOut, computeWhenOut(daddys[len(daddys)-i-1],
-                                                                   rule.ruleHist.theHist[i][0], DEBUG))
-    # slurp.set('when', '{}{}{}'.format(correctModel, whenHist, whenPreOut))
-    when = '{}{}'.format(whenHist, whenPreOut)
-    if when.startswith(' and '):
-        when = when[5:]
+    # do so by just looking it up in the states own hist model
+    # when = correctModel + ' and ' + correctHist
+    when = correctHist
+    # for i in (range(len(daddys))):
+    #     whenPreOut = '{} and {}'.format(whenPreOut, computeWhenOut(daddys[len(daddys)-i-1],
+    #                                                                rule.ruleHist.theHist[i][0], DEBUG))
+    # # slurp.set('when', '{}{}{}'.format(correctModel, whenHist, whenPreOut))
+    # when = '{}{}'.format(whenHist, whenPreOut)
+    # if when.startswith(' and '):
+    #     when = when[5:]
     slurp.set('when', when)
-    slurp.set('onComplete', 'additionalCode.dataRule(self,"{}")'.format(j))
+    # slurp.set('onZ', 'additionalCode.dataRule(self,"{}")'.format(j))
+    if len(state.templates) > 1:
+        onStart = int(correctModel.split('==')[1].split('int(')[1][:-1])
+        slurp.set('onStart', 'additionalCode.randMan(self,"{}")'.format(onStart))
     return slurp
+
+
+def whenHist(hist, state):
+    h = hist.length()
+    s = ''
+    while h > 1:
+        s += 'int(StateModel.states["{}"]["theHist"].dataModel["ID-{}"].InternalValue) == int({})'.format(state, h, hist.getID(-h)[0])
+        h -= 1
+        s += ' and '
+    return s[:-5]
 
 
 def computeAbsoluteFields(state, templateID, relativeField):
@@ -787,7 +990,6 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
     # compute hist of nextStates
     if state.curState in templates.stateToID.keys():
         # state.templates = templates.stateToID[state.curState][:]
-        temps = []
         temps = copy.deepcopy(templates.stateToID[state.curState])
         for tempID in temps[:]:
             # if template has no content: remove it
@@ -795,13 +997,13 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
                 temps.remove(tempID)
         state.templates = temps
         # if no templates left, there is no nextState to reach
-        if not temps:
-            checkParent(state, container)
-            # state.nextStates = []
-            # state.ioAction = 'END'
-            # appendTodo(container, state)
-            return
-        state.nextHist = state.hist.update(state.templates)
+        # if not temps:
+        #     checkParent(state, container)
+        #     # state.nextStates = []
+        #     # state.ioAction = 'END'
+        #     # appendTodo(container, state)
+        #     return
+        # state.nextHist = state.hist.update(state.templates)
         #print(state.nextHist)
 
     #fetch fields of the templates
@@ -818,60 +1020,69 @@ def stateAssembler(state, container, model, templates, rules, copyRules, dataRul
         appendTodo(container, state)
         return
 
-    #fetch rules
-    lenHist = len(state.hist.theHist)
-    possibleHists = state.hist.assembleHist(lenHist)
-    ruleIDs = []
+    #ToDO: fetch rules
+    # lenHist = len(state.hist.theHist)
+    # possibleHists = state.hist.assembleHist(lenHist)
+    # ruleIDs = []
     #normal rules
-    for hist in possibleHists:
-        if hist in rules.keys():
-            rule = match(state, rules[hist])
-            if rule:
-                for r in rule:
-                    ruleIDs.append(r.ruleHist.getID())
-                state.rules.append(rule)
-    #data rules
-    for hist in possibleHists:
-        if hist in dataRules.keys():
-            rule = match(state, dataRules[hist])
-            if rule:
-                for r in rule:
-                    ruleIDs.append(r.ruleHist.getID())
-                state.dataRules.append(rule)
-    #copy rules
-    for hist in possibleHists:
-        if hist in copyRules.keys():
-            rule = match(state, copyRules[hist])
-            if rule:
-                for r in rule:
-                    ruleIDs.append(r.ruleHist.getID())
-                state.copyRules.append(rule)
+    for tempID in state.templates:
+        if tempID in rules.keys():
+            for r in rules[tempID]:
+                state.rules.append(r)
+    # for hist in possibleHists:
+    #     if hist in rules.keys():
+    #         rule = match(state, rules[hist])
+    #         if rule:
+    #             for r in rule:
+    #                 ruleIDs.append(r.ruleHist.getID())
+    #             state.rules.append(rule)
+    # #data rules
+    for tempID in state.templates:
+        if tempID in dataRules.keys():
+            for r in dataRules[tempID]:
+                state.dataRules.append(r)
+    # for hist in possibleHists:
+    #     if hist in dataRules.keys():
+    #         rule = match(state, dataRules[hist])
+    #         if rule:
+    #             for r in rule:
+    #                 ruleIDs.append(r.ruleHist.getID())
+    #             state.dataRules.append(rule)
+    # #copy rules
+    for tempID in state.templates:
+        if tempID in copyRules.keys():
+            for r in copyRules[tempID]:
+                state.copyRules.append(r)
+    # for hist in possibleHists:
+    #     if hist in copyRules.keys():
+    #         rule = match(state, copyRules[hist])
+    #         if rule:
+    #             for r in rule:
+    #                 ruleIDs.append(r.ruleHist.getID())
+    #             state.copyRules.append(rule)
 
-    x = []
-    for sublist in ruleIDs:
-        for ID in sublist:
-            x.append(ID)
-    ruleIDs = set(x)
+    # x = []
+    # for sublist in ruleIDs:
+    #     for ID in sublist:
+    #         x.append(ID)
+    # ruleIDs = set(x)
 
-    tmp = state.templates[:]
+    # tmp = state.templates[:]
 
-    # remove templates with fields which cannot be filled in this context
-    for temp in state.templates[:]:
-        if state.ioAction == 'output' and state.fields[temp]:
-            if temp not in ruleIDs:
-                state.templates.remove(temp)
-                if not state.templates:
-                    # having to remove this state completely
-                    # need to remove the transition to this state in parent state
-                    # if parent then has no more transitions: remove it, too
-                    checkParent(state, container)
-                    return
-    if not state.templates:
-        checkParent(state, container)
-        return
+    # # remove templates with fields which cannot be filled in this context
+    # for temp in state.templates[:]:
+    #     if state.ioAction == 'output' and state.fields[temp]:
+    #         if temp not in ruleIDs:
+    #             state.templates.remove(temp)
+    #             if not state.templates:
+    #                 # having to remove this state completely
+    #                 # need to remove the transition to this state in parent state
+    #                 # if parent then has no more transitions: remove it, too
+    #                 checkParent(state, container)
+    #                 return
 
     # update nextStates hist
-    state.nextHist = state.hist.update(state.templates)
+    # state.nextHist = state.hist.update(state.templates)
 
     #if state.hist in dataRules.keys():
     #    state.dataRules = dataRules[state.hist]
@@ -891,18 +1102,26 @@ def checkParent(state, container):
     parent.nextStates.remove(state.curState)
     if not parent.nextStates:
         container.donerem(parent)
-        checkParent(parent)
+        checkParent(parent, container)
     return
 
 
 def appendTodo(container, state):
-    if state.hist in container.done.keys():
-        for stateDash in container.done[state.hist]:
-            if state == stateDash:
-                return
+    if state.name in container.done.keys():
+        # having state already -> do nothing
+        PeachState = container.done[state.name][0]
+        #    if ns not in PeachState.previous:
+        #        PeachState.previous.append(ns)
+        for prev in state.previous:
+            PeachState.previous.append(prev)
+        return
+        # for stateDash in container.done[state.hist]:
+        #     if state == stateDash:
+        #         return
     container.doneadd(state)
     if state.nextStates != []:
         for nextState in state.nextStates:
-            nxt = PeachState(nextState, state.hist, state.nextHist, parent=state)
+            # nxt = PeachState(nextState, state.hist, state.nextHist, parent=state)
+            nxt = PeachStateReloaded(nextState, parent=state)
             container.todoadd(nxt)
     return
