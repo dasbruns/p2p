@@ -191,6 +191,10 @@ def rand(self, num):
 # 	return
 
 
+def set(Action, modelsIDs):
+    Action.dataModel["a1"].DefaultValue = Variant(modelsIDs)
+
+
 def choose(Action, num):
     soLong = str(Action.parent["randOut"].dataModel["a1"].InternalValue)
     if ';;;' in soLong:
@@ -199,6 +203,19 @@ def choose(Action, num):
         Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
         return
     if soLong == '-1':
+        try:
+            modelwithoutfields = str(Action.parent["fallback"].dataModel["a1"].InternalValue).split(';')
+            modelwithoutfields = random.choice(modelwithoutfields)
+            modelwithoutfields = int(modelwithoutfields)
+            if modelwithoutfields != -1:
+                f = open('woot', 'a')
+                f.write('fallback triggered')
+                f.close()
+                Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(modelwithoutfields)
+                return
+        except:
+            pass
+
         num = random.randint(0, num)
         Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
         return

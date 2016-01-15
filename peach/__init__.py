@@ -24,7 +24,7 @@ fieldsINblock = {}
 def test(pit, role=False, IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
-    # test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
+    test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
     test.append(ET.Element('StateModel', attrib={'ref': 'StateModel'}))
     # append default publisher
     if role == True:
@@ -50,9 +50,12 @@ def agent(pit, application, fuzzedBin):
     agent = pit.tree.find('Agent')
     agent.append(ET.Element('Monitor', attrib={'class': 'LinuxCrashMonitor'}))
     monitor = ET.Element('Monitor', attrib={'class': 'Process'})
-    monitor.append(ET.Element('Param', name='Executable', attrib={'value': './{}'.format(application)}))
-    monitor.append(ET.Element('Param', name='StartOnCall', attrib={'value': 'Start'}))
-    monitor.append(ET.Element('Param', name='Arguments', attrib={'value': '{}'.format(fuzzedBin)}))
+    monitor.append(ET.Element('Param', name='Executable', attrib={'value': '{}'.format(application)}))  # '/volume/src/xbmc/kodi.bin'}))
+    monitor.append(ET.Element('Param', name='FaultOnEarlyExit', attrib={'value': 'True'}))
+    agent.append(monitor)
+    monitor = ET.Element('Monitor', attrib={'class': 'Pcap'})
+    monitor.append(ET.Element('Param', name='Device', attrib={'value': 'lo'}))
+    monitor.append(ET.Element('Param', name='Filter', attrib={'value': 'port 36666'}))
     agent.append(monitor)
     return pit
 
@@ -151,6 +154,11 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
     dataModel.append(ET.Element('String', name='c', attrib={'value': '\n', 'mutable': 'false'}))
     root.append(dataModel)
 
+    # create fallback dataModel
+    dataModel = ET.Element('DataModel', name='fallback')
+    dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false', 'value': '-1'}))
+    root.append(dataModel)
+
     # create randomChange dataModel
     dataModel = ET.Element('DataModel', name='randChange')
     dataModel.append(ET.Element('String', name='a', attrib={'value': 'randomChange: ', 'mutable': 'false'}))
@@ -163,6 +171,11 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
     dataModel.append(ET.Element('String', name='a', attrib={'value': '===== entering: ', 'mutable': 'false'}))
     dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false'}))
     dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
+    root.append(dataModel)
+
+    # create model for ending gracefully
+    dataModel = ET.Element('DataModel', name='endState')
+    dataModel.append(ET.Element('String', name='a', attrib={'value': '===== ENDING RUN =====\n', 'mutable': 'false'}))
     root.append(dataModel)
 
     # create history dataModel
@@ -196,6 +209,10 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
 
 
 def getLengthRelation(dataModel):
+    for child in dataModel.getchildren():
+        if child.attrib['value'] == '\r\n\r\n':
+            if child == dataModel.getchildren()[-1]:
+                return
     global blackList
     global fieldsINblock
     flag = False
@@ -326,7 +343,6 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
     stateModel = pit.tree.getroot().find('StateModel')
     multiModels = {}
     dataRuleModels = {}
-    x = fieldsINblock
     global tempID2StateMap
     tempID2StateMap = templatesID2stateName
     for listOstates in done.values():
@@ -354,6 +370,13 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             actionCounter += 1
 
             noHist = False
+
+            if state.ioAction == 'END':
+                # tell us the end
+                # ToDo: DEBUG only
+                end = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT'})
+                end .append(ET.Element('DataModel', attrib={'ref': 'endState'}))
+                peachState.append(end )
 
             # handle ioActions
             if state.ioAction != 'END':
@@ -468,6 +491,16 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
 
                 # install random generator for multi-output
                 if len(dataModelIDs) > 1:
+                    # crazy idea
+
+                    modelsWithFields = set(state.fields.keys())
+                    modelswithoutFields = list(set(dataModelIDs) - modelsWithFields)
+                    if modelswithoutFields:
+                        modelswithoutFields = ';'.join(modelswithoutFields)
+                        outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'fallback', 'publisher': 'nullOUT', 'onStart': 'acdditionalCode.set(self,{})'.format(modelswithoutFields)})
+                        outputAction.append(ET.Element('DataModel', attrib={'ref': 'fallback'}))
+                        peachState.append(outputAction)
+
                     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut', 'publisher': 'nullOUT', 'onStart': 'additionalCode.choose(self, {})'.format(len(dataModelIDs)-1)})
                     outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                     peachState.append(outputAction)
@@ -694,6 +727,7 @@ def pimpMySlurp(slurp, srcID, hardcore=False):
                 return [slurp, specSlurp]
 
     return [slurp]
+
 
 def pimpMySlurpOLD(slurp, srcID, hardcore=False):
     if srcID == -1:
