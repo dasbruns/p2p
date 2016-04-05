@@ -24,6 +24,10 @@ fieldsINblock = {}
 def test(pit, role=False, IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
+    # get rid of stupid connection errors
+    strategy = ET.Element('Strategy', attrib={'class': 'Random'})
+    strategy.append(ET.Element('Param', name='SwitchCount', attrib={'value': '500000000'}))
+    test.append(strategy)
     test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
     test.append(ET.Element('StateModel', attrib={'ref': 'StateModel'}))
     # append default publisher
