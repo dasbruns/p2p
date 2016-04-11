@@ -24,10 +24,11 @@ fieldsINblock = {}
 def test(pit, role=False, IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
-    # get rid of stupid connection errors
-    strategy = ET.Element('Strategy', attrib={'class': 'Random'})
-    strategy.append(ET.Element('Param', name='SwitchCount', attrib={'value': '500000000'}))
-    test.append(strategy)
+    # no so useful at all..
+    # # get rid of stupid connection errors
+    # strategy = ET.Element('Strategy', attrib={'class': 'Random'})
+    # strategy.append(ET.Element('Param', name='SwitchCount', attrib={'value': '500000000'}))
+    # test.append(strategy)
     test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
     test.append(ET.Element('StateModel', attrib={'ref': 'StateModel'}))
     # append default publisher
@@ -363,6 +364,10 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             # ToDo: DEBUG only
             current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
                 'additionalCode.name(self)'})
+            if state.isInit():
+                current.attrib['onComplete'] = 'additionalCode.start(self)'
+                # current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
+                #     'additionalCode.name(self)', 'onComplete': 'additionalCode.start(self)'})
             current.append(ET.Element('DataModel', attrib={'ref': 'enterState'}))
             peachState.append(current)
             actionCounter += 1
@@ -378,7 +383,8 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             if state.ioAction == 'END':
                 # tell us the end
                 # ToDo: DEBUG only
-                end = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT'})
+                end = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT',
+                                                   'onComplete': 'additionalCode.end(self)'})
                 end .append(ET.Element('DataModel', attrib={'ref': 'endState'}))
                 peachState.append(end )
 
