@@ -1,5 +1,6 @@
-#peach imports
+# peach imports
 import clr
+
 clr.AddReference("Peach.Core")
 from Peach.Core import Variant
 from System import Array, Byte
@@ -9,22 +10,22 @@ import random
 
 
 def strFromHex(field):
-	try:
-		return str(field.InternalValue).replace(' ','').decode('hex')
-	except:
-		return '-1337'
+    try:
+        return str(field.InternalValue).replace(' ', '').decode('hex')
+    except:
+        return '-1337'
 
 
 def strToHex(val):
-	try:
-		ar = map(lambda x: ord(x), str(val))
-		return Array[Byte](ar)
-	except:
-		return strToHex("-1")
+    try:
+        ar = map(lambda x: ord(x), str(val))
+        return Array[Byte](ar)
+    except:
+        return strToHex("-1")
 
 
 def dataRule(Action, num=0):
-    f = open('woot','a')
+    f = open('woot', 'a')
     f.write('DataRule\n')
     f.write(str(Action.parent.name))
     f.write('\n')
@@ -56,9 +57,9 @@ def dataRule(Action, num=0):
     # f.write('\n Into TYPEFIX\n')
     try:
         # pimped = strToHex(unquote(str(choice)))
-	f.write('trying to pimp..\n')
+        f.write('trying to pimp..\n')
         pimped = strToHex(choice)
-	f.write('pimped\n')
+        f.write('pimped\n')
     except:
         f.write('something wrong here\n')
         pimped = choice
@@ -72,7 +73,7 @@ def dataRule(Action, num=0):
 
 
 def copySeq(Action, change):
-    f = open('woot','a')
+    f = open('woot', 'a')
     f.write('seqRule\n')
     f.write(str(Action.parent.name))
     f.write('\n')
@@ -85,24 +86,24 @@ def copySeq(Action, change):
     # f.write(quote(str(field.InternalValue).encode('utf-8').encode('hex')))
     # f.write('\n')
     try:
-	# we know here only appear hex-strings
+        # we know here only appear hex-strings
         # f.write(str(field.InternalValue))
         # f.write('\n')
         # val = int(str(field.InternalValue).replace(' ',''), 16)
-	# val = int(str(field.InternalValue).decode('hex'))
-	try:
-		f.write('trying to read int\n')
-		val = int(strFromHex(field))
-		f.write('read int: {}\n'.format(val))
-	except:
-		f.write('something wrong\n')
-		val = int('-1337')
-	# val = int(str(field.InternalValue).replace(' ','').decode('hex'))
+        # val = int(str(field.InternalValue).decode('hex'))
+        try:
+            f.write('trying to read int\n')
+            val = int(strFromHex(field))
+            f.write('read int: {}\n'.format(val))
+        except:
+            f.write('something wrong\n')
+            val = int('-1337')
+        # val = int(str(field.InternalValue).replace(' ','').decode('hex'))
         f.write('cast done \n')
     except TypeError:
         field.DefaultValue = Variant(strToHex(-1))
         return
-    f.write('{} --> {} \n'.format(val, val+change))
+    f.write('{} --> {} \n'.format(val, val + change))
     val += int(change)
     f.write('change done \n\n')
     field.DefaultValue = Variant(strToHex(val))
@@ -112,7 +113,7 @@ def copySeq(Action, change):
 
 
 def copyPart(Action, where, separator):
-    f = open('woot','a')
+    f = open('woot', 'a')
     f.write('partRule\n')
     f.write(str(Action.parent.name))
     f.write('\n')
@@ -125,15 +126,15 @@ def copyPart(Action, where, separator):
     val = val.split(unquote(separator))
     f.write('split value {}\n'.format(str(val)))
     if 'PREFIX' in where:
-    	f.write('as prefix\n')
+        f.write('as prefix\n')
         val = val[0]
     else:
-    	f.write('as suffix\n')
-	if len(val) > 1:
-		val = val[1]
-	else:
-		f.write('as suffix failed\n')
-		val = val[0]
+        f.write('as suffix\n')
+        if len(val) > 1:
+            val = val[1]
+        else:
+            f.write('as suffix failed\n')
+            val = val[0]
     f.write('\n')
     f.close()
     field.DefaultValue = Variant(strToHex(val))
@@ -142,7 +143,7 @@ def copyPart(Action, where, separator):
 
 
 def copyComp(Action, where, what):
-    f = open('woot','a')
+    f = open('woot', 'a')
     f.write('compRule\n')
     f.write(str(Action.parent.name))
     f.write('\n')
@@ -164,10 +165,10 @@ def copyComp(Action, where, what):
     i = random.randint(0, len(what) - 1)
     add = unquote(what[i])
     if where == 'PREFIX':
-    	f.write('as prefix\n')
+        f.write('as prefix\n')
         val += add
     else:
-    	f.write('as suffix\n')
+        f.write('as suffix\n')
         val = add + val
     f.write(val)
     f.write('\n')
@@ -178,8 +179,18 @@ def copyComp(Action, where, what):
 
 
 def rand(self, num):
-    num = random.randint(0, num)
     val = self.dataModel.find('a1')
+    soLong = self.dataModel["a1"].InternalValue
+    if soLong != '-1':
+        f = open('woot', 'a')
+        f.write('randMan triggered\n')
+        soLong = soLong.split(';;;')
+        f.write('IDs: {}\n'.format(soLong))
+        ID = random.choice(list(set(soLong)))
+        f.write('chosen: {}\n'.format(ID))
+        val.DefaultValue = Variant(ID)
+        return
+    num = random.randint(0, num)
     val.DefaultValue = Variant(num)
     return
 
@@ -223,35 +234,62 @@ def choose(Action, num):
 
 
 def randMan(Action, num=-1):
-        if int(num) < 0:
-                Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
-                return
-        soLong = str(Action.parent["randOut"].dataModel["a1"].InternalValue)
-        if soLong == '-1':
-            Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
-        else:
-            soLong += ';;;{}'.format(num)
-            Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(soLong)
-        return
+    # if int(num) < 0:
+    #     Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
+    #     return
+    soLong = str(Action.parent["randOut"].dataModel["a1"].InternalValue)
+    if soLong == '-1':
+        Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
+    else:
+        soLong += ';;;{}'.format(num)
+        Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(soLong)
+    return
+
+
+def end(Action):
+    f = open('passedStates', 'a')
+    f.write(str(Action.parent.name))
+    f.write(' ')
+    f.write('END ')
+    f.close()
+
+
+def start(Action):
+    f = open('passedStates', 'a')
+    f.write('NEWSESSION ')
+    f.close()
+
+
+def init(self):
+    # name = self.parent.name
+    # stateModel = self.parent.parent
+    # stateModel.states[initial][name].when = "1 == 0"
+    # self.parent["isInit"].dataModel["a1"].DefaultValue = Variant(1)
+    self.when = "1 == 0"
+    end(self)
+    return
 
 
 def updateHist(Action, ID=None):
-    f = open('woot','a')
+    f = open('woot', 'a')
     f.write('updateHist\n')
     f.write(str(ID))
     f.write('\n')
     if not ID:
-	try:
-		ID = Action.dataModel[0][0][0].referenceName
-	except:
-		f.write('no message received')
-		f.write('\n')
-		ID = -1
-	
-    # f = open('woot','a')
-    # f.write(str(ID))
-    # f.write('\n')
-    # f.close()
+        try:
+            ID = Action.dataModel[0][0][0].referenceName
+        except:
+            f.write('no message received')
+            f.write('\n')
+            ID = -1
+
+    f.close()
+    f = open('passedStates', 'a')
+    f.write(str(Action.parent.name))
+    f.write(';;;')
+    f.write(str(ID))
+    f.write(' ')
+    f.close()
     field = Action.parent['theHist'].dataModel['ID-3']
     # f = open('opts','a')
     # f.write(str(dir(field)))

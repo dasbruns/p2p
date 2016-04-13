@@ -159,10 +159,10 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
     dataModel.append(ET.Element('String', name='c', attrib={'value': '\n', 'mutable': 'false'}))
     root.append(dataModel)
 
-    # create fallback dataModel
-    dataModel = ET.Element('DataModel', name='fallback')
-    dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false', 'value': '-1'}))
-    root.append(dataModel)
+    # # create fallback dataModel
+    # dataModel = ET.Element('DataModel', name='fallback')
+    # dataModel.append(ET.Element('String', name='a1', attrib={'mutable': 'false', 'value': '-1'}))
+    # root.append(dataModel)
 
     # create randomChange dataModel
     dataModel = ET.Element('DataModel', name='randChange')
@@ -237,11 +237,12 @@ def getLengthRelation(dataModel):
         for key in target.attrib.keys():
             target.attrib.pop(key)
         target.set('name', name)
+        target.set('mutable', 'false')
         rel = ET.Element('Relation', attrib={'type': 'size', 'of': 'blockB', 'expressionGet': 'size'})
         target.append(rel)
 
         flag = False
-        blockB = ET.Element('Block', name='blockB')
+        blockB = ET.Element('Block', name='blockB', mutable='false')
         for child in dataModel.getchildren():
             if 'value' in child.attrib.keys() and child.attrib['value'] == '\r\n\r\n':
                 # use this to know if field is in blockB or not
@@ -562,7 +563,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             if len(state.nextStates) > 1:
                 count = len(state.nextStates) - 1
                 outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randChange',
-                                                            'onStart': 'additionalCode.rand(self,{})'.format(
+                                                            'onStart': 'additionalCode.randChange(self,{})'.format(
                                                                 len(state.nextStates) - 1), 'publisher': 'nullOUT'})
                 outputAction.append(ET.Element('DataModel', attrib={'ref': 'randChange'}))
                 peachState.append(outputAction)
