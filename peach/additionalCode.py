@@ -178,71 +178,58 @@ def copyComp(Action, where, what):
     return
 
 
-def rand(self, num):
-    val = self.dataModel.find('a1')
-    soLong = self.dataModel["a1"].InternalValue
-    if soLong != '-1':
+def choose(Action, num):
+    # val = self.dataModel.find('a1')
+    # soLong = str(self.dataModel["a1"].InternalValue)
+    soLong = str(Action.parent["randOut"].dataModel["a1"].InternalValue)
+    f = open('woot', 'a')
+    f.write('current rand: {}\n'.format(soLong))
+    f.close()
+    if soLong != '-1' and soLong != '':
         f = open('woot', 'a')
         f.write('randMan triggered\n')
         soLong = soLong.split(';;;')
         f.write('IDs: {}\n'.format(soLong))
         ID = random.choice(list(set(soLong)))
         f.write('chosen: {}\n'.format(ID))
-        val.DefaultValue = Variant(ID)
+        # val.DefaultValue = Variant(ID)
+        Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(ID)
+        f.close()
         return
+    num = random.randint(0, num)
+    # val.DefaultValue = Variant(num)
+    Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
+    return
+
+
+def randChange(self, num):
+    val = self.dataModel.find('a1')
     num = random.randint(0, num)
     val.DefaultValue = Variant(num)
     return
 
 
-# def randMan(Action, num):
-# 	if int(num) < 0:
-# 		return
-# 	Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
-# 	return
-
-
-def set(Action, modelsIDs):
-    Action.dataModel["a1"].DefaultValue = Variant(modelsIDs)
-
-
-def choose(Action, num):
-    soLong = str(Action.parent["randOut"].dataModel["a1"].InternalValue)
-    if ';;;' in soLong:
-        soLong = soLong.split(';;;')
-        num = random.choice(soLong)
-        Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
-        return
-    if soLong == '-1':
-        try:
-            modelwithoutfields = str(Action.parent["fallback"].dataModel["a1"].InternalValue).split(';')
-            modelwithoutfields = random.choice(modelwithoutfields)
-            modelwithoutfields = int(modelwithoutfields)
-            if modelwithoutfields != -1:
-                f = open('woot', 'a')
-                f.write('fallback triggered')
-                f.close()
-                Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(modelwithoutfields)
-                return
-        except:
-            pass
-
-        num = random.randint(0, num)
-        Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
-        return
-    return
+def fallback(Action, num):
+    Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
 
 
 def randMan(Action, num=-1):
-    # if int(num) < 0:
-    #     Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
-    #     return
+    if int(num) < 0:
+        Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
+        return
+    f = open('woot', 'a')
+    f.write('in randMan\n')
     soLong = str(Action.parent["randOut"].dataModel["a1"].InternalValue)
+    f.write('soLong: {}\n'.format(soLong))
     if soLong == '-1':
+        f.write('manipulating with num: {}\n'.format(num))
         Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
     else:
+        f.write('appending num: {}\n'.format(num))
         soLong += ';;;{}'.format(num)
         Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(soLong)
+    f.write('\n')
+    f.close()
     return
 
 
@@ -258,16 +245,7 @@ def start(Action):
     f = open('passedStates', 'a')
     f.write('NEWSESSION ')
     f.close()
-
-
-def init(self):
-    # name = self.parent.name
-    # stateModel = self.parent.parent
-    # stateModel.states[initial][name].when = "1 == 0"
-    # self.parent["isInit"].dataModel["a1"].DefaultValue = Variant(1)
-    self.when = "1 == 0"
-    end(self)
-    return
+    name(Action)
 
 
 def updateHist(Action, ID=None):
@@ -291,18 +269,8 @@ def updateHist(Action, ID=None):
     f.write(' ')
     f.close()
     field = Action.parent['theHist'].dataModel['ID-3']
-    # f = open('opts','a')
-    # f.write(str(dir(field)))
-    # f.write('\n\n')
-    # f.write(str(field.GetDefaultValue()))
-    # f.write('\n\n')
-    # f.close()
     field.DefaultValue = Variant(ID)
     return
-    # hist = self.parent.name
-    # val = self.dataModel.find('c1')
-    # val.DefaultValue = Variant(hist)
-    # return
 
 
 def name(self):
