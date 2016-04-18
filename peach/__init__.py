@@ -50,14 +50,15 @@ def test(pit, role=False, IP='127.0.0.1', port=80):
     return pit
 
 
-def agent(pit, application, fuzzedBin):
+def agent(pit, application, role):
     pit.tree.getroot().append(ET.Element('Agent', name='Local'))
     agent = pit.tree.find('Agent')
-    agent.append(ET.Element('Monitor', attrib={'class': 'LinuxCrashMonitor'}))
-    monitor = ET.Element('Monitor', attrib={'class': 'Process'})
-    monitor.append(ET.Element('Param', name='Executable', attrib={'value': '{}'.format(application)}))  # '/volume/src/xbmc/kodi.bin'}))
-    monitor.append(ET.Element('Param', name='FaultOnEarlyExit', attrib={'value': 'True'}))
-    agent.append(monitor)
+    if role:
+        agent.append(ET.Element('Monitor', attrib={'class': 'LinuxCrashMonitor'}))
+        monitor = ET.Element('Monitor', attrib={'class': 'Process'})
+        monitor.append(ET.Element('Param', name='Executable', attrib={'value': '{}'.format(application)}))  # '/volume/src/xbmc/kodi.bin'}))
+        monitor.append(ET.Element('Param', name='FaultOnEarlyExit', attrib={'value': 'True'}))
+        agent.append(monitor)
     monitor = ET.Element('Monitor', attrib={'class': 'Pcap'})
     monitor.append(ET.Element('Param', name='Device', attrib={'value': 'lo'}))
     monitor.append(ET.Element('Param', name='Filter', attrib={'value': 'port 36666'}))
@@ -366,7 +367,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
                 'additionalCode.name(self)'})
             if state.isInit():
-                current.attrib['onComplete'] = 'additionalCode.start(self)'
+                current.attrib['onStart'] = 'additionalCode.start(self)'
                 # current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
                 #     'additionalCode.name(self)', 'onComplete': 'additionalCode.start(self)'})
             current.append(ET.Element('DataModel', attrib={'ref': 'enterState'}))
@@ -416,6 +417,23 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                     peachState.append(inputAction)
                     actionCounter += 1
             elif state.ioAction == 'output':
+                # find out:
+                #   does state have more than one model
+                #   does it possess models with fields
+                #   does it posses models without fields
+                #   if so write down all models WITHOUT fields in random
+                noFields = []
+                hasFields = False
+                for id in dataModelIDs:
+                    if id in state.fields.keys():
+                        if state.fields[id] == []:
+                            # noFields.append(str(id))
+                            noFields.append(str(len(dataModelIDs) -1 - dataModelIDs.index(id)))
+                        else:
+                            hasFields = True
+                if hasFields and noFields:
+                    s = ';;;'.join(noFields)
+                    current.attrib['onComplete'] = 'additionalCode.fallback(self, "{}")'.format(s)
                 # have multiple output options
                 hasOpts = False
                 count = 0
@@ -437,7 +455,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                     # dataModels, slurps = data(state, dataRuleModels, done, DEBUG, blob)
                     dataModels, slurps = data(state, dataRuleModels, done, DEBUG, blob)
 
-                    # install dataRule output models
+                    # install dataRuState = ET.Element('State'le output models
                     for model in dataModels:
                         # modID = int(model.attrib['name'].split()[0].split(';')[-1][1:-1])
                         modID = getHist(model, horizon)
@@ -539,7 +557,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                             outputAction.set('when', whenExpression)
                             outputAction.append(ET.Element('DataModel', attrib={'ref': '{}'.format(ID),
                                                                                 'name': 'out{}'.format(ID)}))
-                    # apply dataRules
+                    # apply dataRuleState = ET.Element('State's
                     if state.dataRules != []:
                         pass
                         # dataElements = data(ID, state)

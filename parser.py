@@ -272,13 +272,13 @@ if __name__ == '__main__':
     pit = peach.stateModel(pit, container.done, theHistLength, templateID2stateName, args.debug, args.blob)
     if args.verbose > 1: print('Done')
     if args.verbose > 1: print('Processing Agent/Test area ... ', end='', flush=True)
-    pit = peach.agent(pit, args.application, args.fuzzedBinary)
+    pit = peach.agent(pit, args.application, args.role)
     pit = peach.test(pit, args.role, args.address, args.port)
     if args.verbose: print('Done\n')
     if args.role:
-        if args.verbose: print('Writing to {0}/{1}.xml'.format(args.folder, args.outFile))
-        pit.toFile('{0}/{1}.xml'.format(args.folder, args.outFile))
+        if args.verbose: print('Writing to {0}/{1}client.xml'.format(args.folder, args.outFile))
+        pit.toFile('{0}/{1}client.xml'.format(args.folder, args.outFile))
     else:
-        if args.verbose: print('Writing to {0}/{1}.xml'.format(args.folder, args.outFile))
-        pit.toFile('{0}/{1}.xml'.format(args.folder, args.outFile))
+        if args.verbose: print('Writing to {0}/{1}server.xml'.format(args.folder, args.outFile))
+        pit.toFile('{0}/{1}server.xml'.format(args.folder, args.outFile))
 
