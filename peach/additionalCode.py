@@ -253,7 +253,7 @@ def updateHist(Action, ID=None):
     f.write('updateHist\n')
     f.write(str(ID))
     f.write('\n')
-    if not ID:
+    if ID == None:
         try:
             ID = Action.dataModel[0][0][0].referenceName
         except:
