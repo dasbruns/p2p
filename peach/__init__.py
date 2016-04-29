@@ -42,7 +42,8 @@ def test(pit, role=False, IP='127.0.0.1', port=80):
     test.append(publisher)
     # append publishing device for random number generating
     test.append(ET.Element('Publisher', name='null', attrib={'class': 'Null'}))
-    test.append(ET.Element('Publisher', name='nullOUT', attrib={'class': 'Console'}))
+    test.append(ET.Comment('set to "Console" for debugging'))
+    test.append(ET.Element('Publisher', name='nullOUT', attrib={'class': 'Null'}))
     #append some kind of logger
     logger = ET.Element('Logger', attrib={'class': 'File'})
     logger.append(ET.Element('Param', name='Path', attrib={'value': 'logs'}))
@@ -312,7 +313,9 @@ def order4Length(list):
         if item != '"':
             l.append(length[int(item)])
     while list != []:
-        ind = l.index(min(l))
+        # check longer messages first
+        # ind = l.index(min(l))
+        ind = l.index(max(l))
         ordered.append(list.pop(ind))
         l.pop(ind)
     return ordered

@@ -28,7 +28,7 @@ if __name__ == '__main__':
     parser.add_argument('-bin', '--fuzzedBinary', default='pathToKodi', help='location of binary to be fuzzed')
     parser.add_argument('-app', '--application', default='kodi', help='application to be fuzzed')
 
-    parser.add_argument('-o', '--outFile', help='specify output file name', default='pit')
+    parser.add_argument('-o', '--outFile', help='specify output file name', default='')
     args = parser.parse_args()
 
     if args.folder[-1] == '/':
