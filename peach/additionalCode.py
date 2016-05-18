@@ -268,7 +268,13 @@ def updateHist(Action, ID=None):
     f.write(str(ID))
     f.write(' ')
     f.close()
-    field = Action.parent['theHist'].dataModel['ID-3']
+    # here a hell of lot of logic to handle the hist correctly
+    # the number MUST be 1 more than the horizon you would work on
+    # thus a 5 horizon yields a 6!
+    # below sample for 2 horizon:
+    # field = Action.parent['theHist'].dataModel['ID-3']
+    field = Action.parent['theHist'].dataModel['ID-6']
+
     field.DefaultValue = Variant(ID)
     return
 

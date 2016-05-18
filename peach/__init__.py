@@ -24,11 +24,9 @@ fieldsINblock = {}
 def test(pit, role=False, IP='127.0.0.1', port=80):
     pit.tree.getroot().append(ET.Element('Test', name='Default'))
     test = pit.tree.find('Test')
-    # no so useful at all..
-    # # get rid of stupid connection errors
-    # strategy = ET.Element('Strategy', attrib={'class': 'Random'})
-    # strategy.append(ET.Element('Param', name='SwitchCount', attrib={'value': '500000000'}))
-    # test.append(strategy)
+    strategy = ET.Element('Strategy', attrib={'class': 'Random'})
+    strategy.append(ET.Element('Param', name='SwitchCount', attrib={'value': '50'}))
+    test.append(strategy)
     test.append(ET.Element('Agent', attrib={'ref': 'Local'}))
     test.append(ET.Element('StateModel', attrib={'ref': 'StateModel'}))
     # append default publisher
@@ -613,21 +611,29 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                     peachState.append(ET.Comment('manipulate hist here for nextState {}'.format(nxt)))
                     if not DEBUG:
                         nxtName = str(base64.b64encode(str(nxt).encode('ascii')))[2:-1].replace('=', '')
-                    if not nxtwhen:
-                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-2'.format(encodeState(state, DEBUG)),
-                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-3'.format(nxtName)}))
-                        # crazy idea here: oldest message ID not needed any more. so eventually put in the emitted message ID
-                        # of this very state and slurp it to the most recent message ID of the nextState's history model!
-                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-3'.format(encodeState(state, DEBUG)),
-                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-2'.format(nxtName)}))
-                    else:
-                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-2'.format(encodeState(state, DEBUG)),
-                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-3'.format(nxtName), 'when': whenExpression}))
-                        # crazy idea here: oldest message ID not needed any more. so eventually put in the emitted message ID
-                        # of this very state and slurp it to the most recent message ID of the nextState's history model!
-                        peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-3'.format(encodeState(state, DEBUG)),
-                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-2'.format(nxtName), 'when': whenExpression}))
+                    # if not nxtwhen:
+                    for hor in reversed(range(2, horizon+1)):
+                        tFA = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-{}'.format(encodeState(state, DEBUG), hor),
+                                                                       'setXpath': '//StateModel//{}//theHist//hist//ID-{}'.format(nxtName, hor+1)})
+                        if nxtwhen:
+                            tFA.set('when', nxtwhen)
+                        peachState.append(tFA)
+                    # crazy idea here: oldest message ID not needed any more. so eventually put in the emitted message ID
+                    # of this very state and slurp it to the most recent message ID of the nextState's history model!
+                    tFA = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-{}'.format(encodeState(state, DEBUG), horizon+1),
+                                                                   'setXpath': '//StateModel//{}//theHist//hist//ID-2'.format(nxtName)})
+                    if nxtwhen:
+                        tFA.set('when', nxtwhen)
+                    peachState.append(tFA)
+                    # else:
+                    #     peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-2'.format(encodeState(state, DEBUG)),
+                    #                                                    'setXpath': '//StateModel//{}//theHist//hist//ID-3'.format(nxtName), 'when': whenExpression}))
+                    #     # crazy idea here: oldest message ID not needed any more. so eventually put in the emitted message ID
+                    #     # of this very state and slurp it to the most recent message ID of the nextState's history model!
+                    #     peachState.append(ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-3'.format(encodeState(state, DEBUG)),
+                    #                                                    'setXpath': '//StateModel//{}//theHist//hist//ID-2'.format(nxtName), 'when': whenExpression}))
                 if 'when' in changeAction.attrib.keys():
+                    peachState.append(ET.Comment('MULTI'))
                     peachState.append(ET.Comment('{}'.format(changeAction.attrib['when'])))
                 peachState.append(changeAction)
             stateModel.append(peachState)
