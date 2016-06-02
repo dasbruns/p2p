@@ -98,7 +98,7 @@ if __name__ == '__main__':
         model = PrismaIO.markovParse(f)
         f.close()
         # do not enhance statemodel
-        if args.enhance and False:
+        if args.enhance:  # and False:
             if args.verbose > 1: print('\n    \\__pruning StateModel ...', end='', flush=True)
             model.modelEnhancer()
         if args.verbose: print(' Done\n', end='', flush=True)
