@@ -136,10 +136,27 @@ if __name__ == '__main__':
     pit = peach.agent(pit, args.application, args.role, args.port)
     pit = peach.test(pit, args.role, args.address, args.port)
     if args.verbose: print('Done\n')
+    outfile = os.path.join(args.folder, args.outFile)
     if args.role:
-        if args.verbose: print('Writing to {0}/{1}client.xml'.format(args.folder, args.outFile))
-        pit.toFile('{0}/{1}client.xml'.format(args.folder, args.outFile))
+        if args.verbose: print('Writing to {0}client.xml'.format(outfile))
+        pit.toFile('{0}client.xml'.format(outfile))
     else:
-        if args.verbose: print('Writing to {0}/{1}server.xml'.format(args.folder, args.outFile))
-        pit.toFile('{0}/{1}server.xml'.format(args.folder, args.outFile))
+        if args.verbose: print('Writing to {0}server.xml'.format(outfile))
+        pit.toFile('{0}server.xml'.format(outfile))
+
+    # copy prisma extension into pit file directory
+    prisma = os.path.join(os.path.join(os.getcwd(), 'peach'), 'Prisma.py')
+    prismaOut = os.path.join(args.folder, 'Prisma.py')
+    f = open(prismaOut, 'w')
+    g = open(prisma, 'r')
+    for line in g:
+        # are we on hex encoding?
+        if '# return' in line and not args.blob:
+            line = line.replace('# ', '')
+        # what's the horizon length?!
+        if '#' not in line and 'ID-X' in line:
+            line = line.replace('ID-X', 'ID-{}'.format(theHistLength+1))
+        f.write(line)
+    g.close()
+    f.close()
 

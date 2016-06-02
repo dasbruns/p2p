@@ -10,6 +10,8 @@ import random
 
 
 def strFromHex(field):
+    # uncomment next line in NON hex encoded mode
+    # return field
     try:
         return str(field.InternalValue).replace(' ', '').decode('hex')
     except:
@@ -17,6 +19,8 @@ def strFromHex(field):
 
 
 def strToHex(val):
+    # uncomment next line in NON hex encoded mode
+    # return val
     try:
         ar = map(lambda x: ord(x), str(val))
         return Array[Byte](ar)
@@ -273,7 +277,7 @@ def updateHist(Action, ID=None):
     # thus a 5 horizon yields a 6!
     # below sample for 2 horizon:
     # field = Action.parent['theHist'].dataModel['ID-3']
-    field = Action.parent['theHist'].dataModel['ID-6']
+    field = Action.parent['theHist'].dataModel['ID-X']
 
     field.DefaultValue = Variant(ID)
     return
