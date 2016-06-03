@@ -11,7 +11,7 @@ import random
 from urllib import parse
 
 # testing purpose import
-# from .additionalCode import manipulate
+# from .Prisma import manipulate
 
 # dataModelID to dataModelLength dictionary
 # insert empty template with length 0 manually
@@ -156,9 +156,11 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
 
     # create count dataModel
     dataModel = ET.Element('DataModel', name='count')
-    count = ET.Element('Number', name='count', attrib={'size': '16'})
+    dataModel.append(ET.Element('String', name='a', attrib={'value': '===== COUNT: ', 'mutable': 'false'}))
+    count = ET.Element('Number', name='count', attrib={'size': '16', 'value': '1', 'mutable': 'false'})
     count.append(ET.Element('Fixup', attrib={'class': 'SequenceIncrementFixup'}))
     dataModel.append(count)
+    dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
     root.append(dataModel)
 
     # create model for ending gracefully
@@ -315,22 +317,24 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             # tell us where we are
             # ToDo: DEBUG only
             current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
-                'additionalCode.name(self)'})
+                'Prisma.name(self)'})
             if state.isInit():
-                current.attrib['onStart'] = 'additionalCode.start(self)'
+                current.attrib['onStart'] = 'Prisma.start(self)'
                 # current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
-                #     'additionalCode.name(self)', 'onComplete': 'additionalCode.start(self)'})
+                #     'Prisma.name(self)', 'onComplete': 'Prisma.start(self)'})
             current.append(ET.Element('DataModel', attrib={'ref': 'enterState'}))
             peachState.append(current)
             actionCounter += 1
 
-            # install exit on too long run
-            current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT'})
+            # install exit on too long run, that is more than messageMAX messages are exchanged
+            current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'count'})
             current.append(ET.Element('DataModel', attrib={'ref': 'count'}))
             peachState.append(current)
             actionCounter += 1
 
-            current = ET.Element('Action', attrib={'type': 'changeState', 'when': 'int(State["count"].dataModel["count"].InternalValue) == int(10)', 'ref': 'exit'})
+            # ToDo parameterize this
+            messageMAX = 50
+            current = ET.Element('Action', attrib={'type': 'changeState', 'when': 'int(State["count"].dataModel["count"].InternalValue) == int({})'.format(messageMAX), 'ref': 'exit'})
             peachState.append(current)
             actionCounter += 1
 
@@ -346,7 +350,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                 # tell us the end
                 # ToDo: DEBUG only
                 end = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT',
-                                                   'onComplete': 'additionalCode.end(self)'})
+                                                   'onComplete': 'Prisma.end(self)'})
                 end .append(ET.Element('DataModel', attrib={'ref': 'endState'}))
                 peachState.append(end )
 
@@ -373,7 +377,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                         inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': '{}mult'.format(name)}))
                     else:
                         inputAction.append(ET.Element('DataModel', name='read', attrib={'ref': name}))
-                    inputAction.set('onComplete', 'additionalCode.updateHist(self)')
+                    inputAction.set('onComplete', 'Prisma.updateHist(self)')
                     peachState.append(inputAction)
                     actionCounter += 1
             elif state.ioAction == 'output':
@@ -393,7 +397,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                             hasFields = True
                 if hasFields and noFields:
                     s = ';;;'.join(noFields)
-                    current.attrib['onComplete'] = 'additionalCode.fallback(self, "{}")'.format(s)
+                    current.attrib['onComplete'] = 'Prisma.fallback(self, "{}")'.format(s)
                 # have multiple output options
                 hasOpts = False
                 count = 0
@@ -401,7 +405,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                 # install random generator for multi-output
                 # if len(dataModelIDs) > 1:
                 #     # outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut',
-                #     #                                             'onStart': 'additionalCode.rand(self,{})'.format(
+                #     #                                             'onStart': 'Prisma.rand(self,{})'.format(
                 #     #                                                 len(dataModelIDs) - 1), 'publisher': 'nullOUT'})
                 #     outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut'})
                 #     outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
@@ -490,7 +494,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                         outputAction.append(ET.Element('DataModel', attrib={'ref': 'fallback'}))
                         peachState.append(outputAction)
 
-                    outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut', 'publisher': 'nullOUT', 'onStart': 'additionalCode.choose(self, {})'.format(len(dataModelIDs)-1)})
+                    outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randOut', 'publisher': 'nullOUT', 'onStart': 'Prisma.choose(self, {})'.format(len(dataModelIDs)-1)})
                     outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                     peachState.append(outputAction)
                     count = len(dataModelIDs) - 1
@@ -522,12 +526,12 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                         pass
                         # dataElements = data(ID, state)
                         # outputAction.append(ET.Element('Data'))
-                    outputAction.set('onComplete', 'additionalCode.updateHist(self,{})'.format(ID))
+                    outputAction.set('onComplete', 'Prisma.updateHist(self,{})'.format(ID))
                     peachState.append(outputAction)
                     actionCounter += 1
 
                 if hasOpts:
-                    outputAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null', 'name': 'randOutReset', 'onComplete': 'additionalCode.randMan(self)'})
+                    outputAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'null', 'name': 'randOutReset', 'onComplete': 'Prisma.randMan(self)'})
                     outputAction.append(ET.Element('DataModel', attrib={'ref': 'rand'}))
                     peachState.append(outputAction)
             # # handle history update
@@ -541,7 +545,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             if len(state.nextStates) > 1:
                 count = len(state.nextStates) - 1
                 outputAction = ET.Element('Action', attrib={'type': 'output', 'name': 'randChange',
-                                                            'onStart': 'additionalCode.randChange(self,{})'.format(
+                                                            'onStart': 'Prisma.randChange(self,{})'.format(
                                                                 len(state.nextStates) - 1), 'publisher': 'nullOUT'})
                 outputAction.append(ET.Element('DataModel', attrib={'ref': 'randChange'}))
                 peachState.append(outputAction)
@@ -630,7 +634,7 @@ def craftSlurp(state, rule, done, DEBUG, ruleType=None):
     if len(state.templates) > 1:
         correctModel = computeWhenOut(state, ID, DEBUG)
         onStart = int(correctModel.split('==')[1].split('int(')[1][:-1])
-        slurp.set('onStart', 'additionalCode.randMan(self,"{}")'.format(onStart))
+        slurp.set('onStart', 'Prisma.randMan(self,"{}")'.format(onStart))
     # if '1 == 1' in correctModel:
     #     j = -1
     # else:
@@ -693,7 +697,7 @@ def createDataRuleModel(state, hist, DEBUG=False):
 
 
 def assembleCopyRules(rule):
-    call = 'additionalCode.'
+    call = 'Prisma.'
     if 'Complete' in rule.typ:
         s = ''
         for cont in set(rule.content):
@@ -719,9 +723,9 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
         modelName = str(base64.b64encode((modelName).encode('ascii')))[2:-1].replace('=', '')
     ID = rule.ruleHist.getID()[0]
     absoluteDstField = computeAbsoluteFields(state, ID, rule.dstField)
-    adiC = 'additionalCode.dataRule(self)'
+    adiC = 'Prisma.dataRule(self)'
     if ID in fieldsINblock.keys() and absoluteDstField > int(fieldsINblock[ID][1:]):
-        adiC = 'additionalCode.dataRule(self,1)'
+        adiC = 'Prisma.dataRule(self,1)'
     setXpath = '//StateModel//{}//out{}//out{}//c{}'.format(encState, ID, ID, absoluteDstField)
     valueXpath = '//StateModel//{0}//{1}//c{2}'.format(encState, modelName, absoluteDstField)
     slurp = ET.Element('Action', attrib={'type': 'slurp', 'onComplete': adiC,
@@ -737,7 +741,7 @@ def dataSlurp(state, rule, modelName, done, DEBUG):
     slurp.set('when', when)
     if len(state.templates) > 1:
         onStart = int(correctModel.split('==')[1].split('int(')[1][:-1])
-        slurp.set('onStart', 'additionalCode.randMan(self,"{}")'.format(onStart))
+        slurp.set('onStart', 'Prisma.randMan(self,"{}")'.format(onStart))
     return slurp
 
 
