@@ -154,6 +154,13 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
     dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
     root.append(dataModel)
 
+    # create count dataModel
+    dataModel = ET.Element('DataModel', name='count')
+    count = ET.Element('Number', name='count', attrib={'size': '16'})
+    count.append(ET.Element('Fixup', attrib={'class': 'SequenceIncrementFixup'}))
+    dataModel.append(count)
+    root.append(dataModel)
+
     # create model for ending gracefully
     dataModel = ET.Element('DataModel', name='endState')
     dataModel.append(ET.Element('String', name='a', attrib={'value': '===== ENDING RUN =====\n', 'mutable': 'false'}))
@@ -292,6 +299,9 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
     dataRuleModels = {}
     global tempID2StateMap
     tempID2StateMap = templatesID2stateName
+    # create dedicated exit state
+    pexit = ET.Element('State', name="exit")
+    stateModel.append(pexit)
     for listOstates in done.values():
         for state in listOstates:
             blackListed(state)
@@ -311,6 +321,16 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                 # current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart':
                 #     'additionalCode.name(self)', 'onComplete': 'additionalCode.start(self)'})
             current.append(ET.Element('DataModel', attrib={'ref': 'enterState'}))
+            peachState.append(current)
+            actionCounter += 1
+
+            # install exit on too long run
+            current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT'})
+            current.append(ET.Element('DataModel', attrib={'ref': 'count'}))
+            peachState.append(current)
+            actionCounter += 1
+
+            current = ET.Element('Action', attrib={'type': 'changeState', 'when': 'int(State["count"].dataModel["count"].InternalValue) == int(10)', 'ref': 'exit'})
             peachState.append(current)
             actionCounter += 1
 
@@ -548,6 +568,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                 # for more than 2-horizon
                 if not noHist:
                     peachState.append(ET.Comment('manipulate hist here for nextState {}'.format(nxt)))
+                    nxtName = nxt
                     if not DEBUG:
                         nxtName = str(base64.b64encode(str(nxt).encode('ascii')))[2:-1].replace('=', '')
                     # if not nxtwhen:
