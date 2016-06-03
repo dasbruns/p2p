@@ -157,8 +157,7 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
     # create count dataModel
     dataModel = ET.Element('DataModel', name='count')
     dataModel.append(ET.Element('String', name='a', attrib={'value': '===== COUNT: ', 'mutable': 'false'}))
-    count = ET.Element('Number', name='count', attrib={'size': '16', 'value': '1', 'mutable': 'false'})
-    count.append(ET.Element('Fixup', attrib={'class': 'SequenceIncrementFixup'}))
+    count = ET.Element('String', name='count', attrib={'value': '0', 'mutable': 'false'})
     dataModel.append(count)
     dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
     root.append(dataModel)
@@ -302,7 +301,11 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
     global tempID2StateMap
     tempID2StateMap = templatesID2stateName
     # create dedicated exit state
+    # give it action to reset count model
     pexit = ET.Element('State', name="exit")
+    reset = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart': 'Prisma.reset(self)'})
+    reset.append(ET.Element('DataModel', attrib={'ref': 'count'}))
+    pexit.append(reset)
     stateModel.append(pexit)
     for listOstates in done.values():
         for state in listOstates:
@@ -327,7 +330,8 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             actionCounter += 1
 
             # install exit on too long run, that is more than messageMAX messages are exchanged
-            current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'count'})
+            current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'count',
+                                                   'onComplete': 'Prisma.set(self)'})
             current.append(ET.Element('DataModel', attrib={'ref': 'count'}))
             peachState.append(current)
             actionCounter += 1

@@ -213,6 +213,17 @@ def randChange(self, num):
     return
 
 
+def set(Action):
+    val = int(str(Action.dataModel["count"].InternalValue))
+    val += 1
+    Action.dataModel["count"].DefaultValue = Variant(val)
+
+
+def reset(self):
+    val = self.dataModel.find('count')
+    val.DefaultValue = Variant(str(0))
+
+
 def fallback(Action, num):
     Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
 
