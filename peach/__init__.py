@@ -232,6 +232,8 @@ def getLengthRelation(dataModel):
 
 def createHistModel(horizon):
     dataModel = ET.Element('DataModel', name='hist')
+    dataModel.append(ET.Element('String', name='count', attrib={'value': '0', 'mutable': 'false'}))
+    dataModel.append(ET.Element('String', name='newline', attrib={'value': '\n', 'mutable': 'false'}))
     for i in range(horizon):
         dataModel.append(ET.Element('String', name='ID-{}'.format(horizon-i+1), attrib={'mutable': 'false', 'value': '-1'}))
         dataModel.append(ET.Element('String', name='lb{}'.format(horizon-i+1), attrib={'mutable': 'false', 'value': '\n'}))
@@ -303,7 +305,7 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
     # create dedicated exit state
     # give it action to reset count model
     pexit = ET.Element('State', name="exit")
-    reset = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'onStart': 'Prisma.reset(self)'})
+    reset = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT'})
     reset.append(ET.Element('DataModel', attrib={'ref': 'count'}))
     pexit.append(reset)
     stateModel.append(pexit)
@@ -329,23 +331,18 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
             peachState.append(current)
             actionCounter += 1
 
-            # install exit on too long run, that is more than messageMAX messages are exchanged
-            current = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'count',
-                                                   'onComplete': 'Prisma.set(self)'})
-            current.append(ET.Element('DataModel', attrib={'ref': 'count'}))
-            peachState.append(current)
+            # install hist dataModel
+            histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'theHist',
+                                                      'onComplete': 'Prisma.set(self)'})
+            histAction.append(ET.Element('DataModel', attrib={'ref': 'hist', 'name': 'hist'}))
+            peachState.append(histAction)
             actionCounter += 1
 
             # ToDo parameterize this
             messageMAX = 50
-            current = ET.Element('Action', attrib={'type': 'changeState', 'when': 'int(State["count"].dataModel["count"].InternalValue) == int({})'.format(messageMAX), 'ref': 'exit'})
+            peachState.append(ET.Comment('max {} messages exchanged per session'.format(messageMAX)))
+            current = ET.Element('Action', attrib={'type': 'changeState', 'when': 'int(State["theHist"].dataModel["count"].InternalValue) == int({})'.format(messageMAX), 'ref': 'exit'})
             peachState.append(current)
-            actionCounter += 1
-
-            # install hist dataModel
-            histAction = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT', 'name': 'theHist'})
-            histAction.append(ET.Element('DataModel', attrib={'ref': 'hist', 'name': 'hist'}))
-            peachState.append(histAction)
             actionCounter += 1
 
             noHist = False

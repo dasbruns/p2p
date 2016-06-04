@@ -219,11 +219,6 @@ def set(Action):
     Action.dataModel["count"].DefaultValue = Variant(val)
 
 
-def reset(self):
-    val = self.dataModel.find('count')
-    val.DefaultValue = Variant(str(0))
-
-
 def fallback(Action, num):
     Action.parent["randOut"].dataModel["a1"].DefaultValue = Variant(num)
 
