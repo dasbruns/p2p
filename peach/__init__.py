@@ -154,13 +154,13 @@ def dataModel(templates, horizon, fuzzyness, blob=False, advanced=False, role=Tr
     dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
     root.append(dataModel)
 
-    # create count dataModel
-    dataModel = ET.Element('DataModel', name='count')
-    dataModel.append(ET.Element('String', name='a', attrib={'value': '===== COUNT: ', 'mutable': 'false'}))
-    count = ET.Element('String', name='count', attrib={'value': '0', 'mutable': 'false'})
-    dataModel.append(count)
-    dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
-    root.append(dataModel)
+    # # create count dataModel
+    # dataModel = ET.Element('DataModel', name='count')
+    # dataModel.append(ET.Element('String', name='a', attrib={'value': '===== COUNT: ', 'mutable': 'false'}))
+    # count = ET.Element('String', name='count', attrib={'value': '0', 'mutable': 'false'})
+    # dataModel.append(count)
+    # dataModel.append(ET.Element('String', name='c', attrib={'value': ' ===== \n', 'mutable': 'false'}))
+    # root.append(dataModel)
 
     # create model for ending gracefully
     dataModel = ET.Element('DataModel', name='endState')
@@ -305,9 +305,9 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
     # create dedicated exit state
     # give it action to reset count model
     pexit = ET.Element('State', name="exit")
-    reset = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT'})
-    reset.append(ET.Element('DataModel', attrib={'ref': 'count'}))
-    pexit.append(reset)
+    # reset = ET.Element('Action', attrib={'type': 'output', 'publisher': 'nullOUT'})
+    # reset.append(ET.Element('DataModel', attrib={'ref': 'count'}))
+    # pexit.append(reset)
     stateModel.append(pexit)
     for listOstates in done.values():
         for state in listOstates:
@@ -576,7 +576,10 @@ def stateModel(dataPit, done, horizon, templatesID2stateName, DEBUG=False, blob=
                     nxtName = nxt
                     if not DEBUG:
                         nxtName = str(base64.b64encode(str(nxt).encode('ascii')))[2:-1].replace('=', '')
-                    # if not nxtwhen:
+                    # update count to next Hist
+                    cup = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//count'.format(encodeState(state, DEBUG), horizon+1),
+                                                                   'setXpath': '//StateModel//{}//theHist//hist//count'.format(nxtName)})
+                    peachState.append(cup)
                     for hor in reversed(range(2, horizon+1)):
                         tFA = ET.Element('Action', attrib={'type': 'slurp', 'valueXpath': '//StateModel//{}//theHist//hist//ID-{}'.format(encodeState(state, DEBUG), hor),
                                                                        'setXpath': '//StateModel//{}//theHist//hist//ID-{}'.format(nxtName, hor+1)})

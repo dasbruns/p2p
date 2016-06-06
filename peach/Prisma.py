@@ -213,10 +213,12 @@ def randChange(self, num):
     return
 
 
-def set(Action):
-    val = int(str(Action.dataModel["count"].InternalValue))
+def set(Action, reset=0):
+    val = int(str(Action.parent["theHist"].dataModel["count"].InternalValue))
     val += 1
-    Action.dataModel["count"].DefaultValue = Variant(val)
+    if reset:
+        val = 0
+    Action.parent["theHist"].dataModel["count"].DefaultValue = Variant(val)
 
 
 def fallback(Action, num):
@@ -256,6 +258,7 @@ def start(Action):
     f.write('NEWSESSION ')
     f.close()
     name(Action)
+    set(Action, reset=1)
 
 
 def updateHist(Action, ID=None):
