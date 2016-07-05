@@ -68,6 +68,7 @@ def agent(pit, application, role, port=80):
 def createContent(ID, dataModel, templates, fuzzyness, blob, advanced):
     count = 0
     mutCount = -1
+    addTokens = []
     for cont in templates[ID].content:
         mutCount -= 1
         if random.random() <= float(fuzzyness) and cont != ' ':
@@ -97,13 +98,22 @@ def createContent(ID, dataModel, templates, fuzzyness, blob, advanced):
             if data == '':
                 #just a normal string, no non-printables detected
                 if mutCount == 0 and advanced:
-                    # use this to fuzz structs like key : value
-                    # assumed that key, :, and value are each their own field in datamodel
-                    # mutable = 'true'
+                    # use this to fuzz structs like key:value
+                    # assumed key: and value are each their own field in datamodel and separated by whitespace field
+                    # uncomment next line to fuzz each value of key:value pairs
+                    mutable = 'true'
                     mutCount = -1
-                data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token, 'mutable': mutable})
-                if ':' in cont:
+                # possibly key
+                if cont.endswith(':') and advanced:
+                    # uncomment next line to tokenize key of key:value pair
+                    addTokens.append(count)
                     mutCount = 2
+                data = ET.Element('String', name='c' + str(count), attrib={'value': cont, 'token': token, 'mutable': mutable})
+                try:
+                    int(cont)
+                    data.append(ET.Element("Hint", name="NumericalString", value="true"))
+                except ValueError:
+                    pass
         else:
             # rule field (defaultValue: good question)
             # ToDo consider thinking of better defaultValue
@@ -126,6 +136,8 @@ def createContent(ID, dataModel, templates, fuzzyness, blob, advanced):
                     dataModel = dataModel[:-1]
                 dataModel[-1].set('value', '\r\n\r\n')
                 dataModel[-1].set('token', 'true')
+    for c in addTokens:
+        dataModel[c].set('token', 'true')
     return templates[ID].isServer()
 
 

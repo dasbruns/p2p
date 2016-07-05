@@ -213,7 +213,7 @@ def randChange(self, num):
     return
 
 
-def set(Action, reset=0):
+def SET(Action, reset=0):
     val = int(str(Action.parent["theHist"].dataModel["count"].InternalValue))
     val += 1
     if reset:
@@ -258,7 +258,7 @@ def start(Action):
     f.write('NEWSESSION ')
     f.close()
     name(Action)
-    set(Action, reset=1)
+    SET(Action, reset=1)
 
 
 def updateHist(Action, ID=None):
